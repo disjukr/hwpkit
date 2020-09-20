@@ -1,26 +1,18 @@
 {
   "private": true,
-  "name": "hwp2pdf",
+  "name": "hwpkit",
   "version": "0.0.0",
-  "description": "hwp 2 pdf",
+  "description": "hwp toolkit",
   "workspaces": [
-    "hwp2pdf",
+    "hwpkit",
     "website"
   ],
   "scripts": {
     "dev": "ultra -r dev",
     "build": "ultra -r -b build"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/disjukr/hwp2pdf.git"
-  },
   "author": "JongChan Choi <jong@chan.moe>",
   "license": "(MIT OR Apache-2.0)",
-  "bugs": {
-    "url": "https://github.com/disjukr/hwp2pdf/issues"
-  },
-  "homepage": "https://github.com/disjukr/hwp2pdf#readme",
   "dependencies": {
     "ultra-runner": "^3.5.0"
   }

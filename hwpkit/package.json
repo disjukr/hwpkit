@@ -1,5 +1,5 @@
 {
-  "name": "hwp2pdf",
+  "name": "hwpkit",
   "main": "lib/index.js",
   "type": "lib/index.d.ts",
   "version": "0.0.0",
@@ -10,16 +10,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/disjukr/hwp2pdf.git"
+    "url": "git+https://github.com/disjukr/hwpkit.git"
   },
   "author": "JongChan Choi <jong@chan.moe>",
   "license": "(MIT OR Apache-2.0)",
   "bugs": {
-    "url": "https://github.com/disjukr/hwp2pdf/issues"
+    "url": "https://github.com/disjukr/hwpkit/issues"
   },
-  "homepage": "https://github.com/disjukr/hwp2pdf#readme",
+  "homepage": "https://github.com/disjukr/hwpkit#readme",
   "dependencies": {
-    "hwp.js": "^0.0.1"
+    "@types/canvaskit-wasm": "^0.9.1",
+    "hwp.js": "^0.0.2"
+  },
+  "peerDependencies": {
+    "canvaskit-wasm": "^0.17.3"
   },
   "devDependencies": {
     "@types/node": "^14.6.4",
