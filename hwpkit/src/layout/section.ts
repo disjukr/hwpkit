@@ -4,7 +4,7 @@ import { LayoutConfig } from '.';
 import { Page, Column } from '../rendering-model';
 
 export interface LayoutSectionConfig extends LayoutConfig {
-  docSection: DocSection;
+  readonly docSection: DocSection;
 }
 export function layoutSection(config: LayoutSectionConfig): Page[] {
   const pages: Page[] = [];
@@ -20,7 +20,7 @@ export function createPage(config: CreatePageConfig): Page {
     width: docSection.width / 100,
     height: docSection.height / 100,
     columns: [createColumn(config)],
-    objects: [],
+    floatingObjects: [],
   };
 }
 export interface CreateColumnConfig extends LayoutSectionConfig {}
@@ -37,6 +37,6 @@ export function createColumn(config: CreateColumnConfig): Column {
     y: paddingTop,
     width: pageWidth - paddingLeft - paddingRight,
     height: pageHeight - paddingTop - paddingBottom,
-    lines: [],
+    paragraphs: [],
   };
 }

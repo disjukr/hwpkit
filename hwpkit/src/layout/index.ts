@@ -5,8 +5,8 @@ import { RenderingModel, Page } from '../rendering-model';
 import { layoutSection } from './section';
 
 export interface LayoutConfig {
-  CanvasKit: CanvasKit;
-  document: HWPDocument;
+  readonly CanvasKit: CanvasKit;
+  readonly document: HWPDocument;
 }
 export default function layout(config: LayoutConfig): RenderingModel {
   const pages: Page[] = [];

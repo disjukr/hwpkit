@@ -17,9 +17,13 @@ export interface Page extends FloatingObjectContainer {
 }
 export interface Column extends ParagraphContainer, Offset2d {}
 export interface FloatingObjectContainer extends Size2d {
-  objects: unknown[];
+  floatingObjects: FloatingObject[];
 }
+export type FloatingObject = unknown;
 export interface ParagraphContainer extends Size2d {
+  paragraphs: Paragraph[];
+}
+export interface Paragraph extends Size2d, Offset2d {
   lines: Line[];
 }
 export interface Line extends Size2d, Offset2d {}
