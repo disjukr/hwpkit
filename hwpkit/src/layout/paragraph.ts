@@ -1,6 +1,7 @@
-import DocSection from 'hwp.js/build/models/section';
+import HWPDocument from 'hwp.js/build/models/document';
 import DocParagraph from 'hwp.js/build/models/paragraph';
 import HWPChar, { CharType } from 'hwp.js/build/models/char';
+import CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
 import { Offset2d, Paragraph } from '../rendering-model';
@@ -12,7 +13,6 @@ import {
 } from './misc';
 
 export interface LayoutParagraphConfig extends LayoutConfig {
-  readonly docSection: DocSection;
   readonly docParagraph: DocParagraph;
   readonly startControlOffset: number;
   readonly startOffset: Offset2d;
@@ -24,8 +24,22 @@ export interface LayoutParagraphResult {
   readonly endControlOffset: number;
 }
 export function layoutParagraph(config: LayoutParagraphConfig): LayoutParagraphResult {
-  const { docParagraph } = config;
+  const { document, docParagraph } = config;
+  const charShapeBuffer = getCharShapeBuffer(document, docParagraph);
   return {} as LayoutParagraphResult;
+}
+
+export type CharShapeBuffer = (CharShape | undefined)[];
+function getCharShapeBuffer(document: HWPDocument, docParagraph: DocParagraph): CharShapeBuffer {
+  const charShapeBuffer: (CharShape | undefined)[] = new Array(docParagraph.content.length);
+  for (let i = 0; i < docParagraph.shapeBuffer.length; ++i) {
+    const shapePointer = docParagraph.shapeBuffer[i];
+    const charShape = document.info.charShapes[shapePointer.shapeIndex];
+    const start = shapePointer.pos;
+    const end = docParagraph.getShapeEndPos(i);
+    for (let j = start; j <= end; ++j) charShapeBuffer[j] = charShape;
+  }
+  return charShapeBuffer;
 }
 
 function getNextBreakableControlOffset(docParagraph: DocParagraph, currentOffset: number): number {
