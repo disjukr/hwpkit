@@ -5,10 +5,9 @@ import { Control as DocControl } from 'hwp.js/build/models/controls';
 import CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
-import { Control, FloatingObject, Offset2d, Paragraph } from '../rendering-model';
+import { Control, ControlType, FloatingObject, Offset2d, Paragraph, Segment } from '../rendering-model';
 import {
   FloatingObjectEnvironment,
-  isWhitespaceCharCode,
   isHangulCharCode,
   SizeConstraint,
 } from './misc';
@@ -76,6 +75,7 @@ interface CompletedInlineLayoutResult extends InlineLayoutResultBase<InlineLayou
 interface OverflowedInlineLayoutResult extends InlineLayoutResultBase<InlineLayoutResultType.Overflowed> {
   readonly paragraph: Paragraph | undefined;
   readonly endInlineControlOffset: number;
+  readonly endOffset: Offset2d;
 }
 export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
   const {
@@ -83,22 +83,39 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     startInlineControlOffset,
     startOffset,
     containerSizeConstraint,
+    floatingObjects,
   } = config;
-  const maxControlHeight = Math.max.apply(
-    null,
-    inlineControls.slice(startInlineControlOffset).map(control => control.height)
-  );
-  if (startOffset.y !== 0) {
-    if (maxControlHeight > containerSizeConstraint.maxHeight) {
+  let currentInlineControlOffset = startInlineControlOffset;
+  let currentOffset = { ...startOffset };
+  const paragraph: Paragraph = {
+    ...startOffset,
+    width: 0,
+    height: 0,
+    lines: [],
+  };
+  while (currentInlineControlOffset < inlineControls.length) {
+    const lineHeight = scanLineHeight(inlineControls, currentInlineControlOffset, containerSizeConstraint.maxWidth);
+    const segments = getSegments(currentOffset, lineHeight, containerSizeConstraint, floatingObjects);
+    if (segments.length === 0) {
       return {
         type: InlineLayoutResultType.Overflowed,
-        paragraph: undefined,
-        endInlineControlOffset: startInlineControlOffset,
+        paragraph: paragraph.lines.length === 0 ? undefined : paragraph,
+        endInlineControlOffset: currentInlineControlOffset,
+        endOffset: currentOffset,
       };
     }
+    paragraph.lines.push({
+      ...currentOffset,
+      width: 0,
+      height: 0,
+      segments,
+    });
+    // TODO: currentInlineControlOffset가 증가해야함. 단어 배치, wrap up 등
   }
-  // TODO
-  return {} as InlineLayoutResult;
+  return {
+    type: InlineLayoutResultType.Completed,
+    paragraph,
+  };
 }
 
 export interface ExpandedParagraph {
@@ -138,40 +155,73 @@ export function expandParagraph(document: HWPDocument, docParagraph: DocParagrap
   };
 }
 
-function getNextBreakableControlOffset(docParagraph: DocParagraph, currentOffset: number): number {
+function getMaxHeight<T extends { height: number }>(items: T[]): number {
+  return Math.max.apply(null, items.map(item => item.height));
+}
+
+function scanLineHeight(inlineControls: Control[], currentOffset: number, maxWidth: number): number {
+  let offsetX = 0;
+  let maxControlHeight = 1; // 줄 높이가 1pt보다 작아질 수 없음
+  for (let i = currentOffset; i < inlineControls.length; ++i) {
+    const control = inlineControls[i];
+    maxControlHeight = Math.max(maxControlHeight, control.height);
+    offsetX += control.width;
+    if (offsetX > maxWidth) return maxControlHeight;
+  }
+  return maxControlHeight;
+}
+
+function getSegments(
+  startOffset: Offset2d,
+  lineHeight: number,
+  containerSizeConstraint: SizeConstraint,
+  _floatingObjects: FloatingObject[]
+): Segment[] {
+  const bottom = startOffset.y + lineHeight;
+  if (bottom > containerSizeConstraint.maxHeight) {
+    return [];
+  }
+  // TODO: floatingObjects를 피해가는 Segment 목록 반환하기
+  return [
+    {
+      x: startOffset.x,
+      y: startOffset.y,
+      width: containerSizeConstraint.maxWidth - startOffset.x,
+      height: lineHeight,
+      words: [],
+    }
+  ];
+}
+
+function getNextLineBreakableControlOffset(inlineControls: Control[], currentOffset: number): number {
   // 줄 나눔 기준이 한글 단위: '글자', 영어 단위: '단어'라고 가정
-  const len = docParagraph.content.length;
+  const len = inlineControls.length;
   if (currentOffset >= len) return currentOffset;
   const nextOffset = currentOffset + 1;
   if (nextOffset >= len) return nextOffset;
-  let currentBreakableType: BreakableType = getBreakableType(docParagraph.content[currentOffset]);
-  if (currentBreakableType === BreakableType.Hangul) return nextOffset;
+  let currentLineBreakableType: LineBreakableType = getLineBreakableType(inlineControls[currentOffset]);
+  if (currentLineBreakableType === LineBreakableType.Hangul) return nextOffset;
   for (let i = nextOffset; i < len; ++i) {
-    const nextBreakableType = getBreakableType(docParagraph.content[i]);
-    if (currentBreakableType !== nextBreakableType) return i;
-    currentBreakableType = nextBreakableType;
+    const nextLineBreakableType = getLineBreakableType(inlineControls[i]);
+    if (currentLineBreakableType !== nextLineBreakableType) return i;
+    currentLineBreakableType = nextLineBreakableType;
   }
   return len;
 }
 
-const enum BreakableType {
+const enum LineBreakableType {
   Hangul,
   English,
   Whitespace,
   Other,
 }
-function getBreakableType(control: HWPChar): BreakableType {
-  if (control.type !== CharType.Char) return BreakableType.Other;
-  const charCode = typeof control.value === 'string' ? control.value.charCodeAt(0) : control.value;
-  if (isWhitespaceCharCode(charCode)) return BreakableType.Whitespace;
-  if (isHangulCharCode(charCode)) return BreakableType.Hangul;
-  return BreakableType.English;
-}
-
-function charControlsToString(controls: HWPChar[]): string {
-  return controls.map(control => {
-    if (control.type !== CharType.Char) return '?';
-    if (typeof control.value === 'string') return control.value;
-    return String.fromCharCode(control.value);
-  }).join('');
+function getLineBreakableType(control: Control): LineBreakableType {
+  switch (control.type) {
+    case ControlType.Whitespace: return LineBreakableType.Whitespace;
+    case ControlType.Char:
+      const charCode = control.char.charCodeAt(0);
+      if (isHangulCharCode(charCode)) return LineBreakableType.Hangul;
+      return LineBreakableType.English;
+    default: return LineBreakableType.Other;
+  }
 }
