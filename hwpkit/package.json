@@ -1,7 +1,6 @@
 {
   "name": "hwpkit",
   "main": "lib/index.js",
-  "type": "lib/index.d.ts",
   "version": "0.0.0",
   "description": "hwp 2 pdf",
   "scripts": {
@@ -20,7 +19,7 @@
   "homepage": "https://github.com/disjukr/hwpkit#readme",
   "dependencies": {
     "@types/canvaskit-wasm": "^0.9.1",
-    "hwp.js": "^0.0.2"
+    "hwp.js": "^0.0.3"
   },
   "peerDependencies": {
     "canvaskit-wasm": "^0.17.3"

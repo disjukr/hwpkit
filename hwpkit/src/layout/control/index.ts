@@ -1,6 +1,5 @@
 import HWPChar, { CharType } from 'hwp.js/build/models/char';
 import CharShape from 'hwp.js/build/models/charShape';
-import { Control as DocControl } from 'hwp.js/build/models/controls';
 
 import { LayoutConfig } from '..';
 import {
@@ -10,28 +9,54 @@ import {
   WhitespaceControl,
 } from '../../rendering-model';
 import { isWhitespaceCharCode } from '../misc';
+import { ExpandedControl } from '../paragraph';
 
 export interface LayoutControlConfig extends LayoutConfig {
-  readonly docChar: HWPChar;
-  readonly charShape: CharShape;
-  readonly docControl?: DocControl;
+  readonly expandedControl: ExpandedControl;
 }
-export interface LayoutControlResult {
+export type LayoutControlResult =
+  | NoneLayoutControlResult
+  | InlineLayoutControlResult
+  | FloatingObjectLayoutControlResult
+;
+export const enum LayoutControlResultType {
+  None,
+  Inline,
+  FloatingObject,
+}
+interface LayoutControlResultBase<TType extends LayoutControlResultType> {
+  readonly type: TType;
+}
+interface NoneLayoutControlResult extends LayoutControlResultBase<LayoutControlResultType.None> {}
+interface InlineLayoutControlResult extends LayoutControlResultBase<LayoutControlResultType.Inline> {
   control: Control;
 }
+interface FloatingObjectLayoutControlResult extends LayoutControlResultBase<LayoutControlResultType.FloatingObject> {
+  /**
+   * 떠다니는 객체의 경우 완전히 지금 페이지에서 벗어나 다음 페이지부터 시작될 수 있음.
+  */
+  control: Control | undefined;
+}
 export function layoutControl(config: LayoutControlConfig): LayoutControlResult {
-  const { docChar, charShape } = config;
+  const { expandedControl } = config;
+  const { char: docChar, charShape } = expandedControl;
   switch (docChar.type) {
     case CharType.Inline:
     case CharType.Extened:
       // TODO
-      return { control: layoutCharControl('?', charShape) };
+      return { type: LayoutControlResultType.None };
     case CharType.Char: {
       const char = getStringFromDocChar(docChar);
       if (isWhitespaceCharCode(char.charCodeAt(0))) {
-        return { control: layoutWhitespaceControl(char, charShape) };
+        return {
+          type: LayoutControlResultType.Inline,
+          control: layoutWhitespaceControl(char, charShape),
+        };
       } else {
-        return { control: layoutCharControl(char, charShape) };
+        return {
+          type: LayoutControlResultType.Inline,
+          control: layoutCharControl(char, charShape),
+        };
       }
     }
   }
