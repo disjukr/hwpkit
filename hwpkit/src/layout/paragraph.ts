@@ -5,7 +5,7 @@ import { Control as DocControl } from 'hwp.js/build/models/controls';
 import CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
-import { Control, ControlType, FloatingObject, Offset2d, Paragraph, Segment } from '../rendering-model';
+import { Control, ControlType, FloatingObject, InlineControl, Offset2d, Paragraph, Segment, Word, WordType } from '../rendering-model';
 import {
   FloatingObjectEnvironment,
   isHangulCharCode,
@@ -26,7 +26,7 @@ export interface BlockLayoutConfig extends LayoutConfig {
   readonly floatingObjectEnvironment: FloatingObjectEnvironment;
 }
 export interface BlockLayoutResult {
-  readonly inlineControls: Control[];
+  readonly inlineControls: InlineControl[];
   readonly floatingObjectEnvironment: FloatingObjectEnvironment;
 }
 export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
@@ -35,12 +35,15 @@ export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
     floatingObjectEnvironment,
   } = config;
   const { expandedControls } = expandedParagraph;
-  const inlineControls: Control[] = [];
+  const inlineControls: InlineControl[] = [];
+  let accWidth = 0;
   for (let i = 0; i < expandedControls.length; ++i) {
     const expandedControl = expandedControls[i];
     const layoutControlResult = layoutControl({ ...config, expandedControl });
     if (layoutControlResult.type === LayoutControlResultType.Inline) {
-      inlineControls.push(layoutControlResult.control);
+      const inlineControl = layoutControlResult.control as InlineControl;
+      inlineControl.accWidth = accWidth += inlineControl.width;
+      inlineControls.push(inlineControl);
     }
     // TODO: floating object
   }
@@ -52,7 +55,7 @@ export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
 
 export interface InlineLayoutConfig extends LayoutConfig {
   readonly expandedParagraph: ExpandedParagraph;
-  readonly inlineControls: Control[];
+  readonly inlineControls: InlineControl[];
   readonly startInlineControlOffset: number;
   readonly startOffset: Offset2d;
   readonly containerSizeConstraint: SizeConstraint;
@@ -155,6 +158,76 @@ export function expandParagraph(document: HWPDocument, docParagraph: DocParagrap
   };
 }
 
+/**
+ * segment에 word를 집어넣습니다.
+ * word가 segment에 들어가지 못하고 넘칠 경우 넘친 만큼을 잘라서 반환합니다.
+ * 한 글자도 들어가지 못할 경우 그대로 반환합니다.
+*/
+function pushWordToSegment(segment: Segment, word: Word): Word | undefined {
+  if (word.type === WordType.Whitespace) {
+    segment.words.push(word);
+    return undefined;
+  }
+  const restWidth = getRestWidthOfSegment(segment);
+  if (restWidth >= word.width) {
+    segment.words.push(word);
+    return undefined;
+  }
+  const firstControl = word.controls[0];
+  const left = firstControl.accWidth - firstControl.width;
+  const overflowIndex = bisectRight(i => word.controls[i].accWidth, left + restWidth, 0, word.controls.length);
+  const cutHere = segment.atLeastOne ? Math.max(1, overflowIndex) : overflowIndex;
+  if (cutHere === 0) return word;
+  const head = wrapControls(word.controls.slice(0, cutHere));
+  const tail = wrapControls(word.controls.slice(cutHere));
+  segment.words.push(head);
+  return tail;
+}
+function bisectRight(get: (index: number) => number, target: number, lo: number, hi: number): number {
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (target < get(mid)) hi = mid;
+    else lo = mid + 1;
+  }
+  return lo;
+}
+
+function getRestWidthOfSegment(segment: Segment): number {
+  if (segment.words.length === 0) {
+    return segment.width;
+  } else {
+    const firstControl = segment.words[0].controls[0];
+    const lastWord = segment.words[segment.words.length - 1];
+    const lastControl = lastWord.controls[lastWord.controls.length - 1];
+    const using = lastControl.accWidth - (firstControl.accWidth - firstControl.width);
+    return segment.width - using;
+  }
+}
+
+/**
+ * control들을 묶어서 word로 만듭니다.
+ * word의 height, x, y는 여기서 결정하지 않습니다.
+*/
+function wrapControls(inlineControls: InlineControl[]): Word {
+  const firstControl = inlineControls[0];
+  const endControl = inlineControls[inlineControls.length - 1];
+  const type = (
+    firstControl.type === ControlType.Whitespace ?
+    WordType.Whitespace :
+    WordType.Text
+  );
+  const left = firstControl.accWidth - firstControl.width;
+  const right = endControl.accWidth;
+  return {
+    type,
+    controls: inlineControls,
+    width: right - left,
+    height: 0,
+    x: 0,
+    y: 0,
+  } as Word;
+}
+
 function getMaxHeight<T extends { height: number }>(items: T[]): number {
   return Math.max.apply(null, items.map(item => item.height));
 }
@@ -182,6 +255,7 @@ function getSegments(
     return [];
   }
   // TODO: floatingObjects를 피해가는 Segment 목록 반환하기
+  // floatingObjects와 맞닿은 Segment의 경우 atLeastOne 속성이 false여야 함
   return [
     {
       x: startOffset.x,
@@ -189,6 +263,7 @@ function getSegments(
       width: containerSizeConstraint.maxWidth - startOffset.x,
       height: lineHeight,
       words: [],
+      atLeastOne: true,
     }
   ];
 }

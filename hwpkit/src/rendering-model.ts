@@ -31,6 +31,10 @@ export interface Line extends Size2d, Offset2d {
 }
 export interface Segment extends Size2d, Offset2d {
   words: Word[];
+  /**
+   * 레이아웃 무한루프를 방지하기 위해 적어도 하나의 컨트롤이 들어와야 하는지 여부.
+  */
+  atLeastOne: boolean;
 }
 export type Word =
   | WhitespaceWord
@@ -42,10 +46,16 @@ export const enum WordType {
 }
 interface WordBase<TType extends WordType, TControl extends Control> extends Size2d, Offset2d {
   type: TType;
-  controls: TControl[];
+  controls: InlineControl<TControl>[];
 }
 export interface WhitespaceWord extends WordBase<WordType.Whitespace, WhitespaceControl> {}
 export interface TextWord extends WordBase<WordType.Text, CharControl> {}
+export type InlineControl<TControl extends Control = Control> = TControl & {
+  /**
+   * 문단내 누적 인라인 가로폭
+  */
+  accWidth: number;
+};
 export type Control =
   | WhitespaceControl
   | CharControl
