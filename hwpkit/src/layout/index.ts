@@ -1,7 +1,7 @@
 import { CanvasKit } from 'canvaskit-wasm';
 import HWPDocument from 'hwp.js/build/models/document';
 
-import { RenderingModel, Page } from '../rendering-model';
+import { RenderingModel, Paper } from '../rendering-model';
 import { layoutSection } from './section';
 
 export interface LayoutConfig {
@@ -9,12 +9,12 @@ export interface LayoutConfig {
   readonly document: HWPDocument;
 }
 export default function layout(config: LayoutConfig): RenderingModel {
-  const pages: Page[] = [];
+  const papers: Paper[] = [];
   const { document } = config;
   for (const docSection of document.sections) {
-    pages.push(...layoutSection({ ...config, docSection }));
+    papers.push(...layoutSection({ ...config, docSection }));
   }
   return {
-    pages,
+    papers,
   };
 }
