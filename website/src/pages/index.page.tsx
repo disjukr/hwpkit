@@ -15,28 +15,28 @@ const Page: React.FC = () => {
   const CanvasKit = useCanvasKitState();
   const renderingModel = useRenderingModel(CanvasKit, hwp);
   const {
-    page,
+    paper,
     pageCount,
     currentPage,
-  } = usePage(renderingModel);
+  } = usePaper(renderingModel);
   if (error) return <>{getErrorMessage(error)}</>;
   if (!CanvasKit) return null;
   return <canvaskitContext.Provider value={CanvasKit}>
     page: {currentPage + 1} / {pageCount}
-    {page && <HwpPage page={page}/>}
+    {paper && <HwpPage paper={paper}/>}
   </canvaskitContext.Provider>;
 };
 export default Page;
 
-function usePage(renderingModel?: RenderingModel) {
-  const pageCount = renderingModel?.pages.length ?? 0;
+function usePaper(renderingModel?: RenderingModel) {
+  const pageCount = renderingModel?.papers.length ?? 0;
   const [currentPage, setCurrentPage] = useState(0);
-  const page = renderingModel?.pages[currentPage];
+  const paper = renderingModel?.papers[currentPage];
   useEffect(() => {
     setCurrentPage(Math.max(0, Math.min(currentPage, pageCount - 1)));
   }, [pageCount]);
   return {
-    page,
+    paper,
     pageCount,
     currentPage,
     setCurrentPage,

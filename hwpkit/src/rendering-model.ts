@@ -1,10 +1,13 @@
-import { Size2d, Offset2d } from './geom';
+import { Size2d, Offset2d, Rect } from './geom';
 
 export interface RenderingModel {
-  pages: Page[];
+  papers: Paper[];
 }
 
-export interface Page extends FloatingObjectContainer {
+export interface Paper extends FloatingObjectContainer {
+  page: Page;
+}
+export interface Page extends Rect {
   columns: Column[];
 }
 export interface Column extends ParagraphContainer, Offset2d {}
@@ -15,13 +18,13 @@ export type FloatingObject = Control;
 export interface ParagraphContainer extends Size2d {
   paragraphs: Paragraph[];
 }
-export interface Paragraph extends Size2d, Offset2d {
+export interface Paragraph extends Rect {
   lines: Line[];
 }
-export interface Line extends Size2d, Offset2d {
+export interface Line extends Rect {
   segments: Segment[];
 }
-export interface Segment extends Size2d, Offset2d {
+export interface Segment extends Rect {
   words: Word[];
   /**
    * 레이아웃 무한루프를 방지하기 위해 적어도 하나의 컨트롤이 들어와야 하는지 여부.
@@ -36,7 +39,7 @@ export const enum WordType {
   Whitespace,
   Text,
 }
-interface WordBase<TType extends WordType, TControl extends Control> extends Size2d, Offset2d {
+interface WordBase<TType extends WordType, TControl extends Control> extends Rect {
   type: TType;
   controls: InlineControl<TControl>[];
 }
@@ -56,7 +59,7 @@ export const enum ControlType {
   Whitespace,
   Char,
 }
-interface ControlBase<TType extends ControlType> extends Size2d, Offset2d {
+interface ControlBase<TType extends ControlType> extends Rect {
   type: TType;
 }
 export interface WhitespaceControl extends ControlBase<ControlType.Whitespace> {

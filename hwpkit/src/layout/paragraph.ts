@@ -8,7 +8,8 @@ import { LayoutConfig } from '.';
 import { Offset2d, subOffset2d } from '../geom';
 import { Control, ControlType, FloatingObject, InlineControl, Paragraph, Segment, Word, WordType } from '../rendering-model';
 import {
-  FloatingObjectEnvironment,
+  ColumnInfo,
+  PaperInfo,
   isHangulCharCode,
   SizeConstraint,
 } from './misc';
@@ -24,16 +25,18 @@ import { layoutControl, LayoutControlResultType } from './control';
 export interface BlockLayoutConfig extends LayoutConfig {
   readonly expandedParagraph: ExpandedParagraph;
   readonly containerSizeConstraint: SizeConstraint;
-  readonly floatingObjectEnvironment: FloatingObjectEnvironment;
+  readonly paperInfo: PaperInfo;
+  readonly columnInfo: ColumnInfo;
+  readonly floatingObjects: FloatingObject[];
 }
 export interface BlockLayoutResult {
   readonly inlineControls: InlineControl[];
-  readonly floatingObjectEnvironment: FloatingObjectEnvironment;
+  readonly floatingObjects: FloatingObject[];
 }
 export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
   const {
     expandedParagraph,
-    floatingObjectEnvironment,
+    floatingObjects,
   } = config;
   const { expandedControls } = expandedParagraph;
   const inlineControls: InlineControl[] = [];
@@ -50,7 +53,7 @@ export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
   }
   return {
     inlineControls,
-    floatingObjectEnvironment,
+    floatingObjects,
   };
 }
 

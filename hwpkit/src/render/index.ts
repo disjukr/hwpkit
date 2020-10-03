@@ -1,13 +1,13 @@
 import { CanvasKit, SkSurface } from 'canvaskit-wasm';
 
-import { Page } from '../rendering-model';
+import { Paper } from '../rendering-model';
 
-export interface RenderPageConfig {
+export interface RenderPaperConfig {
   CanvasKit: CanvasKit;
   surface: SkSurface;
-  page: Page;
+  paper: Paper;
 }
-export function renderPage({ CanvasKit, surface }: RenderPageConfig): void {
+export function renderPaper({ CanvasKit, surface }: RenderPaperConfig): void {
   const canvas = surface.getCanvas();
   canvas.clear(CanvasKit.WHITE);
 }

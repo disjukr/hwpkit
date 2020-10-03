@@ -7,6 +7,7 @@ export interface Offset2d {
   x: Pt;
   y: Pt;
 }
+export interface Rect extends Size2d, Offset2d {}
 
 export function subOffset2d(a: Offset2d, b: Offset2d): Offset2d {
   return {

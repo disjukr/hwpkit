@@ -1,23 +1,18 @@
-import { FloatingObject } from '../rendering-model';
+import { Rect, Size2d } from "../geom";
 
 export interface SizeConstraint {
   maxWidth: number;
   maxHeight: number;
 }
 
-export interface FloatingObjectEnvironment {
-  pageWidth: number;
-  pageHeight: number;
-  pagePaddingLeft: number;
-  pagePaddingTop: number;
-  pagePaddingRight: number;
-  pagePaddingBottom: number;
-  columnX: number;
-  columnY: number;
-  columnWidth: number;
-  columnHeight: number;
-  floatingObjects: FloatingObject[];
+export interface PaperInfo extends Size2d {
+  /**
+   * padding 안쪽의 사각형
+  */
+  page: Rect;
 }
+
+export interface ColumnInfo extends Rect {}
 
 const c_whitespace = ' '.charCodeAt(0);
 export function isWhitespaceCharCode(charCode: number): boolean {
