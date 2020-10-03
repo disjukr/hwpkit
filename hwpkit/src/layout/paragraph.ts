@@ -110,14 +110,14 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     if (!segments) {
       return {
         type: InlineLayoutResultType.Overflowed,
-        paragraph: paragraph.lines.length === 0 ? undefined : paragraph,
+        paragraph: wrapUp(paragraph, currentOffset),
         endInlineControlOffset: currentInlineControlOffset,
         endOffset: currentOffset,
       };
     }
     const currentLine = {
       ...(subOffset2d(startOffset, currentOffset)),
-      width: 0,
+      width: paragraph.width,
       height: 0,
       segments,
     };
@@ -136,11 +136,10 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || defaultCharShape.fontBaseSize;
     for (const segment of segments) segment.height = segmentHeight;
     currentOffset.y += currentLine.height = segmentHeight * 1.6;
-    // TODO: wrap up
   }
   return {
     type: InlineLayoutResultType.Completed,
-    paragraph,
+    paragraph: wrapUp(paragraph, currentOffset)!,
     endOffset: currentOffset,
   };
 }
@@ -184,6 +183,31 @@ export function expandParagraph(document: HWPDocument, docParagraph: DocParagrap
 export function getDefaultCharShape(document: HWPDocument, docParagraph: DocParagraph): CharShape {
   const shapePointer = docParagraph.shapeBuffer[0];
   return document.info.charShapes[shapePointer.shapeIndex];
+}
+
+function wrapUp(paragraph: Paragraph, currentOffset: Offset2d): Paragraph | undefined {
+  if (paragraph.lines.length === 0) return undefined;
+  for (const line of paragraph.lines) {
+    for (const segment of line.segments) {
+      alignLeft(segment);
+      for (const word of segment.words) {
+        word.height = segment.height;
+        for (const control of word.controls) {
+          control.y = word.height - control.height;
+        }
+      }
+    }
+  }
+  paragraph.height = currentOffset.y - paragraph.y;
+  return paragraph;
+}
+
+function alignLeft(segment: Segment) {
+  let offsetX = 0;
+  for (const word of segment.words) {
+    word.x = offsetX;
+    offsetX += word.width;
+  }
 }
 
 /**
@@ -244,7 +268,6 @@ function* words(inlineControls: InlineControl[], currentOffset: number): Generat
 
 /**
  * control들을 묶어서 word로 만듭니다.
- * word의 height, x, y는 여기서 결정하지 않습니다.
 */
 function wrapControls(inlineControls: InlineControl[]): Word {
   const firstControl = inlineControls[0];
