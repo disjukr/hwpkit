@@ -5,7 +5,8 @@ import { Control as DocControl } from 'hwp.js/build/models/controls';
 import CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
-import { Control, ControlType, FloatingObject, InlineControl, Offset2d, Paragraph, Segment, Word, WordType } from '../rendering-model';
+import { Offset2d, subOffset2d } from '../geom';
+import { Control, ControlType, FloatingObject, InlineControl, Paragraph, Segment, Word, WordType } from '../rendering-model';
 import {
   FloatingObjectEnvironment,
   isHangulCharCode,
@@ -74,6 +75,7 @@ interface InlineLayoutResultBase<TType extends InlineLayoutResultType> {
 }
 interface CompletedInlineLayoutResult extends InlineLayoutResultBase<InlineLayoutResultType.Completed> {
   readonly paragraph: Paragraph;
+  readonly endOffset: Offset2d;
 }
 interface OverflowedInlineLayoutResult extends InlineLayoutResultBase<InlineLayoutResultType.Overflowed> {
   readonly paragraph: Paragraph | undefined;
@@ -82,24 +84,27 @@ interface OverflowedInlineLayoutResult extends InlineLayoutResultBase<InlineLayo
 }
 export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
   const {
+    document,
+    expandedParagraph,
     inlineControls,
     startInlineControlOffset,
     startOffset,
     containerSizeConstraint,
     floatingObjects,
   } = config;
+  const defaultCharShape = getDefaultCharShape(document, expandedParagraph.docParagraph);
   let currentInlineControlOffset = startInlineControlOffset;
   let currentOffset = { ...startOffset };
   const paragraph: Paragraph = {
     ...startOffset,
-    width: 0,
+    width: containerSizeConstraint.maxWidth - startOffset.x,
     height: 0,
     lines: [],
   };
   while (currentInlineControlOffset < inlineControls.length) {
-    const lineHeight = scanLineHeight(inlineControls, currentInlineControlOffset, containerSizeConstraint.maxWidth);
-    const segments = getSegments(currentOffset, lineHeight, containerSizeConstraint, floatingObjects);
-    if (segments.length === 0) {
+    const lineBoundingHeight = scanLineBoundingHeight(inlineControls, currentInlineControlOffset, containerSizeConstraint.maxWidth);
+    const segments = getSegments(currentOffset, lineBoundingHeight, containerSizeConstraint, floatingObjects);
+    if (!segments) {
       return {
         type: InlineLayoutResultType.Overflowed,
         paragraph: paragraph.lines.length === 0 ? undefined : paragraph,
@@ -107,17 +112,33 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
         endOffset: currentOffset,
       };
     }
-    paragraph.lines.push({
-      ...currentOffset,
+    const currentLine = {
+      ...(subOffset2d(startOffset, currentOffset)),
       width: 0,
       height: 0,
       segments,
-    });
-    // TODO: currentInlineControlOffset가 증가해야함. 단어 배치, wrap up 등
+    };
+    paragraph.lines.push(currentLine);
+    for (const segment of segments) {
+      for (const word of words(inlineControls, currentInlineControlOffset)) {
+        const overflowedWord = pushWordToSegment(segment, word);
+        if (overflowedWord) {
+          currentInlineControlOffset += word.controls.length - overflowedWord.controls.length;
+          break;
+        } else {
+          currentInlineControlOffset += word.controls.length;
+        }
+      }
+    }
+    const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || defaultCharShape.fontBaseSize;
+    for (const segment of segments) segment.height = segmentHeight;
+    currentOffset.y += currentLine.height = segmentHeight * 1.6;
+    // TODO: wrap up
   }
   return {
     type: InlineLayoutResultType.Completed,
     paragraph,
+    endOffset: currentOffset,
   };
 }
 
@@ -156,6 +177,10 @@ export function expandParagraph(document: HWPDocument, docParagraph: DocParagrap
     docParagraph,
     expandedControls,
   };
+}
+export function getDefaultCharShape(document: HWPDocument, docParagraph: DocParagraph): CharShape {
+  const shapePointer = docParagraph.shapeBuffer[0];
+  return document.info.charShapes[shapePointer.shapeIndex];
 }
 
 /**
@@ -204,6 +229,16 @@ function getRestWidthOfSegment(segment: Segment): number {
   }
 }
 
+function* words(inlineControls: InlineControl[], currentOffset: number): Generator<Word, void> {
+  let curr = currentOffset;
+  while (curr < inlineControls.length) {
+    const next = getNextLineBreakableControlOffset(inlineControls, curr);
+    if (next <= curr) return;
+    yield wrapControls(inlineControls.slice(curr, next));
+    curr = next;
+  }
+}
+
 /**
  * control들을 묶어서 word로 만듭니다.
  * word의 height, x, y는 여기서 결정하지 않습니다.
@@ -228,11 +263,14 @@ function wrapControls(inlineControls: InlineControl[]): Word {
   } as Word;
 }
 
+function max(numbers: number[]): number {
+  return Math.max(0, Math.max.apply(null, numbers));
+}
 function getMaxHeight<T extends { height: number }>(items: T[]): number {
-  return Math.max.apply(null, items.map(item => item.height));
+  return max(items.map(item => item.height));
 }
 
-function scanLineHeight(inlineControls: Control[], currentOffset: number, maxWidth: number): number {
+function scanLineBoundingHeight(inlineControls: Control[], currentOffset: number, maxWidth: number): number {
   let offsetX = 0;
   let maxControlHeight = 1; // 줄 높이가 1pt보다 작아질 수 없음
   for (let i = currentOffset; i < inlineControls.length; ++i) {
@@ -244,16 +282,17 @@ function scanLineHeight(inlineControls: Control[], currentOffset: number, maxWid
   return maxControlHeight;
 }
 
+/**
+ * 지금 컨테이너 안에 segment 배치가 불가능한 경우 undefined를 반환합니다.
+*/
 function getSegments(
   startOffset: Offset2d,
-  lineHeight: number,
+  lineBoundingHeight: number,
   containerSizeConstraint: SizeConstraint,
   _floatingObjects: FloatingObject[]
-): Segment[] {
-  const bottom = startOffset.y + lineHeight;
-  if (bottom > containerSizeConstraint.maxHeight) {
-    return [];
-  }
+): Segment[] | undefined {
+  const bottom = startOffset.y + lineBoundingHeight;
+  if (bottom > containerSizeConstraint.maxHeight) return undefined;
   // TODO: floatingObjects를 피해가는 Segment 목록 반환하기
   // floatingObjects와 맞닿은 Segment의 경우 atLeastOne 속성이 false여야 함
   return [
@@ -261,7 +300,7 @@ function getSegments(
       x: startOffset.x,
       y: startOffset.y,
       width: containerSizeConstraint.maxWidth - startOffset.x,
-      height: lineHeight,
+      height: lineBoundingHeight,
       words: [],
       atLeastOne: true,
     }

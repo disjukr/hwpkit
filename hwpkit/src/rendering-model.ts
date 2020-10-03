@@ -1,12 +1,4 @@
-export type Pt = number; // 1 / 72 inch
-export interface Size2d {
-  width: Pt;
-  height: Pt;
-}
-export interface Offset2d {
-  x: Pt;
-  y: Pt;
-}
+import { Size2d, Offset2d } from './geom';
 
 export interface RenderingModel {
   pages: Page[];
