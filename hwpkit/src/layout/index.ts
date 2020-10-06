@@ -1,11 +1,9 @@
-import { CanvasKit } from 'canvaskit-wasm';
-import HWPDocument from 'hwp.js/build/models/document';
+import type HWPDocument from 'hwp.js/build/models/document';
 
 import { RenderingModel, Paper } from '../rendering-model';
 import { layoutSection } from './section';
 
 export interface LayoutConfig {
-  readonly CanvasKit: CanvasKit;
   readonly document: HWPDocument;
 }
 export default function layout(config: LayoutConfig): RenderingModel {

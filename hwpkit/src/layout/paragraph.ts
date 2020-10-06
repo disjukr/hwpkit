@@ -1,8 +1,9 @@
-import HWPDocument from 'hwp.js/build/models/document';
-import DocParagraph from 'hwp.js/build/models/paragraph';
-import HWPChar, { CharType } from 'hwp.js/build/models/char';
-import { Control as DocControl } from 'hwp.js/build/models/controls';
-import CharShape from 'hwp.js/build/models/charShape';
+import type HWPDocument from 'hwp.js/build/models/document';
+import type DocParagraph from 'hwp.js/build/models/paragraph';
+// import type { default as HWPChar, CharType } from 'hwp.js/build/models/char';
+import type HWPChar from 'hwp.js/build/models/char';
+import type { Control as DocControl } from 'hwp.js/build/models/controls';
+import type CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
 import { Offset2d, subOffset2d } from '../geom';
@@ -169,7 +170,7 @@ export function expandParagraph(document: HWPDocument, docParagraph: DocParagrap
     const char = docParagraph.content[i];
     const charShape = charShapes[i];
     const control = (
-      char.type === CharType.Extened ?
+      char.type === 2 /* CharType.Extened */ ?
       docParagraph.controls[controlIndex++] :
       undefined
     );

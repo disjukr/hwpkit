@@ -1,5 +1,6 @@
-import HWPChar, { CharType } from 'hwp.js/build/models/char';
-import CharShape from 'hwp.js/build/models/charShape';
+// import type { default as HWPChar, CharType } from 'hwp.js/build/models/char';
+import type HWPChar from 'hwp.js/build/models/char';
+import type CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '..';
 import {
@@ -41,11 +42,11 @@ export function layoutControl(config: LayoutControlConfig): LayoutControlResult 
   const { expandedControl } = config;
   const { char: docChar, charShape } = expandedControl;
   switch (docChar.type) {
-    case CharType.Inline:
-    case CharType.Extened:
+    case 1 /* CharType.Inline */:
+    case 2 /* CharType.Extened */:
       // TODO
       return { type: LayoutControlResultType.None };
-    case CharType.Char: {
+    case 0 /* CharType.Char */: {
       const char = getStringFromDocChar(docChar);
       if (isWhitespaceCharCode(char.charCodeAt(0))) {
         return {
@@ -60,6 +61,7 @@ export function layoutControl(config: LayoutControlConfig): LayoutControlResult 
       }
     }
   }
+  return null as never;
 }
 
 function layoutWhitespaceControl(char: string, charShape: CharShape): WhitespaceControl {

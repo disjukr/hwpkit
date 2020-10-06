@@ -1,30 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { CanvasKit } from 'canvaskit-wasm';
 import axios from 'axios';
 import HWPDocument from 'hwp.js/build/models/document';
 import { parse } from 'hwp.js';
-import { RenderingModel } from 'hwpkit/lib';
+import { RenderingModel } from 'hwpkit/lib/rendering-model';
 import layout from 'hwpkit/lib/layout';
 
 import { getErrorMessage } from '../misc/error';
-import { useCanvasKitState, canvaskitContext } from '../canvaskit';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
   const { hwp, error } = useHwp('/hwp/empty.hwp');
-  const CanvasKit = useCanvasKitState();
-  const renderingModel = useRenderingModel(CanvasKit, hwp);
+  const renderingModel = useRenderingModel(hwp);
   const {
     paper,
     pageCount,
     currentPage,
   } = usePaper(renderingModel);
   if (error) return <>{getErrorMessage(error)}</>;
-  if (!CanvasKit) return null;
-  return <canvaskitContext.Provider value={CanvasKit}>
+  return <>
     page: {currentPage + 1} / {pageCount}
     {paper && <HwpPage paper={paper}/>}
-  </canvaskitContext.Provider>;
+  </>;
 };
 export default Page;
 
@@ -43,12 +39,12 @@ function usePaper(renderingModel?: RenderingModel) {
   };
 }
 
-function useRenderingModel(CanvasKit?: CanvasKit, hwp?: HWPDocument) {
+function useRenderingModel(hwp?: HWPDocument) {
   const [renderingModel, setRenderingModel] = useState<RenderingModel>();
   useEffect(() => {
-    if (!CanvasKit || !hwp) return;
-    setRenderingModel(layout({ CanvasKit, document: hwp }));
-  }, [CanvasKit, hwp]);
+    if (!hwp) return;
+    setRenderingModel(layout({ document: hwp }));
+  }, [hwp]);
   return renderingModel;
 }
 

@@ -1,4 +1,4 @@
-import DocSection from 'hwp.js/build/models/section';
+import type DocSection from 'hwp.js/build/models/section';
 
 import { LayoutConfig } from '.';
 import { Offset2d } from '../geom';
