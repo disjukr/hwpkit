@@ -15,8 +15,9 @@ export interface PaperInfo extends Size2d {
 export interface ColumnInfo extends Rect {}
 
 const c_whitespace = ' '.charCodeAt(0);
+const c_carriageReturn = '\r'.charCodeAt(0);
 export function isWhitespaceCharCode(charCode: number): boolean {
-  return charCode === c_whitespace;
+  return charCode === c_whitespace || charCode === c_carriageReturn;
 }
 
 const c_ㄱ = 'ㄱ'.charCodeAt(0);

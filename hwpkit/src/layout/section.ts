@@ -18,23 +18,24 @@ export function layoutSection(config: LayoutSectionConfig): Paper[] {
     const blockLayoutResult = blockLayout({
       ...config,
       expandedParagraph,
-      containerSizeConstraint: getColumnSizeConstraint(paperMaker.currentColumn),
+      columnSizeConstraint: getColumnSizeConstraint(paperMaker.currentColumn),
       paperInfo: paperMaker.paperInfo,
       columnInfo: paperMaker.currentColumn,
       floatingObjects: paperMaker.currentPaper.floatingObjects,
     });
     const { floatingObjects, inlineControls } = blockLayoutResult;
     paperMaker.currentPaper.floatingObjects = floatingObjects;
+    let currentInlineControlOffset = 0;
     inline_layout: while (true) {
-      let currentInlineControlOffset = 0;
-      paperMaker.currentOffset
       const inlineLayoutResult = inlineLayout({
         ...config,
         expandedParagraph,
         inlineControls,
         startInlineControlOffset: currentInlineControlOffset,
         startOffset: paperMaker.currentOffset,
-        containerSizeConstraint: getColumnSizeConstraint(paperMaker.currentColumn),
+        columnSizeConstraint: getColumnSizeConstraint(paperMaker.currentColumn),
+        paperInfo: paperMaker.paperInfo,
+        columnInfo: paperMaker.currentColumn,
         floatingObjects,
       });
       const { paragraph, endOffset } = inlineLayoutResult;

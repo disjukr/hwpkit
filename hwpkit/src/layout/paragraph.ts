@@ -25,7 +25,7 @@ import { layoutControl, LayoutControlResultType } from './control';
 
 export interface BlockLayoutConfig extends LayoutConfig {
   readonly expandedParagraph: ExpandedParagraph;
-  readonly containerSizeConstraint: SizeConstraint;
+  readonly columnSizeConstraint: SizeConstraint;
   readonly paperInfo: PaperInfo;
   readonly columnInfo: ColumnInfo;
   readonly floatingObjects: FloatingObject[];
@@ -63,7 +63,9 @@ export interface InlineLayoutConfig extends LayoutConfig {
   readonly inlineControls: InlineControl[];
   readonly startInlineControlOffset: number;
   readonly startOffset: Offset2d;
-  readonly containerSizeConstraint: SizeConstraint;
+  readonly columnSizeConstraint: SizeConstraint;
+  readonly paperInfo: PaperInfo;
+  readonly columnInfo: ColumnInfo;
   readonly floatingObjects: FloatingObject[];
 }
 export type InlineLayoutResult =
@@ -93,21 +95,35 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     inlineControls,
     startInlineControlOffset,
     startOffset,
-    containerSizeConstraint,
+    columnSizeConstraint,
+    paperInfo,
+    columnInfo,
     floatingObjects,
   } = config;
   const defaultCharShape = getDefaultCharShape(document, expandedParagraph.docParagraph);
+  const fontBaseSize = defaultCharShape.fontBaseSize;
   let currentInlineControlOffset = startInlineControlOffset;
   let currentOffset = { ...startOffset };
   const paragraph: Paragraph = {
-    ...startOffset,
-    width: containerSizeConstraint.maxWidth - startOffset.x,
+    ...(subOffset2d(subOffset2d(currentOffset, paperInfo.page), columnInfo)),
+    width: columnSizeConstraint.maxWidth,
     height: 0,
     lines: [],
   };
-  while (currentInlineControlOffset < inlineControls.length) {
-    const lineBoundingHeight = scanLineBoundingHeight(inlineControls, currentInlineControlOffset, containerSizeConstraint.maxWidth);
-    const segments = getSegments(currentOffset, lineBoundingHeight, containerSizeConstraint, floatingObjects);
+  do {
+    const lineBoundingHeight = scanLineBoundingHeight(
+      inlineControls,
+      currentInlineControlOffset,
+      columnSizeConstraint.maxWidth
+    ) || fontBaseSize;
+    const segments = getSegments(
+      currentOffset,
+      lineBoundingHeight,
+      columnSizeConstraint,
+      paperInfo,
+      columnInfo,
+      floatingObjects
+    );
     if (!segments) {
       return {
         type: InlineLayoutResultType.Overflowed,
@@ -117,7 +133,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
       };
     }
     const currentLine = {
-      ...(subOffset2d(startOffset, currentOffset)),
+      ...(subOffset2d(currentOffset, startOffset)),
       width: paragraph.width,
       height: 0,
       segments,
@@ -134,10 +150,10 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
         }
       }
     }
-    const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || defaultCharShape.fontBaseSize;
+    const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || fontBaseSize;
     for (const segment of segments) segment.height = segmentHeight;
     currentOffset.y += currentLine.height = segmentHeight * 1.6;
-  }
+  } while (currentInlineControlOffset < inlineControls.length);
   return {
     type: InlineLayoutResultType.Completed,
     paragraph: wrapUp(paragraph, currentOffset)!,
@@ -193,8 +209,11 @@ function wrapUp(paragraph: Paragraph, currentOffset: Offset2d): Paragraph | unde
       alignLeft(segment);
       for (const word of segment.words) {
         word.height = segment.height;
+        let offsetX = 0;
         for (const control of word.controls) {
           control.y = word.height - control.height;
+          control.x = offsetX;
+          offsetX += control.width;
         }
       }
     }
@@ -226,15 +245,21 @@ function pushWordToSegment(segment: Segment, word: Word): Word | undefined {
     segment.words.push(word);
     return undefined;
   }
+  const segmentIsEmpty = segment.words.length === 0;
+  if (!segmentIsEmpty) return word;
   const firstControl = word.controls[0];
   const left = firstControl.accWidth - firstControl.width;
   const overflowIndex = bisectRight(i => word.controls[i].accWidth, left + restWidth, 0, word.controls.length);
   const cutHere = segment.atLeastOne ? Math.max(1, overflowIndex) : overflowIndex;
   if (cutHere === 0) return word;
-  const head = wrapControls(word.controls.slice(0, cutHere));
-  const tail = wrapControls(word.controls.slice(cutHere));
-  segment.words.push(head);
-  return tail;
+  if (cutHere >= word.controls.length) {
+    return word;
+  } else {
+    const head = wrapControls(word.controls.slice(0, cutHere));
+    const tail = wrapControls(word.controls.slice(cutHere));
+    segment.words.push(head);
+    return tail;
+  }
 }
 function bisectRight(get: (index: number) => number, target: number, lo: number, hi: number): number {
   while (lo < hi) {
@@ -299,7 +324,7 @@ function getMaxHeight<T extends { height: number }>(items: T[]): number {
 
 function scanLineBoundingHeight(inlineControls: Control[], currentOffset: number, maxWidth: number): number {
   let offsetX = 0;
-  let maxControlHeight = 1; // 줄 높이가 1pt보다 작아질 수 없음
+  let maxControlHeight = 0;
   for (let i = currentOffset; i < inlineControls.length; ++i) {
     const control = inlineControls[i];
     maxControlHeight = Math.max(maxControlHeight, control.height);
@@ -315,18 +340,20 @@ function scanLineBoundingHeight(inlineControls: Control[], currentOffset: number
 function getSegments(
   startOffset: Offset2d,
   lineBoundingHeight: number,
-  containerSizeConstraint: SizeConstraint,
+  columnSizeConstraint: SizeConstraint,
+  paperInfo: PaperInfo,
+  columnInfo: ColumnInfo,
   _floatingObjects: FloatingObject[]
 ): Segment[] | undefined {
   const bottom = startOffset.y + lineBoundingHeight;
-  if (bottom > containerSizeConstraint.maxHeight) return undefined;
+  if ((bottom - paperInfo.page.y - columnInfo.y) > columnSizeConstraint.maxHeight) return undefined;
   // TODO: floatingObjects를 피해가는 Segment 목록 반환하기
   // floatingObjects와 맞닿은 Segment의 경우 atLeastOne 속성이 false여야 함
   return [
     {
-      x: startOffset.x,
-      y: startOffset.y,
-      width: containerSizeConstraint.maxWidth - startOffset.x,
+      x: 0,
+      y: 0,
+      width: columnSizeConstraint.maxWidth,
       height: lineBoundingHeight,
       words: [],
       atLeastOne: true,

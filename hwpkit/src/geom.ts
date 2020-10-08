@@ -9,6 +9,13 @@ export interface Offset2d {
 }
 export interface Rect extends Size2d, Offset2d {}
 
+/**
+ * @example
+ * const pt = 10;
+ * const px = pt * pt2px;
+*/
+export const pt2px = 4 / 3;
+
 export function subOffset2d(a: Offset2d, b: Offset2d): Offset2d {
   return {
     x: a.x - b.x,

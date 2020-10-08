@@ -9,16 +9,19 @@ import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
-  const { hwp, error } = useHwp('/hwp/empty.hwp');
+  const { hwp, error } = useHwp('/hwp/ipsum.hwp');
   const renderingModel = useRenderingModel(hwp);
   const {
     paper,
     pageCount,
     currentPage,
+    setCurrentPage,
   } = usePaper(renderingModel);
   if (error) return <>{getErrorMessage(error)}</>;
   return <>
     page: {currentPage + 1} / {pageCount}
+    <button onClick={() => setCurrentPage(currentPage - 1)}>&lt;</button>
+    <button onClick={() => setCurrentPage(currentPage + 1)}>&gt;</button>
     {paper && <HwpPage paper={paper}/>}
   </>;
 };

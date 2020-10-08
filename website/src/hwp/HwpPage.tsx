@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
+import { pt2px } from 'hwpkit/lib/geom';
 import { Paper } from 'hwpkit/lib/rendering-model';
 import { renderPaperTo2dContext } from 'hwpkit/lib/render';
 
@@ -10,8 +11,8 @@ const HwpPage: React.FC<HwpPageProps> = ({ paper }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     if (!canvasRef.current) return;
-    canvasRef.current.width = paper.width;
-    canvasRef.current.height = paper.height;
+    canvasRef.current.width = paper.width * pt2px;
+    canvasRef.current.height = paper.height * pt2px;
     const ctx = canvasRef.current.getContext('2d')!;
     renderPaperTo2dContext({ ctx, paper });
   }, [canvasRef.current, paper]);
