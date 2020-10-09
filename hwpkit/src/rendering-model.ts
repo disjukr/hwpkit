@@ -30,6 +30,10 @@ export interface Segment extends Rect {
    * 레이아웃 무한루프를 방지하기 위해 적어도 하나의 컨트롤이 들어와야 하는지 여부.
   */
   atLeastOne: boolean;
+  /**
+   * 이 세그먼트에 컨트롤이 꽉 차서 더이상 새로운 컨트롤이 들어올 수 없는지 여부.
+   */
+  full: boolean;
 }
 export type Word =
   | WhitespaceWord

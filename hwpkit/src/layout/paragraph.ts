@@ -144,6 +144,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
         const overflowedWord = pushWordToSegment(segment, word);
         if (overflowedWord) {
           currentInlineControlOffset += word.controls.length - overflowedWord.controls.length;
+          segment.full = true;
           break;
         } else {
           currentInlineControlOffset += word.controls.length;
@@ -206,7 +207,7 @@ function wrapUp(paragraph: Paragraph, currentOffset: Offset2d): Paragraph | unde
   if (paragraph.lines.length === 0) return undefined;
   for (const line of paragraph.lines) {
     for (const segment of line.segments) {
-      alignLeft(segment);
+      alignJustify(segment);
       for (const word of segment.words) {
         word.height = segment.height;
         let offsetX = 0;
@@ -227,6 +228,52 @@ function alignLeft(segment: Segment) {
   for (const word of segment.words) {
     word.x = offsetX;
     offsetX += word.width;
+  }
+}
+
+function alignRight(segment: Segment) {
+  let offsetX = 0;
+  for (const word of [...segment.words].reverse()) {
+    word.x = segment.width - offsetX - word.width;
+    offsetX += word.width;
+  }
+}
+
+function alignCenter(segment: Segment) {
+  if (segment.words.length === 0) return;
+  alignLeft(segment);
+  const firstWord = segment.words[0];
+  const lastWord = findRight(segment.words, word => word.type !== WordType.Whitespace) || firstWord;
+  const left = firstWord.x;
+  const right = lastWord.x + lastWord.width;
+  const leftOffset = (segment.width - (right - left)) / 2;
+  for (const word of segment.words) word.x += leftOffset;
+}
+
+function alignJustify(segment: Segment) {
+  if (segment.words.length === 0) return;
+  if (!segment.full) return alignLeft(segment);
+  const lastWord = segment.words[segment.words.length - 1];
+  const whitespaces = segment.words.filter(word => word.type === WordType.Whitespace);
+  const others = segment.words.filter(word => word.type !== WordType.Whitespace);
+  if (lastWord.type === WordType.Whitespace) whitespaces.pop();
+  const totalGapWidth = sum(whitespaces.map(word => word.width));
+  const totalOthersWidth = sum(others.map(word => word.width));
+  const whitespaceScale = (segment.width - totalOthersWidth) / totalGapWidth;
+  let offsetX = 0;
+  for (const word of segment.words) {
+    word.x = offsetX;
+    if (word.type === WordType.Whitespace) {
+      offsetX += word.width * whitespaceScale;
+    } else {
+      offsetX += word.width;
+    }
+  }
+}
+
+function findRight<T>(items: T[], predicate: (item: T) => boolean): T | undefined {
+  for (let i = items.length - 1; i >= 0; --i) {
+    if (predicate(items[i])) return items[i];
   }
 }
 
@@ -321,6 +368,9 @@ function max(numbers: number[]): number {
 function getMaxHeight<T extends { height: number }>(items: T[]): number {
   return max(items.map(item => item.height));
 }
+function sum(numbers: number[]): number {
+  return numbers.reduce((prev, curr) => prev + curr, 0);
+}
 
 function scanLineBoundingHeight(inlineControls: Control[], currentOffset: number, maxWidth: number): number {
   let offsetX = 0;
@@ -357,6 +407,7 @@ function getSegments(
       height: lineBoundingHeight,
       words: [],
       atLeastOne: true,
+      full: false,
     }
   ];
 }
