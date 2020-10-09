@@ -4,6 +4,7 @@ import HWPDocument from 'hwp.js/build/models/document';
 import { parse } from 'hwp.js';
 import { RenderingModel } from 'hwpkit/lib/rendering-model';
 import layout from 'hwpkit/lib/layout';
+import { measureText } from 'hwpkit/lib/canvas';
 
 import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
@@ -46,7 +47,11 @@ function useRenderingModel(hwp?: HWPDocument) {
   const [renderingModel, setRenderingModel] = useState<RenderingModel>();
   useEffect(() => {
     if (!hwp) return;
-    setRenderingModel(layout({ document: hwp }));
+    setRenderingModel(
+      layout({
+        document: hwp,
+        measureText,
+      }));
   }, [hwp]);
   return renderingModel;
 }

@@ -66,5 +66,6 @@ export interface WhitespaceControl extends ControlBase<ControlType.Whitespace> {
   char: string;
 }
 export interface CharControl extends ControlBase<ControlType.Char> {
+  font: string;
   char: string;
 }

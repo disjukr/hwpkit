@@ -3,6 +3,7 @@ import type HWPChar from 'hwp.js/build/models/char';
 import type CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '..';
+import { px2pt } from '../../geom';
 import {
   CharControl,
   Control,
@@ -56,7 +57,7 @@ export function layoutControl(config: LayoutControlConfig): LayoutControlResult 
       } else {
         return {
           type: LayoutControlResultType.Inline,
-          control: layoutCharControl(char, charShape),
+          control: layoutCharControl(char, charShape, config),
         };
       }
     }
@@ -77,14 +78,22 @@ function layoutWhitespaceControl(char: string, charShape: CharShape): Whitespace
   };
 }
 
-function layoutCharControl(char: string, charShape: CharShape): CharControl {
+function layoutCharControl(
+  char: string,
+  charShape: CharShape,
+  config: LayoutControlConfig
+): CharControl {
+  const { document, measureText } = config;
+  const font = document.info.fontFaces[charShape.fontId[0]].getFontFamily();
+  const metrics = measureText(char, charShape.fontBaseSize, font);
   return {
     type: ControlType.Char,
     char,
     x: 0,
     y: 0,
-    width: charShape.fontBaseSize, // TODO: 폰트로부터 계산하도록 수정
+    width: metrics.width * px2pt,
     height: charShape.fontBaseSize,
+    font,
   };
 }
 
