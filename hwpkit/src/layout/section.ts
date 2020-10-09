@@ -131,14 +131,16 @@ function getPaperInfo(docSection: DocSection): PaperInfo {
   const paddingTop = docSection.paddingTop / 100;
   const paddingRight = docSection.paddingRight / 100;
   const paddingBottom = docSection.paddingBottom / 100;
+  const headerPadding = docSection.headerPadding / 100;
+  const footerPadding = docSection.footerPadding / 100;
   return {
     width: pageWidth,
     height: pageHeight,
     page: {
       x: paddingLeft,
-      y: paddingTop,
+      y: paddingTop + headerPadding,
       width: pageWidth - paddingLeft - paddingRight,
-      height: pageHeight - paddingTop - paddingBottom,
+      height: pageHeight - paddingTop - paddingBottom - headerPadding - footerPadding,
     },
   };
 }
