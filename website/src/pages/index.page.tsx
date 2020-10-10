@@ -10,7 +10,7 @@ import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
-  const { hwp, error } = useHwp('/hwp/ipsum.hwp');
+  const { hwp, error } = useHwp('/hwp/para-align.hwp');
   const renderingModel = useRenderingModel(hwp);
   const {
     paper,

@@ -59,7 +59,7 @@ export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
 }
 
 export interface InlineLayoutConfig extends LayoutConfig {
-  readonly expandedParagraph: ExpandedParagraph;
+  readonly docParagraph: DocParagraph;
   readonly inlineControls: InlineControl[];
   readonly startInlineControlOffset: number;
   readonly startOffset: Offset2d;
@@ -91,7 +91,7 @@ interface OverflowedInlineLayoutResult extends InlineLayoutResultBase<InlineLayo
 export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
   const {
     document,
-    expandedParagraph,
+    docParagraph,
     inlineControls,
     startInlineControlOffset,
     startOffset,
@@ -100,7 +100,8 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     columnInfo,
     floatingObjects,
   } = config;
-  const defaultCharShape = getDefaultCharShape(document, expandedParagraph.docParagraph);
+  const paragraphShape = document.info.paragraphShapes[docParagraph.shapeIndex];
+  const defaultCharShape = getDefaultCharShape(document, docParagraph);
   const fontBaseSize = defaultCharShape.fontBaseSize;
   let currentInlineControlOffset = startInlineControlOffset;
   let currentOffset = { ...startOffset };
@@ -127,7 +128,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     if (!segments) {
       return {
         type: InlineLayoutResultType.Overflowed,
-        paragraph: wrapUp(paragraph, currentOffset),
+        paragraph: wrapUp(paragraph, currentOffset, paragraphShape.align),
         endInlineControlOffset: currentInlineControlOffset,
         endOffset: currentOffset,
       };
@@ -157,7 +158,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
   } while (currentInlineControlOffset < inlineControls.length);
   return {
     type: InlineLayoutResultType.Completed,
-    paragraph: wrapUp(paragraph, currentOffset)!,
+    paragraph: wrapUp(paragraph, currentOffset, paragraphShape.align)!,
     endOffset: currentOffset,
   };
 }
@@ -203,11 +204,15 @@ export function getDefaultCharShape(document: HWPDocument, docParagraph: DocPara
   return document.info.charShapes[shapePointer.shapeIndex];
 }
 
-function wrapUp(paragraph: Paragraph, currentOffset: Offset2d): Paragraph | undefined {
+function wrapUp(
+  paragraph: Paragraph,
+  currentOffset: Offset2d,
+  alignType: number
+): Paragraph | undefined {
   if (paragraph.lines.length === 0) return undefined;
   for (const line of paragraph.lines) {
     for (const segment of line.segments) {
-      alignJustify(segment);
+      align(alignType, segment);
       for (const word of segment.words) {
         word.height = segment.height;
         let offsetX = 0;
@@ -221,6 +226,18 @@ function wrapUp(paragraph: Paragraph, currentOffset: Offset2d): Paragraph | unde
   }
   paragraph.height = currentOffset.y - paragraph.y;
   return paragraph;
+}
+
+function align(alignType: number, segment: Segment) {
+  switch (alignType) {
+    case 0: alignJustify(segment); break;
+    case 1: alignLeft(segment); break;
+    case 2: alignRight(segment); break;
+    case 3: alignCenter(segment); break;
+    case 4: alignDistribute(segment); break;
+    case 5: alignDistributeSpace(segment); break;
+    default: alignJustify(segment); break;
+  }
 }
 
 function alignLeft(segment: Segment) {
@@ -250,25 +267,83 @@ function alignCenter(segment: Segment) {
   for (const word of segment.words) word.x += leftOffset;
 }
 
-function alignJustify(segment: Segment) {
-  if (segment.words.length === 0) return;
-  if (!segment.full) return alignLeft(segment);
+type JistifyInfo = ReturnType<typeof getJustifyInfo>;
+function getJustifyInfo(segment: Segment) {
   const lastWord = segment.words[segment.words.length - 1];
-  const whitespaces = segment.words.filter(word => word.type === WordType.Whitespace);
-  const others = segment.words.filter(word => word.type !== WordType.Whitespace);
-  if (lastWord.type === WordType.Whitespace) whitespaces.pop();
-  const totalGapWidth = sum(whitespaces.map(word => word.width));
-  const totalOthersWidth = sum(others.map(word => word.width));
-  const whitespaceScale = (segment.width - totalOthersWidth) / totalGapWidth;
+  const gaps = segment.words.filter(word => word.type === WordType.Whitespace);
+  const things = segment.words.filter(word => word.type !== WordType.Whitespace);
+  if (lastWord.type === WordType.Whitespace) gaps.pop();
+  const totalGapWidth = sum(gaps.map(word => word.width));
+  const totalThingsWidth = sum(things.map(word => word.width));
+  return {
+    gaps,
+    things,
+    totalGapWidth,
+    totalThingsWidth,
+  };
+}
+
+function justify(justifyInfo: JistifyInfo, segment: Segment) {
+  const {
+    totalGapWidth,
+    totalThingsWidth,
+  } = justifyInfo;
+  const gapScale = (segment.width - totalThingsWidth) / totalGapWidth;
   let offsetX = 0;
   for (const word of segment.words) {
     word.x = offsetX;
     if (word.type === WordType.Whitespace) {
-      offsetX += word.width * whitespaceScale;
+      offsetX += word.width * gapScale;
     } else {
       offsetX += word.width;
     }
   }
+}
+
+function alignJustify(segment: Segment) {
+  if (segment.words.length === 0) return;
+  const justifyInfo = getJustifyInfo(segment);
+  if (segment.full) {
+    justify(justifyInfo, segment);
+  } else {
+    alignLeft(segment);
+  }
+}
+
+function alignDistribute(segment: Segment) {
+  if (segment.words.length === 0) return;
+  const justifyInfo = getJustifyInfo(segment);
+  if (segment.full) return justify(justifyInfo, segment);
+  const {
+    gaps,
+    things,
+    totalGapWidth,
+    totalThingsWidth,
+  } = justifyInfo;
+  const controlCount = (
+    sum(gaps.map(gap => gap.controls.length)) +
+    sum(things.map(thing => thing.controls.length))
+  );
+  if (controlCount < 2) return alignLeft(segment);
+  const restWidth = segment.width - totalGapWidth - totalThingsWidth;
+  const padding = restWidth / (controlCount - 1);
+  let offsetX = 0;
+  for (const word of segment.words) {
+    word.x = offsetX;
+    let controlOffsetX = 0;
+    for (const control of word.controls) {
+      control.width += padding;
+      controlOffsetX += control.width;
+    }
+    word.width = controlOffsetX;
+    offsetX += word.width;
+  }
+}
+
+function alignDistributeSpace(segment: Segment) {
+  if (segment.words.length === 0) return;
+  const justifyInfo = getJustifyInfo(segment);
+  justify(justifyInfo, segment);
 }
 
 function findRight<T>(items: T[], predicate: (item: T) => boolean): T | undefined {

@@ -29,7 +29,7 @@ export function layoutSection(config: LayoutSectionConfig): Paper[] {
     inline_layout: while (true) {
       const inlineLayoutResult = inlineLayout({
         ...config,
-        expandedParagraph,
+        docParagraph: expandedParagraph.docParagraph,
         inlineControls,
         startInlineControlOffset: currentInlineControlOffset,
         startOffset: paperMaker.currentOffset,
