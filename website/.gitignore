@@ -1,2 +1,4 @@
 /.next
 /public/canvaskit.wasm
+
+.vercel

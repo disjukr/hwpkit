@@ -1,6 +1,3 @@
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-
 const config = {
   target: 'serverless',
   pageExtensions: ['page.tsx'],
@@ -10,16 +7,6 @@ const config = {
         fs: 'empty',
       };
     }
-    config.plugins.push(
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: '../node_modules/canvaskit-wasm/bin/canvaskit.wasm',
-            to: path.join(__dirname, './public/canvaskit.wasm'),
-          },
-        ],
-      }),
-    );
     return config;
   },
 };

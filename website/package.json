@@ -4,23 +4,23 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build"
+    "build": "next build",
+    "deploy:dev": "vercel",
+    "deploy:prod": "vercel --prod"
   },
   "dependencies": {
     "@emotion/babel-preset-css-prop": "^10.0.27",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@types/canvaskit-wasm": "^0.9.1",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "axios": "^0.20.0",
-    "canvaskit-wasm": "^0.17.3",
-    "copy-webpack-plugin": "^6.1.1",
     "emotion": "^10.0.27",
     "hwp.js": "^0.0.3",
     "hwpkit": "0.0.0",
     "next": "^9.5.3",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "vercel": "^20.1.2"
   }
 }
