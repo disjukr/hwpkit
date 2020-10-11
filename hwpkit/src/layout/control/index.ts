@@ -9,7 +9,7 @@ import {
   Control,
   ControlType,
   WhitespaceControl,
-} from '../../rendering-model';
+} from '../../model/rendering';
 import { isWhitespaceCharCode } from '../misc';
 import { ExpandedControl } from '../paragraph';
 

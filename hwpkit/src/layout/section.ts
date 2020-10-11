@@ -2,7 +2,7 @@ import type DocSection from 'hwp.js/build/models/section';
 
 import { LayoutConfig } from '.';
 import { Offset2d } from '../geom';
-import { Column, Paper } from '../rendering-model';
+import { Column, Paper } from '../model/rendering';
 import { PaperInfo, SizeConstraint } from './misc';
 import { blockLayout, expandParagraph, inlineLayout, InlineLayoutResultType } from './paragraph';
 

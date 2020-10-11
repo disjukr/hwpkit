@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import { pt2px } from 'hwpkit/lib/geom';
-import { Paper } from 'hwpkit/lib/rendering-model';
+import { Paper } from 'hwpkit/lib/model/rendering';
 import { renderPaperTo2dContext } from 'hwpkit/lib/render';
 
 interface HwpPageProps {

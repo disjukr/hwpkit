@@ -7,7 +7,7 @@ import type CharShape from 'hwp.js/build/models/charShape';
 
 import { LayoutConfig } from '.';
 import { Offset2d, subOffset2d } from '../geom';
-import { Control, ControlType, FloatingObject, InlineControl, Paragraph, Segment, Word, WordType } from '../rendering-model';
+import { Control, ControlType, FloatingObject, InlineControl, Paragraph, Segment, Word, WordType } from '../model/rendering';
 import {
   ColumnInfo,
   PaperInfo,

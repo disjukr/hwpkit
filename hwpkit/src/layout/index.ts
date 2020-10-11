@@ -1,7 +1,7 @@
 import type HWPDocument from 'hwp.js/build/models/document';
 
 import { Pt } from '../geom';
-import { RenderingModel, Paper } from '../rendering-model';
+import { RenderingModel, Paper } from '../model/rendering';
 import { layoutSection } from './section';
 
 export interface MeasureText {

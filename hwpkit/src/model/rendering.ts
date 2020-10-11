@@ -1,4 +1,4 @@
-import { Size2d, Offset2d, Rect } from './geom';
+import { Size2d, Offset2d, Rect } from '../geom';
 
 export interface RenderingModel {
   papers: Paper[];

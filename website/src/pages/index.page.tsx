@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import HWPDocument from 'hwp.js/build/models/document';
 import { parse } from 'hwp.js';
-import { RenderingModel } from 'hwpkit/lib/rendering-model';
+import { RenderingModel } from 'hwpkit/lib/model/rendering';
 import layout from 'hwpkit/lib/layout';
 import { measureText } from 'hwpkit/lib/canvas';
 

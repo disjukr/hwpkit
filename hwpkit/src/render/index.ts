@@ -1,5 +1,5 @@
 import { pt2px } from '../geom';
-import { ControlType, Paper } from '../rendering-model';
+import { ControlType, Paper } from '../model/rendering';
 
 export interface RenderPaperConfig {
   ctx: CanvasRenderingContext2D;
