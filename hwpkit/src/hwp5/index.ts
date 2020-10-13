@@ -1,8 +1,10 @@
-import type HWPDocument from 'hwp.js/build/models/document';
+import { parse } from 'hwp.js';
 
+import { Bufferlike } from '../misc/type';
 import { DocumentModel } from '../model/document';
 
-export function fromHwpjsDocument(hwpjsDocument: HWPDocument): DocumentModel {
+export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
+  const hwpjsDocument = parseAsHwpjsDocument(bufferlike);
   const { info } = hwpjsDocument;
   const {
     startingIndex: beginNumber,
@@ -25,4 +27,8 @@ export function fromHwpjsDocument(hwpjsDocument: HWPDocument): DocumentModel {
     },
     body: {} as any, // TODO
   }
+}
+
+export function parseAsHwpjsDocument(bufferlike: Bufferlike) {
+  return parse(Buffer.from(bufferlike), { type: 'buffer' });
 }
