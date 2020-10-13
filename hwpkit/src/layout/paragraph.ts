@@ -249,8 +249,15 @@ function alignLeft(segment: Segment) {
 }
 
 function alignRight(segment: Segment) {
+  if (segment.words.length === 0) return;
+  const words = [...segment.words];
+  const lastWord = words[words.length - 1];
+  if (lastWord.type === WordType.Whitespace) {
+    lastWord.x = segment.width;
+    words.pop();
+  }
   let offsetX = 0;
-  for (const word of [...segment.words].reverse()) {
+  for (const word of words.reverse()) {
     word.x = segment.width - offsetX - word.width;
     offsetX += word.width;
   }
