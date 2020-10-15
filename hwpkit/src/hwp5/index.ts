@@ -2,7 +2,7 @@ import { parse } from 'hwp.js';
 import type { RGB } from 'hwp.js/build/types/color';
 
 import { Bufferlike } from '../misc/type';
-import { DocumentModel, LineType2, RgbColor, StrikeoutType } from '../model/document';
+import { AlignmentType1, BreakLatinWordType, DocumentModel, HeadingType, LineType2, LineWrapType, RgbColor, StrikeoutType, VerAlignType } from '../model/document';
 
 export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
   const hwpjsDocument = parseAsHwpjsDocument(bufferlike);
@@ -52,7 +52,25 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
           superscript: false,
           subscript: false,
         })),
-        paraShapes: null as any, // TODO
+        paraShapes: paragraphShapes.map(paragraphShape => ({
+          align: paragraphShape.align as AlignmentType1,
+          verAlign: VerAlignType.Baseline,
+          headingType: HeadingType.None,
+          level: 0,
+          tabDef: 0,
+          breakLatinWordType: BreakLatinWordType.KeepWord,
+          breakNonLatinWord: true,
+          condense: 0,
+          widowOrphan: false,
+          keepWithNext: false,
+          keepLines: false,
+          pageBreakBefore: false,
+          fontLineHeight: false,
+          snapToGrid: true,
+          lineWrapType: LineWrapType.Break,
+          autoSpaceEAsianEng: true,
+          autoSpaceEAsianNum: true,
+        })),
       },
     },
     body: {} as any, // TODO

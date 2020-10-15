@@ -13,7 +13,7 @@ export const enum AlignmentType2 {
   Right,
 }
 
-export const enum VertAlignType {
+export const enum VerAlignType {
   Baseline,
   Top,
   Center,

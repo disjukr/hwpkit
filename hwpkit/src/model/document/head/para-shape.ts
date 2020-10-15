@@ -1,9 +1,9 @@
 import type { Percent, Index } from '..';
-import type { AlignmentType1, VertAlignType } from './alignment';
+import type { AlignmentType1, VerAlignType } from './alignment';
 
 export interface ParaShape {
   align: AlignmentType1;
-  vertAlign: VertAlignType;
+  verAlign: VerAlignType;
   headingType: HeadingType;
   level: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   tabDef: Index;
