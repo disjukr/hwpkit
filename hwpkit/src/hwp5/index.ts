@@ -2,7 +2,7 @@ import { parse } from 'hwp.js';
 import type { RGB } from 'hwp.js/build/types/color';
 
 import { Bufferlike } from '../misc/type';
-import { AlignmentType1, BreakLatinWordType, DocumentModel, HeadingType, LineType2, LineWrapType, RgbColor, StrikeoutType, VerAlignType } from '../model/document';
+import { AlignmentType1, BreakLatinWordType, DocumentModel, HeadingType, LangType, LineType2, LineWrapType, RgbColor, StrikeoutType, VerAlignType } from '../model/document';
 
 export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
   const hwpjsDocument = parseAsHwpjsDocument(bufferlike);
@@ -25,7 +25,14 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
         }
       },
       mappingTable: {
-        fontFaces: null as any, // TODO
+        fontFaces: [{
+          // TODO: 국가별 글꼴 정보는 HWPTAG_ID_MAPPINGS 정보가 있어야 제대로 처리할 수 있음
+          lang: LangType.Hangul,
+          fonts: fontFaces.map(fontFace => ({
+            name: fontFace.name,
+            type: undefined,
+          })),
+        }],
         charShapes: charShapes.map(charShape => ({
           height: charShape.fontBaseSize * 1000,
           textColor: rgb(charShape.color),

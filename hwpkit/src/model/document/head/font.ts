@@ -1,3 +1,4 @@
+import { Option } from '../../../misc/type';
 import type { LangType } from './lang';
 
 export interface FontFace {
@@ -7,7 +8,7 @@ export interface FontFace {
 
 export interface Font {
   name: string;
-  type: FontType;
+  type: Option<FontType>;
 }
 
 export const enum FontType {
