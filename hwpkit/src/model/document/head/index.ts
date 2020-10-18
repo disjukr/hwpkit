@@ -1,3 +1,4 @@
+import type { Index } from '..';
 import type { FontFace } from './font';
 import type { CharShape } from './char-shape';
 import type { ParaShape } from './para-shape';
@@ -38,4 +39,19 @@ export interface MappingTable {
   fontFaces: FontFace[];
   charShapes: CharShape[];
   paraShapes: ParaShape[];
+  styles: Style[];
+}
+
+export interface Style {
+  type: StyleType;
+  name: string;
+  engName: string;
+  paraShapeIndex: Index;
+  charShapeIndex: Index;
+  nextStyleIndex: Index;
+}
+
+export const enum StyleType {
+  Para,
+  Char,
 }

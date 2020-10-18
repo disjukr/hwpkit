@@ -21,6 +21,7 @@ import {
   RgbColor,
   Section,
   StrikeoutType,
+  StyleType,
   TextDirection,
   VerAlignType,
 } from '../model/document';
@@ -102,6 +103,16 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
           autoSpaceEAsianEng: true,
           autoSpaceEAsianNum: true,
         })),
+        styles: [
+          {
+            type: StyleType.Para,
+            name: '바탕글',
+            engName: 'Normal',
+            paraShapeIndex: 0,
+            charShapeIndex: 0,
+            nextStyleIndex: 0,
+          }
+        ],
       },
     },
     body: {
