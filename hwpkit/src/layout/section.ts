@@ -1,23 +1,20 @@
-import type DocSection from 'hwp.js/build/models/section';
-
 import { LayoutConfig } from '.';
-import { Offset2d } from '../geom';
+import { Offset2d } from '../model/geom';
+import { Section as DocSection } from '../model/document';
 import { Column, Paper } from '../model/rendering';
 import { PaperInfo, SizeConstraint } from './misc';
-import { blockLayout, expandParagraph, inlineLayout, InlineLayoutResultType } from './paragraph';
+import { blockLayout, inlineLayout, InlineLayoutResultType } from './paragraph';
 
 export interface LayoutSectionConfig extends LayoutConfig {
   readonly docSection: DocSection;
 }
 export function layoutSection(config: LayoutSectionConfig): Paper[] {
-  const { document, docSection } = config;
+  const { docSection } = config;
   const paperMaker = createPaperMaker(docSection);
-  const expandedParagraphs = docSection.content.map(docParagraph => expandParagraph(document, docParagraph));
-  for (let i = 0; i < expandedParagraphs.length; ++i) {
-    const expandedParagraph = expandedParagraphs[i];
+  for (const docParagraph of docSection.paragraphs) {
     const blockLayoutResult = blockLayout({
       ...config,
-      expandedParagraph,
+      docParagraph,
       columnSizeConstraint: getColumnSizeConstraint(paperMaker.currentColumn),
       paperInfo: paperMaker.paperInfo,
       columnInfo: paperMaker.currentColumn,
@@ -29,7 +26,7 @@ export function layoutSection(config: LayoutSectionConfig): Paper[] {
     inline_layout: while (true) {
       const inlineLayoutResult = inlineLayout({
         ...config,
-        docParagraph: expandedParagraph.docParagraph,
+        docParagraph,
         inlineControls,
         startInlineControlOffset: currentInlineControlOffset,
         startOffset: paperMaker.currentOffset,
@@ -125,22 +122,21 @@ function getColumnSizeConstraint(column: Column): SizeConstraint {
 }
 
 function getPaperInfo(docSection: DocSection): PaperInfo {
-  const pageWidth = docSection.width / 100;
-  const pageHeight = docSection.height / 100;
-  const paddingLeft = docSection.paddingLeft / 100;
-  const paddingTop = docSection.paddingTop / 100;
-  const paddingRight = docSection.paddingRight / 100;
-  const paddingBottom = docSection.paddingBottom / 100;
-  const headerPadding = docSection.headerPadding / 100;
-  const footerPadding = docSection.footerPadding / 100;
+  const {
+    pageDef: {
+      width,
+      height,
+      margin,
+    },
+  } = docSection.def;
   return {
-    width: pageWidth,
-    height: pageHeight,
+    width,
+    height,
     page: {
-      x: paddingLeft,
-      y: paddingTop + headerPadding,
-      width: pageWidth - paddingLeft - paddingRight,
-      height: pageHeight - paddingTop - paddingBottom - headerPadding - footerPadding,
+      x: margin.left,
+      y: margin.top + margin.header,
+      width: width - margin.left - margin.right,
+      height: height - margin.top - margin.bottom - margin.header - margin.footer,
     },
   };
 }

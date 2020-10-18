@@ -1,10 +1,4 @@
 import { Option } from '../../../misc/type';
-import type { LangType } from './lang';
-
-export interface FontFace {
-  lang: LangType;
-  fonts: Font[];
-}
 
 export interface Font {
   name: string;

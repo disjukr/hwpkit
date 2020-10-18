@@ -39,6 +39,10 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
     charShapes,
     paragraphShapes,
   } = info;
+  const fonts = fontFaces.map(fontFace => ({
+    name: fontFace.name,
+    type: undefined,
+  }));
   return {
     head: {
       docSetting: {
@@ -50,14 +54,16 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
         }
       },
       mappingTable: {
-        fontFaces: [{
-          // TODO: 국가별 글꼴 정보는 HWPTAG_ID_MAPPINGS 정보가 있어야 제대로 처리할 수 있음
-          lang: LangType.Hangul,
-          fonts: fontFaces.map(fontFace => ({
-            name: fontFace.name,
-            type: undefined,
-          })),
-        }],
+        // TODO: 언어별 글꼴 정보는 HWPTAG_ID_MAPPINGS 정보가 있어야 제대로 처리할 수 있음
+        fontFaces: {
+          [LangType.Hangul]: fonts,
+          [LangType.Latin]: fonts,
+          [LangType.Hanja]: fonts,
+          [LangType.Japanese]: fonts,
+          [LangType.Other]: fonts,
+          [LangType.Symbol]: fonts,
+          [LangType.User]: fonts,
+        },
         charShapes: charShapes.map(charShape => ({
           height: charShape.fontBaseSize * 1000,
           textColor: rgb(charShape.color),

@@ -1,15 +1,17 @@
-import { pt2px } from '../geom';
+import { hwpunit2px } from '../model/geom';
+import { Head, LangType } from '../model/document';
 import { ControlType, Paper } from '../model/rendering';
 
 export interface RenderPaperConfig {
   ctx: CanvasRenderingContext2D;
+  head: Head;
   paper: Paper;
 }
-export function renderPaperTo2dContext({ ctx, paper }: RenderPaperConfig): void {
+export function renderPaperTo2dContext({ ctx, head, paper }: RenderPaperConfig): void {
   const { page } = paper;
   const { columns } = page;
   ctx.save();
-  ctx.scale(pt2px, pt2px);
+  ctx.scale(hwpunit2px, hwpunit2px);
   ctx.textBaseline = 'top';
   ctx.fillStyle = '#0001';
   ctx.translate(page.x, page.y);
@@ -33,7 +35,8 @@ export function renderPaperTo2dContext({ ctx, paper }: RenderPaperConfig): void 
               ctx.translate(control.x, control.y);
               if (control.type === ControlType.Char) {
                 ctx.fillStyle = '#000';
-                ctx.font = `${control.height}px ${control.font}`;
+                const font = head.mappingTable.fontFaces[LangType.Hangul][control.charShape.fontIds[0]];
+                ctx.font = `${control.height}px ${font.name}`;
                 ctx.fillText(control.char, 0, 0);
               }
               ctx.restore();

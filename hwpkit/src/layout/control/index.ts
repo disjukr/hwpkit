@@ -1,9 +1,11 @@
-// import type { default as HWPChar, CharType } from 'hwp.js/build/models/char';
-import type HWPChar from 'hwp.js/build/models/char';
-import type CharShape from 'hwp.js/build/models/charShape';
-
 import { LayoutConfig } from '..';
-import { px2pt } from '../../geom';
+import { hwpunit2px, px2hwpunit } from '../../model/geom';
+import {
+  CharShape,
+  Control as DocControl,
+  ControlType as DocControlType,
+  LangType,
+} from '../../model/document';
 import {
   CharControl,
   Control,
@@ -11,10 +13,10 @@ import {
   WhitespaceControl,
 } from '../../model/rendering';
 import { isWhitespaceCharCode } from '../misc';
-import { ExpandedControl } from '../paragraph';
 
 export interface LayoutControlConfig extends LayoutConfig {
-  readonly expandedControl: ExpandedControl;
+  readonly control: DocControl;
+  readonly charShape: CharShape;
 }
 export type LayoutControlResult =
   | NoneLayoutControlResult
@@ -40,16 +42,11 @@ interface FloatingObjectLayoutControlResult extends LayoutControlResultBase<Layo
   control: Control | undefined;
 }
 export function layoutControl(config: LayoutControlConfig): LayoutControlResult {
-  const { expandedControl } = config;
-  const { char: docChar, charShape } = expandedControl;
-  switch (docChar.type) {
-    case 1 /* CharType.Inline */:
-    case 2 /* CharType.Extened */:
-      // TODO
-      return { type: LayoutControlResultType.None };
-    case 0 /* CharType.Char */: {
-      const char = getStringFromDocChar(docChar);
-      if (isWhitespaceCharCode(char.charCodeAt(0))) {
+  const { control, charShape } = config;
+  switch (control.type) {
+    case DocControlType.Char: {
+      const char = String.fromCharCode(control.code);
+      if (isWhitespaceCharCode(control.code)) {
         return {
           type: LayoutControlResultType.Inline,
           control: layoutWhitespaceControl(char, charShape),
@@ -62,7 +59,6 @@ export function layoutControl(config: LayoutControlConfig): LayoutControlResult 
       }
     }
   }
-  return null as never;
 }
 
 function layoutWhitespaceControl(char: string, charShape: CharShape): WhitespaceControl {
@@ -73,8 +69,8 @@ function layoutWhitespaceControl(char: string, charShape: CharShape): Whitespace
     y: 0,
     // '글꼴에 어울리는 빈칸'이 아닌 경우 공백문자의 가로폭은 글자 크기의 절반
     // 참조: https://hancom.com/cs_center/csFaqDetail.do?faq_seq=731
-    width: charShape.fontBaseSize / 2,
-    height: charShape.fontBaseSize,
+    width: charShape.height / 2,
+    height: charShape.height,
   };
 }
 
@@ -84,20 +80,15 @@ function layoutCharControl(
   config: LayoutControlConfig
 ): CharControl {
   const { document, measureText } = config;
-  const font = document.info.fontFaces[charShape.fontId[0]].getFontFamily();
-  const metrics = measureText(char, charShape.fontBaseSize, font);
+  const font = document.head.mappingTable.fontFaces[LangType.Hangul][charShape.fontIds[0]];
+  const metrics = measureText(char, charShape.height * hwpunit2px, font.name);
   return {
     type: ControlType.Char,
     char,
+    charShape,
     x: 0,
     y: 0,
-    width: metrics.width * px2pt,
-    height: charShape.fontBaseSize,
-    font,
+    width: metrics.width * px2hwpunit,
+    height: charShape.height,
   };
-}
-
-function getStringFromDocChar(docChar: HWPChar): string {
-  if (typeof docChar.value === 'string') return docChar.value;
-  return String.fromCharCode(docChar.value);
 }

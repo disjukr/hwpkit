@@ -1,6 +1,8 @@
-import { Size2d, Offset2d, Rect } from '../geom';
+import { Size2d, Offset2d, Rect } from './geom';
+import { Head, CharShape } from './document';
 
 export interface RenderingModel {
+  head: Head;
   papers: Paper[];
 }
 
@@ -70,6 +72,6 @@ export interface WhitespaceControl extends ControlBase<ControlType.Whitespace> {
   char: string;
 }
 export interface CharControl extends ControlBase<ControlType.Char> {
-  font: string;
   char: string;
+  charShape: CharShape;
 }

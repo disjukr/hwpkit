@@ -1,8 +1,9 @@
-import { Rect, Size2d } from "../geom";
+import { Hwpunit } from '../model/document';
+import { Rect, Size2d } from '../model/geom';
 
 export interface SizeConstraint {
-  maxWidth: number;
-  maxHeight: number;
+  maxWidth: Hwpunit;
+  maxHeight: Hwpunit;
 }
 
 export interface PaperInfo extends Size2d {

@@ -2,7 +2,7 @@ import { MeasureText } from './layout';
 
 export const measureText: MeasureText = (text, fontSize, font) => {
   const ctx = getCtx();
-  ctx.font = `${fontSize}pt ${font}`;
+  ctx.font = `${fontSize}px ${font}`;
   return ctx.measureText(text);
 }
 function getCtx() {

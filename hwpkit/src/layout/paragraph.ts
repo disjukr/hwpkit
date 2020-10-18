@@ -1,12 +1,10 @@
-import type HWPDocument from 'hwp.js/build/models/document';
-import type DocParagraph from 'hwp.js/build/models/paragraph';
-// import type { default as HWPChar, CharType } from 'hwp.js/build/models/char';
-import type HWPChar from 'hwp.js/build/models/char';
-import type { Control as DocControl } from 'hwp.js/build/models/controls';
-import type CharShape from 'hwp.js/build/models/charShape';
-
 import { LayoutConfig } from '.';
-import { Offset2d, subOffset2d } from '../geom';
+import { Offset2d, subOffset2d } from '../model/geom';
+import {
+  Paragraph as DocParagraph,
+  ParaShape,
+  AlignmentType1,
+} from '../model/document';
 import { Control, ControlType, FloatingObject, InlineControl, Paragraph, Segment, Word, WordType } from '../model/rendering';
 import {
   ColumnInfo,
@@ -17,14 +15,13 @@ import {
 import { layoutControl, LayoutControlResultType } from './control';
 
 /**
- * 문단 레이아웃은 크게 세 단계로 이루어집니다:
- * 1. `expandParagraph` - 컨트롤 목록에 관련 속성들을 찾아서 이어놓기
- * 2. `blockLayout` - 떠다니는 객체들과 각 글자를 레이아웃
- * 3. `inlineLayout` - 글자처럼 취급되는 객체들과 글자를 페이지 안쪽 및 떠다니는 객체 주변을 흘러다니도록 레이아웃
+ * 문단 레이아웃은 크게 두 단계로 이루어집니다:
+ * 1. `blockLayout` - 떠다니는 객체들과 각 글자를 레이아웃
+ * 2. `inlineLayout` - 글자처럼 취급되는 객체들과 글자를 페이지 안쪽 및 떠다니는 객체 주변을 흘러다니도록 레이아웃
 */
 
 export interface BlockLayoutConfig extends LayoutConfig {
-  readonly expandedParagraph: ExpandedParagraph;
+  readonly docParagraph: DocParagraph;
   readonly columnSizeConstraint: SizeConstraint;
   readonly paperInfo: PaperInfo;
   readonly columnInfo: ColumnInfo;
@@ -36,21 +33,24 @@ export interface BlockLayoutResult {
 }
 export function blockLayout(config: BlockLayoutConfig): BlockLayoutResult {
   const {
-    expandedParagraph,
+    document,
+    docParagraph,
     floatingObjects,
   } = config;
-  const { expandedControls } = expandedParagraph;
+  const { charShapes } = document.head.mappingTable;
   const inlineControls: InlineControl[] = [];
   let accWidth = 0;
-  for (let i = 0; i < expandedControls.length; ++i) {
-    const expandedControl = expandedControls[i];
-    const layoutControlResult = layoutControl({ ...config, expandedControl });
-    if (layoutControlResult.type === LayoutControlResultType.Inline) {
-      const inlineControl = layoutControlResult.control as InlineControl;
-      inlineControl.accWidth = accWidth += inlineControl.width;
-      inlineControls.push(inlineControl);
+  for (const text of docParagraph.texts) {
+    const charShape = charShapes[text.charShapeIndex];
+    for (const control of text.controls) {
+      const layoutControlResult = layoutControl({ ...config, control, charShape });
+      if (layoutControlResult.type === LayoutControlResultType.Inline) {
+        const inlineControl = layoutControlResult.control as InlineControl;
+        inlineControl.accWidth = accWidth += inlineControl.width;
+        inlineControls.push(inlineControl);
+      }
+      // TODO: floating object
     }
-    // TODO: floating object
   }
   return {
     inlineControls,
@@ -100,9 +100,10 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     columnInfo,
     floatingObjects,
   } = config;
-  const paragraphShape = document.info.paragraphShapes[docParagraph.shapeIndex];
-  const defaultCharShape = getDefaultCharShape(document, docParagraph);
-  const fontBaseSize = defaultCharShape.fontBaseSize;
+  const { mappingTable } = document.head;
+  const paraShape = mappingTable.paraShapes[docParagraph.paraShapeIndex];
+  const style = mappingTable.styles[docParagraph.styleIndex];
+  const defaultCharShape = mappingTable.charShapes[style.charShapeIndex];
   let currentInlineControlOffset = startInlineControlOffset;
   let currentOffset = { ...startOffset };
   const paragraph: Paragraph = {
@@ -116,7 +117,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
       inlineControls,
       currentInlineControlOffset,
       columnSizeConstraint.maxWidth
-    ) || fontBaseSize;
+    ) || defaultCharShape.height;
     const segments = getSegments(
       currentOffset,
       lineBoundingHeight,
@@ -128,7 +129,7 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
     if (!segments) {
       return {
         type: InlineLayoutResultType.Overflowed,
-        paragraph: wrapUp(paragraph, currentOffset, paragraphShape.align),
+        paragraph: wrapUp(paragraph, paraShape, currentOffset),
         endInlineControlOffset: currentInlineControlOffset,
         endOffset: currentOffset,
       };
@@ -152,67 +153,26 @@ export function inlineLayout(config: InlineLayoutConfig): InlineLayoutResult {
         }
       }
     }
-    const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || fontBaseSize;
+    const segmentHeight = max(segments.map(segment => getMaxHeight(segment.words))) || defaultCharShape.height;
     for (const segment of segments) segment.height = segmentHeight;
     currentOffset.y += currentLine.height = segmentHeight * 1.6;
   } while (currentInlineControlOffset < inlineControls.length);
   return {
     type: InlineLayoutResultType.Completed,
-    paragraph: wrapUp(paragraph, currentOffset, paragraphShape.align)!,
+    paragraph: wrapUp(paragraph, paraShape, currentOffset)!,
     endOffset: currentOffset,
   };
 }
 
-export interface ExpandedParagraph {
-  readonly docParagraph: DocParagraph;
-  readonly expandedControls: ExpandedControl[];
-}
-export interface ExpandedControl {
-  readonly char: HWPChar;
-  readonly charShape: CharShape;
-  readonly control: DocControl | undefined;
-}
-export function expandParagraph(document: HWPDocument, docParagraph: DocParagraph): ExpandedParagraph {
-  const paragraphLength = docParagraph.content.length;
-  const charShapes: CharShape[] = new Array(paragraphLength);
-  for (let i = 0; i < docParagraph.shapeBuffer.length; ++i) {
-    const shapePointer = docParagraph.shapeBuffer[i];
-    const charShape = document.info.charShapes[shapePointer.shapeIndex];
-    const start = shapePointer.pos;
-    const end = docParagraph.getShapeEndPos(i);
-    for (let j = start; j <= end; ++j) charShapes[j] = charShape;
-  }
-  const expandedControls: ExpandedControl[] = new Array(paragraphLength);
-  let controlIndex = 0;
-  for (let i = 0; i < paragraphLength; ++i) {
-    const char = docParagraph.content[i];
-    const charShape = charShapes[i];
-    const control = (
-      char.type === 2 /* CharType.Extened */ ?
-      docParagraph.controls[controlIndex++] :
-      undefined
-    );
-    expandedControls[i] = { char, charShape, control };
-  }
-  return {
-    docParagraph,
-    expandedControls,
-  };
-}
-export function getDefaultCharShape(document: HWPDocument, docParagraph: DocParagraph): CharShape {
-  const shapePointer = docParagraph.shapeBuffer[0];
-  return document.info.charShapes[shapePointer.shapeIndex];
-}
-
 function wrapUp(
   paragraph: Paragraph,
-  currentOffset: Offset2d,
-  alignType: number
+  paraShape: ParaShape,
+  currentOffset: Offset2d
 ): Paragraph | undefined {
   if (paragraph.lines.length === 0) return undefined;
   for (const line of paragraph.lines) {
     for (const segment of line.segments) {
-      align(alignType, segment);
+      align(paraShape.align, segment);
       for (const word of segment.words) {
         word.height = segment.height;
         let offsetX = 0;
@@ -228,14 +188,14 @@ function wrapUp(
   return paragraph;
 }
 
-function align(alignType: number, segment: Segment) {
+function align(alignType: AlignmentType1, segment: Segment) {
   switch (alignType) {
-    case 0: alignJustify(segment); break;
-    case 1: alignLeft(segment); break;
-    case 2: alignRight(segment); break;
-    case 3: alignCenter(segment); break;
-    case 4: alignDistribute(segment); break;
-    case 5: alignDistributeSpace(segment); break;
+    case AlignmentType1.Justify: alignJustify(segment); break;
+    case AlignmentType1.Left: alignLeft(segment); break;
+    case AlignmentType1.Right: alignRight(segment); break;
+    case AlignmentType1.Center: alignCenter(segment); break;
+    case AlignmentType1.Distribute: alignDistribute(segment); break;
+    case AlignmentType1.DistributeSpace: alignDistributeSpace(segment); break;
     default: alignJustify(segment); break;
   }
 }

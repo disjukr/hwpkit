@@ -1,5 +1,6 @@
 import type { Index } from '..';
-import type { FontFace } from './font';
+import type { Font } from './font';
+import type { LangType } from './lang';
 import type { CharShape } from './char-shape';
 import type { ParaShape } from './para-shape';
 
@@ -36,7 +37,7 @@ export interface CaretPos {
 }
 
 export interface MappingTable {
-  fontFaces: FontFace[];
+  fontFaces: { [langType in LangType]: Font[] };
   charShapes: CharShape[];
   paraShapes: ParaShape[];
   styles: Style[];
