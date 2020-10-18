@@ -5,7 +5,6 @@ import type HwpjsChar from 'hwp.js/build/models/char';
 import type { Control as HwpjsControl } from 'hwp.js/build/models/controls';
 import type { RGB as HwpjsRgb } from 'hwp.js/build/types/color';
 
-import { Bufferlike } from '../misc/type';
 import {
   AlignmentType1,
   BreakLatinWordType,
@@ -24,10 +23,10 @@ import {
   StyleType,
   TextDirection,
   VerAlignType,
-} from '../model/document';
+} from '../../model/document';
 
-export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
-  const hwpjsDocument = parseAsHwpjsDocument(bufferlike);
+export function readHwp5(buffer: Buffer): DocumentModel {
+  const hwpjsDocument = readAsHwpjsDocument(buffer);
   const {
     info,
     sections,
@@ -65,7 +64,7 @@ export function parseHwp5(bufferlike: Bufferlike): DocumentModel {
           [LangType.User]: fonts,
         },
         charShapes: charShapes.map(charShape => ({
-          height: charShape.fontBaseSize * 1000,
+          height: charShape.fontBaseSize * 100,
           textColor: rgb(charShape.color),
           shadeColor: rgb(charShape.shadeColor),
           useFontSpace: false,
@@ -212,6 +211,6 @@ function expandChars(paragraph: HwpjsParagraph) {
   return result;
 }
 
-export function parseAsHwpjsDocument(bufferlike: Bufferlike) {
-  return parse(Buffer.from(bufferlike), { type: 'buffer' });
+export function readAsHwpjsDocument(buffer: Buffer) {
+  return parse(buffer, { type: 'buffer' });
 }

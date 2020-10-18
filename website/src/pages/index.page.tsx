@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import HWPDocument from 'hwp.js/build/models/document';
-import { parse } from 'hwp.js';
-import { RenderingModel } from 'hwpkit/lib/model/rendering';
+import read from 'hwpkit/lib/read';
 import layout from 'hwpkit/lib/layout';
+import { DocumentModel } from 'hwpkit/lib/model/document';
+import { RenderingModel } from 'hwpkit/lib/model/rendering';
 import { measureText } from 'hwpkit/lib/canvas';
 
 import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
-  const { hwp, error } = useHwp('/hwp/para-align.hwp');
-  const renderingModel = useRenderingModel(hwp);
+  const { documentModel, error } = useDocumentModel('/hwp/para-align.hwp');
+  const renderingModel = useRenderingModel(documentModel);
   const {
     paper,
     pageCount,
@@ -23,7 +23,7 @@ const Page: React.FC = () => {
     page: {currentPage + 1} / {pageCount}
     <button onClick={() => setCurrentPage(currentPage - 1)}>&lt;</button>
     <button onClick={() => setCurrentPage(currentPage + 1)}>&gt;</button>
-    {paper && <HwpPage paper={paper}/>}
+    {renderingModel && paper && <HwpPage renderingModel={renderingModel} paper={paper}/>}
   </>;
 };
 export default Page;
@@ -43,32 +43,32 @@ function usePaper(renderingModel?: RenderingModel) {
   };
 }
 
-function useRenderingModel(hwp?: HWPDocument) {
+function useRenderingModel(documentModel?: DocumentModel) {
   const [renderingModel, setRenderingModel] = useState<RenderingModel>();
   useEffect(() => {
-    if (!hwp) return;
+    if (!documentModel) return;
     setRenderingModel(
       layout({
-        document: hwp,
+        document: documentModel,
         measureText,
       }));
-  }, [hwp]);
+  }, [documentModel]);
   return renderingModel;
 }
 
-function useHwp(url: string) {
+function useDocumentModel(url: string) {
   const [error, setError] = useState<Error>();
-  const [hwp, setHwp] = useState<HWPDocument>();
+  const [documentModel, setDocumentModel] = useState<DocumentModel>();
   useEffect(() => {
     axios({
       url,
       responseType: 'arraybuffer'
     }).then(res => {
-      const hwp = parse(Buffer.from(res.data), { type: 'buffer' });
-      setHwp(hwp);
+      const documentModel = read(Buffer.from(res.data));
+      setDocumentModel(documentModel);
     }).catch(err => {
       setError(err);
     });
   }, [url]);
-  return { hwp, error };
+  return { documentModel, error };
 }
