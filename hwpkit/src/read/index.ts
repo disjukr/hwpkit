@@ -1,5 +1,6 @@
 import { DocumentModel } from '../model/document';
 import { readHwp5 } from './hwp5';
+import { readHwpml } from './hwpml';
 
 export const enum HwpType {
   Unknown,
@@ -11,9 +12,9 @@ export const enum HwpType {
 export default function read(buffer: Buffer, as: HwpType = detect(buffer)): DocumentModel {
   switch (as) {
     case HwpType.Unknown:
-    case HwpType.Hwpml:
     case HwpType.Hwp3: throw new Error('unsupported');
     case HwpType.Hwp5: return readHwp5(buffer);
+    case HwpType.Hwpml: return readHwpml(buffer.toString());
   }
 }
 

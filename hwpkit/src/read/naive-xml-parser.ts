@@ -18,14 +18,12 @@ interface Attrs {
   [key: string]: string
 }
 
-export function parse(xml: string): Element {
-  // remove xml decl
-  if (xml.slice(0, 2) === '<?') xml = xml.slice(xml.indexOf('>') + 1);
-  // remove doctype decl
-  if (xml.slice(0, 2) === '<!') xml = xml.slice(xml.indexOf('>') + 1);
+export function parse(xml: string, debug = false): Element {
   let cnt = 0;
   let loc = 0;
   accept(/^\s*/g);
+  accept(/^<\?.+?\?>\s*/g);
+  accept(/^<!.+?>\s*/g);
   return parseElement();
   function accept(pattern: string | RegExp): string | null {
     ++cnt;
@@ -41,6 +39,7 @@ export function parse(xml: string): Element {
   function acceptString(pattern: string): string | null {
     if (xml.substr(loc, pattern.length) !== pattern) return null;
     loc += pattern.length;
+    debug && console.log(pattern);
     return pattern;
   }
   function acceptRegex(regex: RegExp): string | null {
@@ -48,6 +47,7 @@ export function parse(xml: string): Element {
     if (execArray == null) return null;
     const [primary, secondary] = execArray;
     loc += execArray.index + primary.length;
+    debug && console.log(primary);
     if (secondary) return secondary;
     return primary;
   }
@@ -80,7 +80,7 @@ export function parse(xml: string): Element {
   function parseAttrs() {
     const result: Attrs = {};
     while (true) {
-      const key = accept(/^([a-zA-Z]+)\s*/g);
+      const key = accept(/^([a-zA-Z][a-zA-Z0-9]*)\s*/g);
       if (key == null) break;
       expect(/^=\s*/g);
       result[key] = expect(/^"(.+?)"\s*/g);

@@ -10,7 +10,7 @@ import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
-  const { documentModel, error } = useDocumentModel('/hwp/para-align.hwp');
+  const { documentModel, error } = useDocumentModel('/hml/para-align.hml');
   const renderingModel = useRenderingModel(documentModel);
   const {
     paper,
