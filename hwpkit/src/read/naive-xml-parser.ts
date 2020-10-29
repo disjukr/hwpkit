@@ -1,29 +1,29 @@
-type Node = Element | Text;
-interface NodeBase<TType extends NodeType> {
+export type Node = Element | Text;
+export interface NodeBase<TType extends NodeType> {
   type: TType;
 }
-interface Element extends NodeBase<NodeType.Element> {
+export interface Element extends NodeBase<NodeType.Element> {
   tagName: string;
   attrs: Attrs;
   children: Node[];
 }
-interface Text extends NodeBase<NodeType.Text> {
+export interface Text extends NodeBase<NodeType.Text> {
   text: string;
 }
-const enum NodeType {
+export const enum NodeType {
   Text,
   Element,
 }
-interface Attrs {
+export interface Attrs {
   [key: string]: string
 }
 
 export function parse(xml: string, debug = false): Element {
   let cnt = 0;
   let loc = 0;
-  accept(/^\s*/g);
-  accept(/^<\?.+?\?>\s*/g);
-  accept(/^<!.+?>\s*/g);
+  accept(/^\s*/);
+  accept(/^<\?.+?\?>\s*/);
+  accept(/^<!.+?>\s*/);
   return parseElement();
   function accept(pattern: string | RegExp): string | null {
     ++cnt;
@@ -52,11 +52,11 @@ export function parse(xml: string, debug = false): Element {
     return primary;
   }
   function parseElement(): Element {
-    expect(/^<\s*/g);
+    expect(/^<\s*/);
     return parseElement2();
   }
   function parseElement2(): Element {
-    const tagName = expect(/^([a-zA-Z]+)\s*/g);
+    const tagName = expect(/^([a-zA-Z]+)\s*/);
     const attrs = parseAttrs();
     if (accept('/>')) {
       return {
@@ -69,7 +69,7 @@ export function parse(xml: string, debug = false): Element {
     expect('>');
     const children = parseChildren();
     expect(tagName);
-    expect(/^\s*>\s*/g);
+    expect(/^\s*>\s*/);
     return {
       type: NodeType.Element,
       tagName,
@@ -80,17 +80,17 @@ export function parse(xml: string, debug = false): Element {
   function parseAttrs() {
     const result: Attrs = {};
     while (true) {
-      const key = accept(/^([a-zA-Z][a-zA-Z0-9]*)\s*/g);
+      const key = accept(/^([a-zA-Z][a-zA-Z0-9]*)\s*/);
       if (key == null) break;
-      expect(/^=\s*/g);
-      result[key] = expect(/^"(.+?)"\s*/g);
+      expect(/^=\s*/);
+      result[key] = expect(/^"(.+?)"\s*/);
     }
     return result;
   }
   function parseChildren() {
     const result: Node[] = [];
     while (true) {
-      const text = accept(/^[^<]+/g);
+      const text = accept(/^[^<]+/);
       if (text != null) {
         result.push({
           type: NodeType.Text,
@@ -98,8 +98,8 @@ export function parse(xml: string, debug = false): Element {
         });
         continue;
       }
-      if (accept(/^<\/\s*/g) != null) break;
-      if (accept(/^<\s*/g)) {
+      if (accept(/^<\/\s*/) != null) break;
+      if (accept(/^<\s*/)) {
         result.push(parseElement2());
         continue;
       }
