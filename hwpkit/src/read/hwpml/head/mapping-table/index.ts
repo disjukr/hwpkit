@@ -3,6 +3,7 @@ import { Element } from '../../../naive-xml-parser';
 import { el2obj } from '../../misc';
 import { HwpmlCharShape, readHwpmlCharShapeList } from './char-shapes';
 import { HwpmlFontFace, readHwpmlFacenameList } from './font-faces';
+import { HwpmlParaShape, readHwpmlParaShapeList } from './para-shape';
 
 export function readHwpmlMappingTable(hwpmlMappingTable: HwpmlMappingTable): MappingTable {
   console.log(hwpmlMappingTable);
@@ -10,10 +11,13 @@ export function readHwpmlMappingTable(hwpmlMappingTable: HwpmlMappingTable): Map
   const hwpmlCharShapeList = hwpmlMappingTable.CHARSHAPELIST.children.map<HwpmlCharShape>(
     element => el2obj(element as Element)
   );
+  const hwpmlParaShapeList = hwpmlMappingTable.PARASHAPELIST.children.map<HwpmlParaShape>(
+    element => el2obj(element as Element)
+  );
   return {
     fontFaces: readHwpmlFacenameList(hwpmlFacenameList),
     charShapes: readHwpmlCharShapeList(hwpmlCharShapeList),
-    paraShapes: [], // TODO
+    paraShapes: readHwpmlParaShapeList(hwpmlParaShapeList),
     styles: [], // TODO
   };
 }

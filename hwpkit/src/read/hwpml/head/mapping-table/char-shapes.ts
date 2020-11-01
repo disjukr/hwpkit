@@ -1,6 +1,6 @@
 import { CharShape } from '../../../../model/document';
 import { Element } from '../../../naive-xml-parser';
-import { LangTable, readHwpmlLangNumberTable } from './lang';
+import { HwpmlLangTable, readHwpmlLangNumberTable } from './lang';
 
 export function readHwpmlCharShapeList(hwpmlCharShapeList: HwpmlCharShape[]) {
   return hwpmlCharShapeList.map(readHwpmlCharShape);
@@ -13,11 +13,11 @@ export function readHwpmlCharShape(hwpmlCharShape: HwpmlCharShape): CharShape {
     shadeColor: parseInt(hwpmlCharShape.ShadeColor, 10),
     useFontSpace: hwpmlCharShape.UseFontSpace === 'true',
     useKerning: hwpmlCharShape.UseKerning === 'true',
-    fontIds: readHwpmlLangNumberTable(hwpmlCharShape.FONTID.attrs as LangTable<string>),
-    ratios: readHwpmlLangNumberTable(hwpmlCharShape.RATIO.attrs as LangTable<string>),
-    charSpacings: readHwpmlLangNumberTable(hwpmlCharShape.CHARSPACING.attrs as LangTable<string>),
-    relSizes: readHwpmlLangNumberTable(hwpmlCharShape.RELSIZE.attrs as LangTable<string>),
-    charOffsets: readHwpmlLangNumberTable(hwpmlCharShape.CHAROFFSET.attrs as LangTable<string>),
+    fontIds: readHwpmlLangNumberTable(hwpmlCharShape.FONTID.attrs as HwpmlLangTable<string>),
+    ratios: readHwpmlLangNumberTable(hwpmlCharShape.RATIO.attrs as HwpmlLangTable<string>),
+    charSpacings: readHwpmlLangNumberTable(hwpmlCharShape.CHARSPACING.attrs as HwpmlLangTable<string>),
+    relSizes: readHwpmlLangNumberTable(hwpmlCharShape.RELSIZE.attrs as HwpmlLangTable<string>),
+    charOffsets: readHwpmlLangNumberTable(hwpmlCharShape.CHAROFFSET.attrs as HwpmlLangTable<string>),
     italic: false,
     bold: false,
     underline: undefined,

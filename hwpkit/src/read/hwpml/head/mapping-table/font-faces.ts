@@ -1,7 +1,7 @@
 import { Font, FontType, LangType, MappingTable } from '../../../../model/document';
 import { Element } from '../../../naive-xml-parser';
 import { el2obj } from '../../misc';
-import { hwpmlLangToLangTypeMap, Lang } from './lang';
+import { hwpmlLangToLangTypeMap, HwpmlLang } from './lang';
 
 export function readHwpmlFacenameList(hwpmlFacenameList: HwpmlFontFace[]) {
   const result: MappingTable['fontFaces'] = {
@@ -24,7 +24,7 @@ export function readHwpmlFacenameList(hwpmlFacenameList: HwpmlFontFace[]) {
 export interface HwpmlFontFace {
   attrs: {
     Count: string;
-    Lang: Lang;
+    Lang: HwpmlLang;
   },
   children: Element[];
 }
