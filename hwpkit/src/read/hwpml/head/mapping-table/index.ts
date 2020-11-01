@@ -1,9 +1,16 @@
 import { MappingTable } from '../../../../model/document';
 import { Element } from '../../../naive-xml-parser';
+import { HwpmlFontFace, readHwpmlFacenameList } from './font-faces';
 
 export function readHwpmlMappingTable(hwpmlMappingTable: HwpmlMappingTable): MappingTable {
   console.log(hwpmlMappingTable);
-  return {} as any; // TODO
+  const hwpmlFacenameList = hwpmlMappingTable.FACENAMELIST.children as unknown as HwpmlFontFace[];
+  return {
+    fontFaces: readHwpmlFacenameList(hwpmlFacenameList),
+    charShapes: [], // TODO
+    paraShapes: [], // TODO
+    styles: [], // TODO
+  };
 }
 
 export interface HwpmlMappingTable {

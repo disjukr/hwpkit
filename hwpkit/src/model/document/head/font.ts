@@ -8,5 +8,5 @@ export interface Font {
 export const enum FontType {
   Rep,
   Ttf,
-  Htf,
+  Hft,
 }
