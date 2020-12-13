@@ -1,10 +1,10 @@
 import { Body, Section } from '../../../model/document';
 import { Element } from '../../naive-xml-parser';
 import { el2obj } from '../misc';
+import { HwpmlParagraph, readHwpmlParagraph } from './paragraph';
 import { HwpmlSecDef, readHwpmlSecDef } from './secdef';
 
 export function readHwpmlBody(hwpmlBody: HwpmlBody): Body {
-  console.log({ hwpmlBody });
   return {
     sections: hwpmlBody.children.map(readHwpmlSection),
   };
@@ -22,12 +22,8 @@ export function readHwpmlSection(hwpmlSection: HwpmlSection): Section {
   ) as Element;
   return {
     def: readHwpmlSecDef(el2obj(secDef) as HwpmlSecDef),
-    paragraphs: [], // TODO
+    paragraphs: (hwpmlSection.children as unknown as HwpmlParagraph[]).map(readHwpmlParagraph),
   };
 }
 
 export type HwpmlSection = Element;
-
-export interface HwpmlParagraph {
-  children: Element[];
-}

@@ -12,7 +12,6 @@ export function readHwpml(text: string): DocumentModel {
     head: readHwpmlHead(hwpmlHead),
     body: readHwpmlBody(hwpmlBody as HwpmlBody),
   };
-  console.log({ result });
   return result;
 }
 
