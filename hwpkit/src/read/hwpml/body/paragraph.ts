@@ -1,8 +1,11 @@
 import { CharControl, Control, ControlType, Paragraph, Text } from '../../../model/document';
 import { Element, Text as TextNode } from '../../naive-xml-parser';
+import { el2obj } from '../misc';
+import { HwpmlColDef, readHwpmlColDef } from './coldef';
 
 export function readHwpmlParagraph(hwpmlParagraph: HwpmlParagraph): Paragraph {
   const { attrs, children } = hwpmlParagraph;
+  const hwpmlColDef = findHwpmlColDef(hwpmlParagraph);
   return {
     paraShapeIndex: parseInt(attrs.ParaShape, 10),
     styleIndex: parseInt(attrs.Style, 10),
@@ -10,7 +13,16 @@ export function readHwpmlParagraph(hwpmlParagraph: HwpmlParagraph): Paragraph {
     pageBreak: attrs.PageBreak === 'true',
     columnBreak: attrs.ColumnBreak === 'true',
     texts: children.map(readHwpmlText),
+    colDef: hwpmlColDef && readHwpmlColDef(hwpmlColDef),
   };
+}
+
+function findHwpmlColDef(hwpmlParagraph: HwpmlParagraph): HwpmlColDef | undefined {
+  const { children } = hwpmlParagraph;
+  const hwpmlColDefElement = children[0]?.children.find(
+    el => (el as Element).tagName === 'COLDEF'
+  ) as Element;
+  return hwpmlColDefElement && el2obj(hwpmlColDefElement) as HwpmlColDef;
 }
 
 export interface HwpmlParagraph {

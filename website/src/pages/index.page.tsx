@@ -10,7 +10,7 @@ import { getErrorMessage } from '../misc/error';
 import HwpPage from '../hwp/HwpPage';
 
 const Page: React.FC = () => {
-  const { documentModel, error } = useDocumentModel('/hml/para-align.hml');
+  const { documentModel, error } = useDocumentModel('/hml/col.hml');
   const renderingModel = useRenderingModel(documentModel);
   const {
     paper,
@@ -65,6 +65,7 @@ function useDocumentModel(url: string) {
       responseType: 'arraybuffer'
     }).then(res => {
       const documentModel = read(Buffer.from(res.data));
+      console.log(documentModel);
       setDocumentModel(documentModel);
     }).catch(err => {
       setError(err);

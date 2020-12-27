@@ -1,4 +1,5 @@
 import type { Index } from '..';
+import { ColDef } from './column';
 import type { Control } from './control';
 
 export interface Paragraph {
@@ -8,6 +9,7 @@ export interface Paragraph {
   pageBreak: boolean;
   columnBreak: boolean;
   texts: Text[];
+  colDef?: ColDef;
 }
 
 export interface Text {
