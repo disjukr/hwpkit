@@ -34,3 +34,8 @@ yarn dev
         - 인터넷 익스플로러
     - deno에서 실행될 것
 - 다양한 플랫폼에서 정확히 같은 결과물을 출력하는 것
+
+## 라이선스
+
+[AGPL 라이선스](https://www.gnu.org/licenses/agpl-3.0.en.html) 하에 배포합니다.
+상용 라이선스 문의는 <jong@chan.moe>로 연락주세요.
