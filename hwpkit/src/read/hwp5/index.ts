@@ -63,9 +63,20 @@ function u32le(buf: Buffer, off: number) {
 function rgb(rgb: readonly [number, number, number]): RgbColor {
   const [r, g, b] = rgb;
   // NOTE: this matches previous code style even if questionable; good enough for now.
-  return ((b << 16) & (g << 8) & r) as unknown as RgbColor;
+  return (((b << 16) | (g << 8) | r) >>> 0) as unknown as RgbColor;
 }
 
+function toLangMap<T>(arr: T[], fallback: T): { [k in LangType]: T } {
+  return {
+    [LangType.Hangul]: arr[0] ?? fallback,
+    [LangType.Latin]: arr[1] ?? fallback,
+    [LangType.Hanja]: arr[2] ?? fallback,
+    [LangType.Japanese]: arr[3] ?? fallback,
+    [LangType.Other]: arr[4] ?? fallback,
+    [LangType.Symbol]: arr[5] ?? fallback,
+    [LangType.User]: arr[6] ?? fallback,
+  };
+}
 function parseU16Array(buf: Buffer, off: number, count: number): number[] {
   const out = new Array<number>(count);
   for (let i = 0; i < count; i++) out[i] = buf.readUInt16LE(off + i * 2);
@@ -319,7 +330,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const doc: DocumentModel = {
     head: {
       docSetting: {
-        beginNumber: 0 as any,
+        beginNumber: { page: 0, footnote: 0, endnote: 0, picture: 0, table: 0, equation: 0 },
         caretPos: { list: 0, para: 0, pos: 0 },
       },
       mappingTable: {
@@ -338,11 +349,11 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           shadeColor: rgb(cs.shadeColor),
           useFontSpace: false,
           useKerning: false,
-          fontIds: cs.fontId as any,
-          ratios: cs.fontRatio as any,
-          charSpacings: cs.fontSpacing as any,
-          relSizes: cs.fontScale as any,
-          charOffsets: cs.fontLocation as any,
+          fontIds: toLangMap(cs.fontId, 0),
+          ratios: toLangMap(cs.fontRatio, 100),
+          charSpacings: toLangMap(cs.fontSpacing, 0),
+          relSizes: toLangMap(cs.fontScale, 100),
+          charOffsets: toLangMap(cs.fontLocation, 0),
           italic: false,
           bold: false,
           underline: undefined,
@@ -433,4 +444,5 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
 
