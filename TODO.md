@@ -48,11 +48,11 @@ pm test
   - [x] Paragraph.instId
   - [ ] pageBreak, columnBreak
 - [ ] PARA_CHAR_SHAPE 파싱(문자 모양 포인터) 구현 → Paragraph.texts[]를 run 단위로 분할
-  - [ ] 올바른 Text.charShapeIndex로 구간(run) 생성
+  - [x] 올바른 Text.charShapeIndex로 구간(run) 생성
   - [ ] controls와 텍스트 길이 정합성 유지
 - [ ] 테스트
   - [ ] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → 	exts.length > 1 확인
-  - [ ] charShapeIndex 변화 지점 assert
+  - [x] charShapeIndex 변화 지점 assert
 
 ## 4) 단(Columns): Paragraph.colDef
 - [ ] 단 설정이 있는 문서에서 Paragraph.colDef 채우기
