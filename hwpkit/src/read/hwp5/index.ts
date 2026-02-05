@@ -107,6 +107,16 @@ function tryFindUtf16AsciiZ(data: Buffer): string | null {
   return null;
 }
 
+function decodeUtf16ZStrings(data: Buffer): string[] {
+  // Decode as UTF-16LE then split by NUL. Filter to segments that look like text.
+  const s = data.toString('utf16le');
+  return s
+    .split('\u0000')
+    .map((x) => x.replace(/[\u0000-]/g, '').trim())
+    .filter((x) => x.length > 0)
+    .filter((x) => /[A-Za-z가-힣]/.test(x));
+}
+
 function extractFontFaceNames(docInfoRaw: Buffer): string[] {
   const recs = parseRecords(docInfoRaw);
   const names: string[] = [];
@@ -133,12 +143,25 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
     fontLocation: number[];
     strikeColor?: readonly [number, number, number];
   }[];
+  styles: { name: string; engName: string }[];
 } {
   const recs = parseRecords(docInfoRaw);
 
   const fontFaceNames = extractFontFaceNames(docInfoRaw);
 
   const paragraphShapes = recs.filter((r) => r.tagId === 25).map(() => ({ align: 0 }));
+
+  const styles = recs
+    .filter((r) => r.tagId === 26)
+    .map((r) => {
+      const u = r.data.toString('utf16le').replace(/[\u0000-]/g, ' ');
+      const name = (u.match(/[가-힣 ]{2,}/)?.[0] ?? '').trim();
+      const engName = (u.match(/[A-Za-z0-9][A-Za-z0-9 ]{1,}/)?.[0] ?? '').trim();
+      return {
+        name: name || engName || 'Style',
+        engName: engName || name || 'Style',
+      };
+    });
 
   const charShapes = recs.filter((r) => r.tagId === 21).map((r) => {
     const fontId = parseU16Array(r.data, 0, 7);
@@ -164,7 +187,7 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
     };
   });
 
-  return { fontFaceNames, paragraphShapes, charShapes };
+  return { fontFaceNames, paragraphShapes, charShapes, styles };
 }
 
 function decodeParaText(data: Buffer): string {
@@ -378,16 +401,25 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   const paraShapesTable = tables.paragraphShapes.length ? tables.paragraphShapes : [{ align: 0 }];
 
-  const stylesTable = [
-    {
-      type: StyleType.Para,
-      name: '바탕글',
-      engName: 'Normal',
-      paraShapeIndex: 0,
-      charShapeIndex: 0,
-      nextStyleIndex: 0,
-    },
-  ];
+  const stylesTable = tables.styles.length
+    ? tables.styles.map((s, i) => ({
+        type: StyleType.Para,
+        name: s.name,
+        engName: s.engName,
+        paraShapeIndex: 0,
+        charShapeIndex: 0,
+        nextStyleIndex: i + 1 < tables.styles.length ? i + 1 : 0,
+      }))
+    : [
+        {
+          type: StyleType.Para,
+          name: '바탕글',
+          engName: 'Normal',
+          paraShapeIndex: 0,
+          charShapeIndex: 0,
+          nextStyleIndex: 0,
+        },
+      ];
 
   const pageDef = parsedPageDef
     ? {
@@ -472,16 +504,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           autoSpaceEAsianEng: true,
           autoSpaceEAsianNum: true,
         })),
-        styles: [
-          {
-            type: StyleType.Para,
-            name: '바탕글',
-            engName: 'Normal',
-            paraShapeIndex: 0,
-            charShapeIndex: 0,
-            nextStyleIndex: 0,
-          },
-        ],
+        styles: stylesTable,
       },
     },
     body: {
