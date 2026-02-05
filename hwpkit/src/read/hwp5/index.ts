@@ -66,6 +66,14 @@ function rgb(rgb: readonly [number, number, number]): RgbColor {
   return (((b << 16) | (g << 8) | r) >>> 0) as unknown as RgbColor;
 }
 
+
+function bbggrrToRgb(color: number): readonly [number, number, number] {
+  const r = color & 0xff;
+  const g = (color >>> 8) & 0xff;
+  const b = (color >>> 16) & 0xff;
+  return [r, g, b] as const;
+}
+
 function toLangMap<T>(arr: T[], fallback: T): { [k in LangType]: T } {
   return {
     [LangType.Hangul]: arr[0] ?? fallback,
@@ -220,8 +228,8 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
 
     return {
       fontBaseSize,
-      color: [0, 0, 0] as const,
-      shadeColor: [255, 255, 255] as const,
+      color: r.data.length >= 68 ? bbggrrToRgb(r.data.readUInt32LE(60) >>> 0) : ([0, 0, 0] as const),
+      shadeColor: r.data.length >= 72 ? bbggrrToRgb(r.data.readUInt32LE(64) >>> 0) : ([255, 255, 255] as const),
       fontId,
       fontRatio,
       fontSpacing,
@@ -582,6 +590,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
 
 
 
