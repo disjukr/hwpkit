@@ -265,6 +265,38 @@ function buildParagraphTextsFromBodyRecords(records: RecordHeader[]): string[] {
   return paras;
 }
 
+function parsePageDefFromBodyRecords(records: RecordHeader[]): {
+  width: number;
+  height: number;
+  margin: { left: number; right: number; top: number; bottom: number; header: number; footer: number; gutter: number };
+} | null {
+  // Empirical mapping from tag 73 (PAGE_DEF-like) record: sequence of (u32,u32) pairs
+  // [0] width,height
+  // [1] marginLeft, marginRight
+  // [2] marginTop, marginBottom
+  // [3] header, footer
+  // [4] gutter, ?
+  const r = records.find((x) => x.tagId === 73);
+  if (!r || r.data.length < 32) return null;
+  const pairs: { a: number; b: number }[] = [];
+  for (let i = 0; i + 7 < r.data.length; i += 8) {
+    pairs.push({ a: r.data.readUInt32LE(i), b: r.data.readUInt32LE(i + 4) });
+  }
+  if (pairs.length < 4) return null;
+  const width = pairs[0].a;
+  const height = pairs[0].b;
+  const margin = {
+    left: pairs[1].a,
+    right: pairs[1].b,
+    top: pairs[2].a,
+    bottom: pairs[2].b,
+    header: pairs[3].a,
+    footer: pairs[3].b,
+    gutter: pairs[4]?.a ?? 0,
+  };
+  if (!width || !height) return null;
+  return { width, height, margin };
+}
 function listBodyTextSections(cfb: any): string[] {
   const paths: string[] = (cfb.FullPaths ?? []) as string[];
   const secs = paths
@@ -316,16 +348,42 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
 
   const paragraphsText: string[] = [];
+  let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
   for (const secPath of sectionPaths) {
     const entry = CFB.find(cfb as any, secPath) as any;
     const comp: Buffer | undefined = entry?.content;
     if (!comp || !Buffer.isBuffer(comp)) continue;
     const raw = tryInflateRaw(comp);
     const recs = parseRecords(raw);
+    if (!parsedPageDef) parsedPageDef = parsePageDefFromBodyRecords(recs);
     paragraphsText.push(...buildParagraphTextsFromBodyRecords(recs));
   }
 
-  const fonts = tables.fontFaceNames.map((name) => ({ name, type: undefined }));
+  const fonts = (tables.fontFaceNames.length ? tables.fontFaceNames : ['Default']).map((name) => ({ name, type: undefined }));
+
+  const pageDef = parsedPageDef
+    ? {
+        landscape: false,
+        width: parsedPageDef.width,
+        height: parsedPageDef.height,
+        gutterType: GutterType.LeftOnly,
+        margin: {
+          left: parsedPageDef.margin.left,
+          right: parsedPageDef.margin.right,
+          top: parsedPageDef.margin.top,
+          bottom: parsedPageDef.margin.bottom,
+          header: parsedPageDef.margin.header,
+          footer: parsedPageDef.margin.footer,
+          gutter: parsedPageDef.margin.gutter,
+        },
+      }
+    : {
+        landscape: false,
+        width: 59528,
+        height: 84188,
+        gutterType: GutterType.LeftOnly,
+        margin: { left: 8504, right: 8504, top: 5669, bottom: 4252, header: 4252, footer: 4252, gutter: 0 },
+      };
 
   const doc: DocumentModel = {
     head: {
@@ -405,21 +463,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
             textDirection: TextDirection.Horizontal,
             spaceColumns: 1134,
             tabStop: 8000,
-            pageDef: {
-              landscape: false,
-              width: 59528,
-              height: 84188,
-              gutterType: GutterType.LeftOnly,
-              margin: {
-                left: 8504,
-                right: 8504,
-                top: 5669,
-                bottom: 4252,
-                header: 4252,
-                footer: 4252,
-                gutter: 0,
-              },
-            },
+            pageDef: pageDef,
           },
           paragraphs: paragraphsText.map((pt) => ({
             paraShapeIndex: 0,
@@ -444,5 +488,8 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
+
+
 
 
