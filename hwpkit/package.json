@@ -5,7 +5,8 @@
     "description":  "hwp 2 pdf",
     "scripts":  {
                     "dev":  "tsc -w",
-                    "build":  "rm -rf lib \u0026\u0026 tsc"
+                    "build":  "rm -rf lib \u0026\u0026 tsc",
+                    "test":  "npm run build \u0026\u0026 node test/run-tests.js"
                 },
     "repository":  {
                        "type":  "git",
