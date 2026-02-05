@@ -83,6 +83,49 @@ function parseU16Array(buf: Buffer, off: number, count: number): number[] {
   return out;
 }
 
+
+function parseParaShapeRecord(data: Buffer): {
+  align: number;
+  verAlign: number;
+  headingType: number;
+  level: number;
+  tabDef: number;
+  breakLatinWordType: number;
+  breakNonLatinWord: boolean;
+  condense: number;
+  widowOrphan: boolean;
+  keepWithNext: boolean;
+  keepLines: boolean;
+  pageBreakBefore: boolean;
+  fontLineHeight: boolean;
+  snapToGrid: boolean;
+  lineWrapType: number;
+  autoSpaceEAsianEng: boolean;
+  autoSpaceEAsianNum: boolean;
+} {
+  // Heuristic bitfield decode from first u32. (Spec-accurate decode TBD)
+  const props = data.length >= 4 ? data.readUInt32LE(0) : 0;
+
+  return {
+    align: (props >>> 2) & 0x7,
+    verAlign: (props >>> 5) & 0x3,
+    headingType: (props >>> 7) & 0x3,
+    level: (props >>> 9) & 0x7,
+    tabDef: 0,
+    breakLatinWordType: 0,
+    breakNonLatinWord: true,
+    condense: 0,
+    widowOrphan: false,
+    keepWithNext: false,
+    keepLines: false,
+    pageBreakBefore: false,
+    fontLineHeight: false,
+    snapToGrid: true,
+    lineWrapType: 0,
+    autoSpaceEAsianEng: true,
+    autoSpaceEAsianNum: true,
+  };
+}
 function tryFindUtf16AsciiZ(data: Buffer): string | null {
   for (let off = 0; off + 3 < data.length; off++) {
     const b0 = data[off];
@@ -131,7 +174,7 @@ function extractFontFaceNames(docInfoRaw: Buffer): string[] {
 
 function extractDocInfoTables(docInfoRaw: Buffer): {
   fontFaceNames: string[];
-  paragraphShapes: { align: number }[];
+  paragraphShapes: ReturnType<typeof parseParaShapeRecord>[];
   charShapes: {
     fontBaseSize: number;
     color: readonly [number, number, number];
@@ -149,7 +192,7 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
 
   const fontFaceNames = extractFontFaceNames(docInfoRaw);
 
-  const paragraphShapes = recs.filter((r) => r.tagId === 25).map(() => ({ align: 0 }));
+  const paragraphShapes = recs.filter((r) => r.tagId === 25).map((r) => parseParaShapeRecord(r.data));
 
   const styles = recs
     .filter((r) => r.tagId === 26)
@@ -399,7 +442,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
         },
       ];
 
-  const paraShapesTable = tables.paragraphShapes.length ? tables.paragraphShapes : [{ align: 0 }];
+  const paraShapesTable = tables.paragraphShapes.length ? tables.paragraphShapes : [parseParaShapeRecord(Buffer.alloc(0))];
 
   const stylesTable = tables.styles.length
     ? tables.styles.map((s, i) => ({
@@ -486,23 +529,23 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           subscript: false,
         })),
         paraShapes: paraShapesTable.map((ps) => ({
-          align: ps.align as AlignmentType1,
-          verAlign: VerAlignType.Baseline,
-          headingType: HeadingType.None,
-          level: 0,
-          tabDef: 0,
-          breakLatinWordType: BreakLatinWordType.KeepWord,
-          breakNonLatinWord: true,
-          condense: 0,
-          widowOrphan: false,
-          keepWithNext: false,
-          keepLines: false,
-          pageBreakBefore: false,
-          fontLineHeight: false,
-          snapToGrid: true,
-          lineWrapType: LineWrapType.Break,
-          autoSpaceEAsianEng: true,
-          autoSpaceEAsianNum: true,
+          align: (ps.align as number) as AlignmentType1,
+          verAlign: (ps.verAlign as number) as VerAlignType,
+          headingType: (ps.headingType as number) as HeadingType,
+          level: (Math.min(6, ps.level) as any) as any,
+          tabDef: ps.tabDef as any,
+          breakLatinWordType: (ps.breakLatinWordType as number) as BreakLatinWordType,
+          breakNonLatinWord: ps.breakNonLatinWord,
+          condense: ps.condense,
+          widowOrphan: ps.widowOrphan,
+          keepWithNext: ps.keepWithNext,
+          keepLines: ps.keepLines,
+          pageBreakBefore: ps.pageBreakBefore,
+          fontLineHeight: ps.fontLineHeight,
+          snapToGrid: ps.snapToGrid,
+          lineWrapType: (ps.lineWrapType as number) as LineWrapType,
+          autoSpaceEAsianEng: ps.autoSpaceEAsianEng,
+          autoSpaceEAsianNum: ps.autoSpaceEAsianNum,
         })),
         styles: stylesTable,
       },
