@@ -41,8 +41,28 @@ function run() {
   const hasStrike = doc.head.mappingTable.charShapes.some((cs) => cs.strikeout && cs.strikeout.color === 0x00b5742e);
   assert.strictEqual(hasStrike, true);
 
+
+
+  // Sample: bold/italic/underline
+  {
+    const buf2 = loadSample('03-bold-italic-underline.hwp');
+    const doc2 = readHwp5(buf2);
+    assert(doc2.head.mappingTable.charShapes.length > 0);
+    // At minimum, styled samples should create multiple charShapes.
+    assert(doc2.head.mappingTable.charShapes.length >= 2);
+  }
+
+  // Sample: strikeout
+  {
+    const buf3 = loadSample('04-strikeout.hwp');
+    const doc3 = readHwp5(buf3);
+    const hasStrike2 = doc3.head.mappingTable.charShapes.some((cs) => cs.strikeout && cs.strikeout.color === 0x00b5742e);
+    assert.strictEqual(hasStrike2, true);
+  }
+
   console.log('OK');
 }
+
 
 try {
   run();
