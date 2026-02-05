@@ -1,4 +1,4 @@
-﻿import {
+import {
   AlignmentType1,
   BreakLatinWordType,
   Control,
