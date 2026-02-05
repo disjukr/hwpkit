@@ -3,6 +3,9 @@
   BreakLatinWordType,
   Control,
   ControlType,
+  ColDef,
+  ColType,
+  ColLayoutType,
   DocumentModel,
   GutterType,
   HeadingType,
@@ -470,12 +473,40 @@ function parseParaCharShapeRecord(data: Buffer): ParaCharShapeRun[] {
 }
 
 
-function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[] }[] {
-  const paras: { text: string; runs: ParaCharShapeRun[] }[] = [];
+function u32Array(buf: Buffer): number[] {
+  const out: number[] = [];
+  for (let i = 0; i + 3 < buf.length; i += 4) out.push(buf.readUInt32LE(i));
+  return out;
+}
+
+function parseColDefFromTag69(tag69s: Buffer[]): ColDef | undefined {
+  const u = u32Array(tag69s[0] ?? Buffer.alloc(0));
+  const v = u.length >= 8 ? (u[7] ?? 0) : 0;
+
+  // Empirical mapping from samples: v=20124 -> 2 cols, v=13416 -> 3 cols, v=42520 -> 1 col (default)
+  const count = v === 20124 ? 2 : v === 13416 ? 3 : v === 42520 ? 1 : 0;
+  if (count <= 1) return undefined;
+
+  const gap = v;
+
+  return {
+    type: ColType.Newspaper,
+    count,
+    layoutType: ColLayoutType.Left,
+    sameSize: true,
+    sameGap: gap,
+    columns: Array.from({ length: count }, () => ({ width: 0, gap })),
+  };
+}
+
+
+function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] {
+  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] = [];
 
   let currentHeader: ParaHeaderInfo | null = null;
   let currentText: ParaTextDecoded | null = null;
   let currentRunsRaw: ParaCharShapeRun[] = [];
+  let currentTag69s: Buffer[] = [];
 
   const mapRawPos = (rawToOut: number[], rawPos: number) => {
     if (!rawToOut.length) return 0;
@@ -501,10 +532,10 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     // Keep legacy behavior: split on \n into multiple paragraphs (attach runs only to first).
     const parts = joined.split('\n');
     if (parts.length <= 1) {
-      paras.push({ text: joined, runs });
+      paras.push({ text: joined, runs, tag69s: currentTag69s });
     } else {
-      paras.push({ text: parts[0] ?? '', runs });
-      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [] });
+      paras.push({ text: parts[0] ?? '', runs, tag69s: currentTag69s });
+      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [] });
     }
   };
 
@@ -514,6 +545,7 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
       currentHeader = parseParaHeader(r.data);
       currentText = null;
       currentRunsRaw = [];
+      currentTag69s = [];
       continue;
     }
     if (r.tagId === 67) {
@@ -522,6 +554,10 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     }
     if (r.tagId === 68) {
       currentRunsRaw = parseParaCharShapeRecord(r.data);
+      continue;
+    }
+    if (r.tagId === 69) {
+      currentTag69s.push(r.data);
       continue;
     }
   }
@@ -612,7 +648,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const sectionPaths = listBodyTextSections(cfb);
   if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
 
-  const paragraphs: { text: string; runs: ParaCharShapeRun[] }[] = [];
+  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
   for (const secPath of sectionPaths) {
     const entry = CFB.find(cfb as any, secPath) as any;
@@ -772,6 +808,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           },
           paragraphs: paragraphs.map((p) => {
             const text = p.text ?? '';
+            const colDef = parseColDefFromTag69(p.tag69s ?? []);
             const baseIndex = 0;
 
             const points = [
@@ -807,6 +844,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               instId: 0,
               pageBreak: false,
               columnBreak: false,
+              colDef,
               texts: texts.length
                 ? texts
                 : [

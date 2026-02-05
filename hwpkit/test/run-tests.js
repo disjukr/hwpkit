@@ -71,6 +71,19 @@ function run() {
     assert.deepStrictEqual(p0.texts.slice(0, 3).map((t) => t.charShapeIndex), [0, 7, 0]);
   }
 
+  // Sample: multi-column (ColDef via tag69)
+  {
+    const doc7 = readHwp5(loadSample('07-multi-column.hwp'));
+    const p0 = doc7.body.sections[0].paragraphs[0];
+    assert(p0.colDef && p0.colDef.count === 2);
+  }
+
+  {
+    const doc8 = readHwp5(loadSample('08-multi-column-3.hwp'));
+    const p0 = doc8.body.sections[0].paragraphs[0];
+    assert(p0.colDef && p0.colDef.count === 3);
+  }
+
   console.log('OK');
 }
 
