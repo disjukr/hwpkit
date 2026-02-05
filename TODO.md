@@ -43,9 +43,9 @@ pm test
 
 ## 3) Paragraph 인덱스 연결(BodyText)
 - [ ] BodyText에서 문단 단위 메타데이터 파싱
-  - [ ] Paragraph.styleIndex
-  - [ ] Paragraph.paraShapeIndex
-  - [ ] Paragraph.instId
+  - [x] Paragraph.styleIndex
+  - [x] Paragraph.paraShapeIndex
+  - [x] Paragraph.instId
   - [ ] pageBreak, columnBreak
 - [ ] PARA_CHAR_SHAPE 파싱(문자 모양 포인터) 구현 → Paragraph.texts[]를 run 단위로 분할
   - [ ] 올바른 Text.charShapeIndex로 구간(run) 생성

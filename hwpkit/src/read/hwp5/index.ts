@@ -367,33 +367,166 @@ function decodeParaTextWithCount(data: Buffer, nchars?: number): string {
   return decodeParaText(data.subarray(0, maxBytes));
 }
 
-function buildParagraphTextsFromBodyRecords(records: RecordHeader[]): string[] {
-  const paras: string[] = [];
+// --- TODO(3): PARA_CHAR_SHAPE(run) support (empirical)
+
+type ParaCharShapeRun = { pos: number; charShapeIndex: number };
+
+type ParaTextDecoded = { text: string; rawToOut: number[] };
+
+function decodeParaTextMapped(data: Buffer, nchars?: number): ParaTextDecoded {
+  const maxBytes = nchars != null ? Math.min(data.length, nchars * 2) : data.length;
+  const buf = data.subarray(0, maxBytes);
+
+  let out = '';
+  const rawToOut: number[] = [];
+
+  const setBoundary = (rawPos: number, outPos: number) => {
+    if (rawToOut[rawPos] == null) rawToOut[rawPos] = outPos;
+  };
+
+  let rawPos = 0;
+  for (let i = 0; i + 1 < buf.length; i += 2) {
+    const code = buf.readUInt16LE(i);
+    setBoundary(rawPos, out.length);
+
+    if (code === 0x0009) {
+      out += '\t';
+      rawPos += 1;
+      continue;
+    }
+
+    if (code === 0x000a) {
+      out += '\n';
+      rawPos += 1;
+      continue;
+    }
+
+    if (code === 0x000d) {
+      out += '\n';
+      rawPos += 1;
+      if (i + 3 < buf.length && buf.readUInt16LE(i + 2) === 0x000a) {
+        i += 2;
+        rawPos += 1;
+      }
+      continue;
+    }
+
+    // CtrlCh placeholder+skip (heuristic)
+    if (code > 0x0000 && code < 0x0020) {
+      out += '\uFFFC';
+      rawPos += 1;
+      if (i + 9 < buf.length) {
+        i += 8;
+        rawPos += 4;
+      }
+      continue;
+    }
+
+    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
+    if (code === 0x0002 && i + 6 < buf.length) {
+      const w1 = buf.readUInt16LE(i + 2);
+      const w2 = buf.readUInt16LE(i + 4);
+      const isAsciiPair = (w: number) => {
+        const a = w & 0xff;
+        const b = (w >>> 8) & 0xff;
+        const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
+        return isAZ(a) && isAZ(b);
+      };
+      rawPos += 1;
+      if (isAsciiPair(w1) && isAsciiPair(w2)) {
+        i += 4;
+        rawPos += 2;
+      }
+      continue;
+    }
+
+    if (code < 0x0020 || code === 0xffff || code === 0xfffe) {
+      rawPos += 1;
+      continue;
+    }
+
+    out += String.fromCharCode(code);
+    rawPos += 1;
+  }
+
+  setBoundary(rawPos, out.length);
+  return { text: out, rawToOut };
+}
+
+function parseParaCharShapeRecord(data: Buffer): ParaCharShapeRun[] {
+  // Empirical: u32le array; first 2 words are often 0; remaining are pairs: (pos, charShapeIndex)
+  const out: ParaCharShapeRun[] = [];
+  const n = Math.floor(data.length / 4);
+  if (n < 4) return out;
+  for (let i = 2; i + 1 < n; i += 2) {
+    out.push({ pos: data.readUInt32LE(i * 4), charShapeIndex: data.readUInt32LE((i + 1) * 4) });
+  }
+  out.sort((a, b) => a.pos - b.pos);
+  const uniq: ParaCharShapeRun[] = [];
+  for (const r of out) {
+    if (!uniq.length || uniq[uniq.length - 1]!.pos !== r.pos) uniq.push(r);
+  }
+  return uniq;
+}
+
+
+function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[] }[] {
+  const paras: { text: string; runs: ParaCharShapeRun[] }[] = [];
+
   let currentHeader: ParaHeaderInfo | null = null;
-  let currentTextParts: string[] = [];
+  let currentText: ParaTextDecoded | null = null;
+  let currentRunsRaw: ParaCharShapeRun[] = [];
+
+  const mapRawPos = (rawToOut: number[], rawPos: number) => {
+    if (!rawToOut.length) return 0;
+    let rp = Math.max(0, rawPos | 0);
+    if (rp >= rawToOut.length) rp = rawToOut.length - 1;
+    for (let k = rp; k >= 0; k--) {
+      const v = rawToOut[k];
+      if (typeof v === 'number') return v;
+    }
+    return 0;
+  };
 
   const flush = () => {
-    const joined = currentTextParts.join('');
-    // HWP sometimes encodes paragraph breaks as newline chars inside PARA_TEXT.
-    // As a pragmatic fallback, split on \n into multiple paragraphs.
+    const joined = currentText?.text ?? '';
+    const rawToOut = currentText?.rawToOut ?? [];
+
+    // Map raw run positions into decoded-string indices
+    const runs = currentRunsRaw.map((r) => ({
+      pos: mapRawPos(rawToOut, r.pos),
+      charShapeIndex: r.charShapeIndex,
+    }));
+
+    // Keep legacy behavior: split on \n into multiple paragraphs (attach runs only to first).
     const parts = joined.split('\n');
-    for (const part of parts) paras.push(part);
+    if (parts.length <= 1) {
+      paras.push({ text: joined, runs });
+    } else {
+      paras.push({ text: parts[0] ?? '', runs });
+      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [] });
+    }
   };
 
   for (const r of records) {
     if (r.tagId === 66) {
-      if (currentHeader || currentTextParts.length) flush();
+      if (currentHeader || currentText) flush();
       currentHeader = parseParaHeader(r.data);
-      currentTextParts = [];
+      currentText = null;
+      currentRunsRaw = [];
       continue;
     }
     if (r.tagId === 67) {
-      currentTextParts.push(decodeParaTextWithCount(r.data, currentHeader?.nchars));
+      currentText = decodeParaTextMapped(r.data, currentHeader?.nchars);
+      continue;
+    }
+    if (r.tagId === 68) {
+      currentRunsRaw = parseParaCharShapeRecord(r.data);
       continue;
     }
   }
 
-  if (currentHeader || currentTextParts.length) flush();
+  if (currentHeader || currentText) flush();
   return paras;
 }
 
@@ -479,7 +612,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const sectionPaths = listBodyTextSections(cfb);
   if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
 
-  const paragraphsText: string[] = [];
+  const paragraphs: { text: string; runs: ParaCharShapeRun[] }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
   for (const secPath of sectionPaths) {
     const entry = CFB.find(cfb as any, secPath) as any;
@@ -488,7 +621,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
     const raw = tryInflateRaw(comp);
     const recs = parseRecords(raw);
     if (!parsedPageDef) parsedPageDef = parsePageDefFromBodyRecords(recs);
-    paragraphsText.push(...buildParagraphTextsFromBodyRecords(recs));
+    paragraphs.push(...buildParagraphsFromBodyRecords(recs));
   }
 
   const fonts = (tables.fontFaceNames.length ? tables.fontFaceNames : ['Default']).map((name) => ({ name, type: undefined }));
@@ -637,22 +770,56 @@ export function readHwp5(buffer: Buffer): DocumentModel {
             tabStop: 8000,
             pageDef: pageDef,
           },
-          paragraphs: paragraphsText.map((pt) => ({
-            paraShapeIndex: 0,
-            styleIndex: 0,
-            instId: 0,
-            pageBreak: false,
-            columnBreak: false,
-            texts: [
-              {
-                charShapeIndex: 0,
-                controls: Array.from(pt).map((ch) => ({
+          paragraphs: paragraphs.map((p) => {
+            const text = p.text ?? '';
+            const baseIndex = 0;
+
+            const points = [
+              { pos: 0, charShapeIndex: baseIndex },
+              ...(p.runs ?? []),
+            ]
+              .filter((r) => Number.isFinite(r.pos) && r.pos >= 0)
+              .sort((a, b) => a.pos - b.pos);
+
+            const uniq: { pos: number; charShapeIndex: number }[] = [];
+            for (const r of points) {
+              if (!uniq.length || uniq[uniq.length - 1]!.pos !== r.pos) uniq.push(r);
+            }
+
+            const texts: { charShapeIndex: number; controls: Control[] }[] = [];
+            for (let i = 0; i < uniq.length; i++) {
+              const s = uniq[i]!.pos;
+              const e = i + 1 < uniq.length ? uniq[i + 1]!.pos : text.length;
+              const slice = text.slice(s, e);
+              if (!slice) continue;
+              texts.push({
+                charShapeIndex: uniq[i]!.charShapeIndex,
+                controls: Array.from(slice).map((ch) => ({
                   type: ControlType.Char,
                   code: ch.charCodeAt(0),
                 })) as Control[],
-              },
-            ],
-          })),
+              });
+            }
+
+            return {
+              paraShapeIndex: 0,
+              styleIndex: 0,
+              instId: 0,
+              pageBreak: false,
+              columnBreak: false,
+              texts: texts.length
+                ? texts
+                : [
+                    {
+                      charShapeIndex: 0,
+                      controls: Array.from(text).map((ch) => ({
+                        type: ControlType.Char,
+                        code: ch.charCodeAt(0),
+                      })) as Control[],
+                    },
+                  ],
+            };
+          }),
         },
       ],
     },
@@ -660,6 +827,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
 
 
 

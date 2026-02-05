@@ -10,8 +10,7 @@ function loadSample(name) {
 function run() {
   const { readHwp5 } = require('../lib/read/hwp5');
 
-  const buf = loadSample('01-plain-text.hwp');
-  const doc = readHwp5(buf);
+  const doc = readHwp5(loadSample('01-plain-text.hwp'));
 
   // DocumentModel shape
   assert(doc && typeof doc === 'object');
@@ -61,6 +60,15 @@ function run() {
     const doc4 = readHwp5(loadSample('05-shadow-outline.hwp'));
     assert.strictEqual(doc4.head.mappingTable.charShapes.some((cs) => !!cs.shadow), true);
     assert.strictEqual(doc4.head.mappingTable.charShapes.some((cs) => !!cs.outline), true);
+  }
+
+  // Sample: mixed charShape runs (PARA_CHAR_SHAPE)
+  {
+    const doc6 = readHwp5(loadSample('06-mixed-charshape-runs.hwp'));
+    const p0 = doc6.body.sections[0].paragraphs[0];
+    // Expect at least 3 runs: default | bold | default
+    assert.strictEqual(p0.texts.length >= 3, true);
+    assert.deepStrictEqual(p0.texts.slice(0, 3).map((t) => t.charShapeIndex), [0, 7, 0]);
   }
 
   console.log('OK');
