@@ -1,9 +1,5 @@
-﻿
-## Tooling note: Avoid PowerShell one-shot patch scripts
+﻿## Windows scripting + patching conventions
 
-When editing source files on Windows via powershell -Command, avoid complex one-shot patch scripts (heredocs / many nested quotes / regex replace). They frequently break due to quoting/escaping/newline issues and can corrupt files.
-
-Preferred approach:
-- Make small, explicit edits (or use a Node .cjs script that reads/writes files with clear string replacements),
-- Run tests after each small change.
-
+- Avoid complex one-shot patch scripts in `powershell -Command` (heredocs / heavy quoting / large regex replaces). They frequently break due to escaping/newline issues and can corrupt files.
+- Prefer small, explicit edits (or a Node `.cjs` helper that reads/writes files with clear replacements), and run tests after each small change.
+- If you need helper scripts, put them under the repo's `tmp/` directory (keep `tmp/` gitignored) so they can be re-run and iterated safely.
