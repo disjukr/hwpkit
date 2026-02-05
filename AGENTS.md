@@ -7,3 +7,6 @@
 - Update TODO.md checkboxes when finishing a TODO section (easy to forget after code+tests+samples).
 
 - When writing patch scripts in Node, remember that strings like \\\tabDef\ or \\\readHwp5\ will become control characters (\\t, \\r, \\b, etc.). Use escaped backslashes (\\\\tabDef) or String.raw.
+
+- On Windows nodes: prefer Git Bash (bash.exe -lc) over PowerShell for git/diff/grep/sed and general scripting to avoid encoding and quoting pitfalls.
+
