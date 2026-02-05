@@ -1,4 +1,4 @@
-﻿## Windows scripting + patching conventions
+## Windows scripting + patching conventions
 
 - Avoid complex one-shot patch scripts in `powershell -Command` (heredocs / heavy quoting / large regex replaces). They frequently break due to escaping/newline issues and can corrupt files.
 - Prefer small, explicit edits (or a Node `.cjs` helper that reads/writes files with clear replacements), and run tests after each small change.
@@ -6,3 +6,4 @@
 
 - Update TODO.md checkboxes when finishing a TODO section (easy to forget after code+tests+samples).
 
+- When writing patch scripts in Node, remember that strings like \\\tabDef\ or \\\readHwp5\ will become control characters (\\t, \\r, \\b, etc.). Use escaped backslashes (\\\\tabDef) or String.raw.

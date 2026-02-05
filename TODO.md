@@ -1,4 +1,4 @@
-﻿# TODO - HWP5 -> DocumentModel (native)
+# TODO - HWP5 -> DocumentModel (native)
 
 목표: HWP5에서 DocumentModel을 만들 때 **src/model/document/**에 정의된 필드들을 빠짐없이 채우기**.
 
@@ -7,36 +7,36 @@
 - 구현하면서 테스트를 같이 추가/확장한다. 커밋은 작게 쪼갠다.
 
 ## 완료(최근)
-- native-only reader: eadHwp5(buffer) -> DocumentModel
+- native-only reader: \readHwp5(buffer) -> DocumentModel
 - PARA_TEXT 안의 \n을 문단 경계로 쪼개는 fallback
 - BodyText 레코드에서 pageDef 파생(경험적 tag 73)
 - mappingTable이 비지 않도록 기본값 보강(fonts/charShapes/paraShapes/styles)
 - DocInfo styles(tag 26) 파싱해서 mappingTable.styles 채움(name/engName)
 - DocInfo paraShapes(tag 25) 1차(휴리스틱) bitfield 파싱 파이프라인 구축
-- DocInfo charShapes(tag 21) 색상 일부 파싱(	extColor, shadeColor, strikeColor)
+- DocInfo charShapes(tag 21) 색상 일부 파싱(\textColor, shadeColor, strikeColor)
 - 기본 회귀 테스트 러너 추가: 
-pm test
+\npm test
 
 ## 1) ParaShape (DocInfo tag 25) – 파싱 완성
 - [ ] PARA_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
-  - [ ] 	abDef 인덱스
-  - [ ] reakLatinWordType, reakNonLatinWord
+  - [ ] \tabDef 인덱스
+  - [ ] \breakLatinWordType, \breakNonLatinWord
   - [ ] condense
-  - [ ] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, ontLineHeight, snapToGrid
-  - [ ] lineWrapType, utoSpaceEAsianEng, utoSpaceEAsianNum
+  - [ ] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, \fontLineHeight, snapToGrid
+  - [ ] lineWrapType, \autoSpaceEAsianEng, \autoSpaceEAsianNum
 - [ ] 테스트
   - [x] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
 
 ## 2) CharShape (DocInfo tag 21) – 파싱 완성
 - [ ] CHAR_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
-  - [x] old, italic
+  - [x] \bold, italic
   - [x] underline (type/shape/color)
   - [x] strikeout (type/shape/color)
   - [x] outline (type)
   - [x] shadow (type/color/offsetX/offsetY)
   - [ ] emboss, engrave, superscript, subscript
   - [ ] useFontSpace, useKerning
-  - [ ] atios/charSpacings/relSizes/charOffsets 의미/범위 검증
+  - [ ] \ratios/charSpacings/relSizes/charOffsets 의미/범위 검증
 - [ ] 테스트
   - [x] 굵게/밑줄/그림자 등이 포함된 샘플 추가
   - [x] 파싱된 필드 값 assert 추가
@@ -51,7 +51,7 @@ pm test
   - [x] 올바른 Text.charShapeIndex로 구간(run) 생성
   - [ ] controls와 텍스트 길이 정합성 유지
 - [ ] 테스트
-  - [ ] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → 	exts.length > 1 확인
+  - [ ] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → \texts.length > 1 확인
   - [x] charShapeIndex 변화 지점 assert
 
 ## 4) ��(Columns): Paragraph.colDef
@@ -68,7 +68,7 @@ pm test
   - [ ] 해당 값이 기본값이 아닌 샘플이 있으면 추가
 
 ## 테스트 전략
-- 	est/run-tests.js는 스모크/회귀 테스트로 유지
+- \test/run-tests.js는 스모크/회귀 테스트로 유지
 - 기능 추가마다 타겟 assert를 늘리기
 - samples/에 최소 샘플 문서 추가
   - [ ] bold/italic/underline
