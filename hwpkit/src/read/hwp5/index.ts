@@ -18,7 +18,7 @@
   VerAlignType,
 } from '../../model/document';
 
-import { NativeHwp5Parser } from './backends/native';
+import { NativeHwp5Parser } from './native';
 
 import type { Hwp5Control, Hwp5Paragraph, Hwp5ParsedDocument, Hwp5Rgb, Hwp5Section } from './types';
 
@@ -207,6 +207,7 @@ function expandChars(paragraph: Hwp5Paragraph) {
   }
   return result;
 }
+
 
 
 

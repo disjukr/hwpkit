@@ -1,5 +1,5 @@
-﻿import type { Hwp5Parser } from '../../parser';
-import type { Hwp5ParsedDocument, Hwp5Paragraph, Hwp5Section } from '../../types';
+﻿import type { Hwp5Parser } from './parser';
+import type { Hwp5ParsedDocument, Hwp5Paragraph, Hwp5Section } from './types';
 
 import * as CFB from 'cfb';
 import * as zlib from 'zlib';
@@ -345,6 +345,7 @@ export class NativeHwp5Parser implements Hwp5Parser {
     };
   }
 }
+
 
 
 
