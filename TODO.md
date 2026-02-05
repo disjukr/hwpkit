@@ -46,7 +46,7 @@
   - [x] Paragraph.styleIndex
   - [x] Paragraph.paraShapeIndex
   - [x] Paragraph.instId
-  - [ ] pageBreak, columnBreak
+  - [x] pageBreak, columnBreak (empirical: PARA_HEADER flags)
 - [ ] PARA_CHAR_SHAPE 파싱(문자 모양 포인터) 구현 → Paragraph.texts[]를 run 단위로 분할
   - [x] 올바른 Text.charShapeIndex로 구간(run) 생성
   - [ ] controls와 텍스트 길이 정합성 유지
