@@ -361,6 +361,34 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   const fonts = (tables.fontFaceNames.length ? tables.fontFaceNames : ['Default']).map((name) => ({ name, type: undefined }));
 
+  const charShapesTable = tables.charShapes.length
+    ? tables.charShapes
+    : [
+        {
+          fontBaseSize: 10,
+          color: [0, 0, 0] as const,
+          shadeColor: [255, 255, 255] as const,
+          fontId: [0, 0, 0, 0, 0, 0, 0],
+          fontRatio: [100, 100, 100, 100, 100, 100, 100],
+          fontSpacing: [0, 0, 0, 0, 0, 0, 0],
+          fontScale: [100, 100, 100, 100, 100, 100, 100],
+          fontLocation: [0, 0, 0, 0, 0, 0, 0],
+        },
+      ];
+
+  const paraShapesTable = tables.paragraphShapes.length ? tables.paragraphShapes : [{ align: 0 }];
+
+  const stylesTable = [
+    {
+      type: StyleType.Para,
+      name: '바탕글',
+      engName: 'Normal',
+      paraShapeIndex: 0,
+      charShapeIndex: 0,
+      nextStyleIndex: 0,
+    },
+  ];
+
   const pageDef = parsedPageDef
     ? {
         landscape: false,
@@ -401,7 +429,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           [LangType.Symbol]: fonts,
           [LangType.User]: fonts,
         },
-        charShapes: tables.charShapes.map((cs) => ({
+        charShapes: charShapesTable.map((cs) => ({
           height: cs.fontBaseSize * 100,
           textColor: rgb(cs.color),
           shadeColor: rgb(cs.shadeColor),
@@ -425,7 +453,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           superscript: false,
           subscript: false,
         })),
-        paraShapes: tables.paragraphShapes.map((ps) => ({
+        paraShapes: paraShapesTable.map((ps) => ({
           align: ps.align as AlignmentType1,
           verAlign: VerAlignType.Baseline,
           headingType: HeadingType.None,
@@ -488,6 +516,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
 
 
 
