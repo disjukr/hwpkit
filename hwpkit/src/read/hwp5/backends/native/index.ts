@@ -151,7 +151,18 @@ function decodeParaText(data: Buffer): string {
       continue;
     }
 
-    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
+
+    // Other control characters (CtrlCh): keep text flowing by inserting a placeholder.
+    // Spec (from official PDF): [char] size=1, [inline]/[extended] size=8.
+    // We conservatively skip an additional 8 bytes for most control codes.
+    if (code > 0x0000 && code < 0x0020) {
+      out += '\uFFFC';
+      // Skip payload (8 bytes = 4 WCHAR) when present.
+      if (i + 9 < data.length) {
+        i += 8;
+      }
+      continue;
+    }    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
     if (code === 0x0002 && i + 6 < data.length) {
       const w1 = data.readUInt16LE(i + 2);
       const w2 = data.readUInt16LE(i + 4);
@@ -329,6 +340,7 @@ export class NativeHwp5Parser implements Hwp5Parser {
     };
   }
 }
+
 
 
 
