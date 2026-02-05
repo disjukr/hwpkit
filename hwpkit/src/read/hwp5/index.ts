@@ -18,16 +18,12 @@
   VerAlignType,
 } from '../../model/document';
 
-import { getDefaultHwp5Backend } from './parser';
-import type { Hwp5Backend } from './parser';
-import { HwpjsHwp5Parser, readAsHwpjsDocument } from './backends/hwpjs';
 import { NativeHwp5Parser } from './backends/native';
 
 import type { Hwp5Control, Hwp5Paragraph, Hwp5ParsedDocument, Hwp5Rgb, Hwp5Section } from './types';
 
-export function readHwp5(buffer: Buffer, opts?: { backend?: Hwp5Backend }): DocumentModel {
-  const backend = opts?.backend ?? getDefaultHwp5Backend();
-  const doc = parseHwp5(buffer, backend);
+export function readHwp5(buffer: Buffer): DocumentModel {
+  const doc = parseHwp5(buffer);
 
   const { info, sections } = doc;
   const { startingIndex: beginNumber, caratLocation, fontFaces, charShapes, paragraphShapes } = info;
@@ -122,14 +118,8 @@ export function readHwp5(buffer: Buffer, opts?: { backend?: Hwp5Backend }): Docu
   };
 }
 
-function parseHwp5(buffer: Buffer, backend: Hwp5Backend): Hwp5ParsedDocument {
-  switch (backend) {
-    case 'native':
-      return new NativeHwp5Parser().parse(buffer);
-    case 'hwpjs':
-    default:
-      return new HwpjsHwp5Parser().parse(buffer);
-  }
+function parseHwp5(buffer: Buffer): Hwp5ParsedDocument {
+  return new NativeHwp5Parser().parse(buffer);
 }
 
 function rgb(rgb: Hwp5Rgb): RgbColor {
@@ -218,6 +208,5 @@ function expandChars(paragraph: Hwp5Paragraph) {
   return result;
 }
 
-export { readAsHwpjsDocument };
 
 

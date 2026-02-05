@@ -33,14 +33,6 @@ exit-on-epipe@~1.0.1:
   resolved "https://registry.npmjs.org/exit-on-epipe/-/exit-on-epipe-1.0.1.tgz"
   integrity sha512-h2z5mrROTxce56S+pnvAV890uu7ls7f1kEvVGJbw1OlFH3/mlJ5bkXu0KRyW94v37zzHPiUd55iLn3DA7TjWpw==
 
-hwp.js@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.npmjs.org/hwp.js/-/hwp.js-0.0.3.tgz"
-  integrity sha512-qVdQjpyfR2rVmfZbbqd/8LAtt8YbwtZ2vm9FkBJj1UGPTP0Zs9+miUDrsPSfARpqkx3L7NeI1qR6hag5DaicyQ==
-  dependencies:
-    cfb "^1.2.0"
-    pako "^1.0.11"
-
 "hwpkit@file:C:\\Users\\ari\\dev\\hwpkit\\hwpkit":
   version "0.0.0"
   resolved "file:hwpkit"

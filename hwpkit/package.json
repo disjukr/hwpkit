@@ -18,7 +18,6 @@
              },
     "homepage":  "https://github.com/disjukr/hwpkit#readme",
     "dependencies":  {
-                         "hwp.js":  "^0.0.3",
                          "cfb":  "^1.2.2"
                      },
     "devDependencies":  {
