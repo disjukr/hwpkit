@@ -229,9 +229,17 @@ function buildParagraphTextsFromBodyRecords(records: RecordHeader[]): string[] {
   let currentHeader: ParaHeaderInfo | null = null;
   let currentTextParts: string[] = [];
 
+  const flush = () => {
+    const joined = currentTextParts.join('');
+    // HWP sometimes encodes paragraph breaks as newline chars inside PARA_TEXT.
+    // As a pragmatic fallback, split on \n into multiple paragraphs.
+    const parts = joined.split('\n');
+    for (const part of parts) paras.push(part);
+  };
+
   for (const r of records) {
     if (r.tagId === 66) {
-      if (currentHeader || currentTextParts.length) paras.push(currentTextParts.join(''));
+      if (currentHeader || currentTextParts.length) flush();
       currentHeader = parseParaHeader(r.data);
       currentTextParts = [];
       continue;
@@ -242,8 +250,8 @@ function buildParagraphTextsFromBodyRecords(records: RecordHeader[]): string[] {
     }
   }
 
-  if (currentHeader || currentTextParts.length) paras.push(currentTextParts.join(''));
-  return paras.filter((p) => p.length > 0);
+  if (currentHeader || currentTextParts.length) flush();
+  return paras;
 }
 
 function listBodyTextSections(cfb: any): string[] {
@@ -425,3 +433,4 @@ export function readHwp5(buffer: Buffer): DocumentModel {
 
   return doc;
 }
+
