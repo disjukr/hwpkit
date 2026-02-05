@@ -832,12 +832,16 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               const e = i + 1 < uniq.length ? uniq[i + 1]!.pos : text.length;
               const slice = text.slice(s, e);
               if (!slice) continue;
-              texts.push({
-                charShapeIndex: uniq[i]!.charShapeIndex,
-                controls: Array.from(slice).map((ch) => ({
+              const controls = Array.from(slice)
+                .filter((ch) => ch !== '￼')
+                .map((ch) => ({
                   type: ControlType.Char,
                   code: ch.charCodeAt(0),
-                })) as Control[],
+                })) as Control[];
+              if (!controls.length) continue;
+              texts.push({
+                charShapeIndex: uniq[i]!.charShapeIndex,
+                controls,
               });
             }
 
@@ -853,10 +857,12 @@ export function readHwp5(buffer: Buffer): DocumentModel {
                 : [
                     {
                       charShapeIndex: 0,
-                      controls: Array.from(text).map((ch) => ({
-                        type: ControlType.Char,
-                        code: ch.charCodeAt(0),
-                      })) as Control[],
+                      controls: Array.from(text)
+                        .filter((ch) => ch !== '￼')
+                        .map((ch) => ({
+                          type: ControlType.Char,
+                          code: ch.charCodeAt(0),
+                        })) as Control[],
                     },
                   ],
             };

@@ -66,9 +66,9 @@ function run() {
   {
     const doc6 = readHwp5(loadSample('06-mixed-charshape-runs.hwp'));
     const p0 = doc6.body.sections[0].paragraphs[0];
-    // Expect at least 3 runs: default | bold | default
-    assert.strictEqual(p0.texts.length >= 3, true);
-    assert.deepStrictEqual(p0.texts.slice(0, 3).map((t) => t.charShapeIndex), [0, 7, 0]);
+    // After filtering U+FFFC placeholders, the first visible run may start as bold.
+    assert.strictEqual(p0.texts.length >= 2, true);
+    assert.deepStrictEqual(p0.texts.slice(0, 2).map((t) => t.charShapeIndex), [7, 0]);
   }
 
   // Sample: multi-column (ColDef via tag69)
@@ -88,6 +88,11 @@ function run() {
   {
     const doc9 = readHwp5(loadSample('09-page-break.hwp'));
     assert.strictEqual(doc9.body.sections[0].paragraphs.some((p) => p.pageBreak), true);
+    const hasFFFC = doc9.body.sections[0].paragraphs
+      .flatMap((p) => p.texts)
+      .flatMap((t) => t.controls)
+      .some((c) => c.code === 0xfffc);
+    assert.strictEqual(hasFFFC, false);
   }
 
   {
