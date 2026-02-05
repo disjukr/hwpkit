@@ -235,6 +235,7 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
       fontSpacing,
       fontScale,
       fontLocation,
+      strikeColor: r.data.length >= 56 && r.data.readUInt32LE(52) !== 0 ? bbggrrToRgb(r.data.readUInt32LE(52) >>> 0) : undefined,
     };
   });
 
