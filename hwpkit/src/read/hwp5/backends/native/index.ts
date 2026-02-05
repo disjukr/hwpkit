@@ -150,19 +150,24 @@ function decodeParaText(data: Buffer): string {
       }
       continue;
     }
-
-
     // Other control characters (CtrlCh): keep text flowing by inserting a placeholder.
-    // Spec (from official PDF): [char] size=1, [inline]/[extended] size=8.
-    // We conservatively skip an additional 8 bytes for most control codes.
+    // Spec (from official PDF):
+    // - [char] size = 1
+    // - [inline]/[extended] size = 8 (extra payload)
+    // We do a conservative approach:
+    // - emit U+FFFC placeholder
+    // - skip 8 bytes (4 WCHAR) payload when it looks like an inline/extended ctrl
     if (code > 0x0000 && code < 0x0020) {
-      out += '\uFFFC';
+      out += "\uFFFC";
       // Skip payload (8 bytes = 4 WCHAR) when present.
+      // (We already handled TAB/LF/CR above, so they won't hit this.)
       if (i + 9 < data.length) {
         i += 8;
       }
       continue;
-    }    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
+    }
+
+    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
     if (code === 0x0002 && i + 6 < data.length) {
       const w1 = data.readUInt16LE(i + 2);
       const w2 = data.readUInt16LE(i + 4);
@@ -340,6 +345,8 @@ export class NativeHwp5Parser implements Hwp5Parser {
     };
   }
 }
+
+
 
 
 
