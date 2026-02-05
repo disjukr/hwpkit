@@ -1,3 +1,7 @@
 node_modules
 yarn-error.log
 .ultra.cache.json
+
+# local debug scripts
+tmp/**
+

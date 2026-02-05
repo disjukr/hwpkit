@@ -1,11 +1,4 @@
-import { parse } from 'hwp.js';
-import type HwpjsSection from 'hwp.js/build/models/section';
-import type HwpjsParagraph from 'hwp.js/build/models/paragraph';
-import type HwpjsChar from 'hwp.js/build/models/char';
-import type { Control as HwpjsControl } from 'hwp.js/build/models/controls';
-import type { RGB as HwpjsRgb } from 'hwp.js/build/types/color';
-
-import {
+﻿import {
   AlignmentType1,
   BreakLatinWordType,
   Control,
@@ -25,35 +18,36 @@ import {
   VerAlignType,
 } from '../../model/document';
 
-export function readHwp5(buffer: Buffer): DocumentModel {
-  const hwpjsDocument = readAsHwpjsDocument(buffer);
-  const {
-    info,
-    sections,
-  } = hwpjsDocument;
-  const {
-    startingIndex: beginNumber,
-    caratLocation,
-    fontFaces,
-    charShapes,
-    paragraphShapes,
-  } = info;
-  const fonts = fontFaces.map(fontFace => ({
+import { getDefaultHwp5Backend } from './parser';
+import type { Hwp5Backend } from './parser';
+import { HwpjsHwp5Parser, readAsHwpjsDocument } from './backends/hwpjs';
+import { NativeHwp5Parser } from './backends/native';
+
+import type { Hwp5Control, Hwp5Paragraph, Hwp5ParsedDocument, Hwp5Rgb, Hwp5Section } from './types';
+
+export function readHwp5(buffer: Buffer, opts?: { backend?: Hwp5Backend }): DocumentModel {
+  const backend = opts?.backend ?? getDefaultHwp5Backend();
+  const doc = parseHwp5(buffer, backend);
+
+  const { info, sections } = doc;
+  const { startingIndex: beginNumber, caratLocation, fontFaces, charShapes, paragraphShapes } = info;
+
+  const fonts = fontFaces.map((fontFace) => ({
     name: fontFace.name,
     type: undefined,
   }));
+
   return {
     head: {
       docSetting: {
-        beginNumber,
+        beginNumber: beginNumber as any,
         caretPos: {
           list: caratLocation.listId,
           para: caratLocation.paragraphId,
           pos: caratLocation.charIndex,
-        }
+        },
       },
       mappingTable: {
-        // TODO: 언어별 글꼴 정보는 HWPTAG_ID_MAPPINGS 정보가 있어야 제대로 처리할 수 있음
         fontFaces: {
           [LangType.Hangul]: fonts,
           [LangType.Latin]: fonts,
@@ -63,25 +57,27 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           [LangType.Symbol]: fonts,
           [LangType.User]: fonts,
         },
-        charShapes: charShapes.map(charShape => ({
+        charShapes: charShapes.map((charShape) => ({
           height: charShape.fontBaseSize * 100,
           textColor: rgb(charShape.color),
           shadeColor: rgb(charShape.shadeColor),
           useFontSpace: false,
           useKerning: false,
-          fontIds: charShape.fontId,
-          ratios: charShape.fontRatio,
-          charSpacings: charShape.fontSpacing,
-          relSizes: charShape.fontScale,
-          charOffsets: charShape.fontLocation,
+          fontIds: charShape.fontId as any,
+          ratios: charShape.fontRatio as any,
+          charSpacings: charShape.fontSpacing as any,
+          relSizes: charShape.fontScale as any,
+          charOffsets: charShape.fontLocation as any,
           italic: false,
           bold: false,
           underline: undefined,
-          strikeout: charShape.strikeColor ? {
-            type: StrikeoutType.Continuous,
-            shape: LineType2.Solid,
-            color: rgb(charShape.strikeColor),
-          } : undefined,
+          strikeout: charShape.strikeColor
+            ? {
+                type: StrikeoutType.Continuous,
+                shape: LineType2.Solid,
+                color: rgb(charShape.strikeColor),
+              }
+            : undefined,
           outline: undefined,
           shadow: undefined,
           emboss: false,
@@ -89,7 +85,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           superscript: false,
           subscript: false,
         })),
-        paraShapes: paragraphShapes.map(paragraphShape => ({
+        paraShapes: paragraphShapes.map((paragraphShape) => ({
           align: paragraphShape.align as AlignmentType1,
           verAlign: VerAlignType.Baseline,
           headingType: HeadingType.None,
@@ -116,22 +112,32 @@ export function readHwp5(buffer: Buffer): DocumentModel {
             paraShapeIndex: 0,
             charShapeIndex: 0,
             nextStyleIndex: 0,
-          }
+          },
         ],
       },
     },
     body: {
       sections: sections.map(section),
     },
+  };
+}
+
+function parseHwp5(buffer: Buffer, backend: Hwp5Backend): Hwp5ParsedDocument {
+  switch (backend) {
+    case 'native':
+      return new NativeHwp5Parser().parse(buffer);
+    case 'hwpjs':
+    default:
+      return new HwpjsHwp5Parser().parse(buffer);
   }
 }
 
-function rgb(rgb: HwpjsRgb): RgbColor {
+function rgb(rgb: Hwp5Rgb): RgbColor {
   const [r, g, b] = rgb;
-  return (b << 16) & (g << 8) & r;
+  return ((b << 16) & (g << 8) & r) as unknown as RgbColor;
 }
 
-function section(section: HwpjsSection): Section {
+function section(section: Hwp5Section): Section {
   return {
     def: {
       textDirection: TextDirection.Horizontal,
@@ -157,7 +163,7 @@ function section(section: HwpjsSection): Section {
   };
 }
 
-function paragraph(paragraph: HwpjsParagraph): Paragraph {
+function paragraph(paragraph: Hwp5Paragraph): Paragraph {
   const texts = splitCharsByShapes(paragraph);
   return {
     paraShapeIndex: paragraph.shapeIndex,
@@ -172,17 +178,19 @@ function paragraph(paragraph: HwpjsParagraph): Paragraph {
   };
 }
 
+type ExpandedChar = [Hwp5Paragraph['content'][number], Hwp5Control | null];
+
 function isTextChar([char]: ExpandedChar): boolean {
-  return char.type === 0 /* CharType.Char */;
+  return char.type === 0;
 }
 
 function control([char, _control]: ExpandedChar): Control {
-  if (char.type !== 0 /* CharType.Char */) throw new Error(); // TODO: 텍스트가 아닌 경우 처리
+  if (char.type !== 0) throw new Error();
   const code = typeof char.value === 'string' ? char.value.charCodeAt(0) : char.value;
   return { type: ControlType.Char, code };
 }
 
-function splitCharsByShapes(paragraph: HwpjsParagraph) {
+function splitCharsByShapes(paragraph: Hwp5Paragraph) {
   const result: [ExpandedChar[], number][] = [];
   const chars = expandChars(paragraph);
   for (let i = 0; i < paragraph.shapeBuffer.length; ++i) {
@@ -195,14 +203,13 @@ function splitCharsByShapes(paragraph: HwpjsParagraph) {
   return result;
 }
 
-type ExpandedChar = [HwpjsChar, HwpjsControl | null];
-function expandChars(paragraph: HwpjsParagraph) {
+function expandChars(paragraph: Hwp5Paragraph) {
   const len = paragraph.content.length;
   const result: ExpandedChar[] = new Array(len);
   let controlIndex = 0;
   for (let i = 0; i < len; ++i) {
     const char = paragraph.content[i];
-    if (char.type === 2 /* CharType.Extened */) {
+    if (char.type === 2) {
       result[i] = [char, paragraph.controls[controlIndex++]];
     } else {
       result[i] = [char, null];
@@ -211,6 +218,6 @@ function expandChars(paragraph: HwpjsParagraph) {
   return result;
 }
 
-export function readAsHwpjsDocument(buffer: Buffer) {
-  return parse(buffer, { type: 'buffer' });
-}
+export { readAsHwpjsDocument };
+
+

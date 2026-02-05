@@ -1,27 +1,28 @@
-{
-  "name": "hwpkit",
-  "main": "lib/index.js",
-  "version": "0.0.0",
-  "description": "hwp 2 pdf",
-  "scripts": {
-    "dev": "tsc -w",
-    "build": "rm -rf lib && tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/disjukr/hwpkit.git"
-  },
-  "author": "JongChan Choi <jong@chan.moe>",
-  "license": "SEE LICENSE IN <README.md>",
-  "bugs": {
-    "url": "https://github.com/disjukr/hwpkit/issues"
-  },
-  "homepage": "https://github.com/disjukr/hwpkit#readme",
-  "dependencies": {
-    "hwp.js": "^0.0.3"
-  },
-  "devDependencies": {
-    "@types/node": "^14.6.4",
-    "typescript": "^4.0.2"
-  }
+﻿{
+    "name":  "hwpkit",
+    "main":  "lib/index.js",
+    "version":  "0.0.0",
+    "description":  "hwp 2 pdf",
+    "scripts":  {
+                    "dev":  "tsc -w",
+                    "build":  "rm -rf lib \u0026\u0026 tsc"
+                },
+    "repository":  {
+                       "type":  "git",
+                       "url":  "git+https://github.com/disjukr/hwpkit.git"
+                   },
+    "author":  "JongChan Choi \u003cjong@chan.moe\u003e",
+    "license":  "SEE LICENSE IN \u003cREADME.md\u003e",
+    "bugs":  {
+                 "url":  "https://github.com/disjukr/hwpkit/issues"
+             },
+    "homepage":  "https://github.com/disjukr/hwpkit#readme",
+    "dependencies":  {
+                         "hwp.js":  "^0.0.3",
+                         "cfb":  "^1.2.2"
+                     },
+    "devDependencies":  {
+                            "@types/node":  "^14.6.4",
+                            "typescript":  "^4.0.2"
+                        }
 }
