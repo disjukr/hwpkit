@@ -125,14 +125,29 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
 function decodeParaText(data: Buffer): string {
   // Conservative decode for now:
   // - interpret as UTF-16LE stream
-  // - CR(0x000d) => '\n'
+  // - normalize newlines: CRLF/CR/LF => \\n
   // - drop known marker sequences
   let out = '';
   for (let i = 0; i + 1 < data.length; i += 2) {
     const code = data.readUInt16LE(i);
 
+    if (code === 0x0009) {
+      out += '\\t';
+      continue;
+    }
+
+    if (code === 0x000a) {
+      // lone LF
+      out += '\\n';
+      continue;
+    }
+
     if (code === 0x000d) {
-      out += '\n';
+      // CR (may be followed by LF)
+      out += '\\n';
+      if (i + 3 < data.length && data.readUInt16LE(i + 2) === 0x000a) {
+        i += 2;
+      }
       continue;
     }
 
@@ -160,6 +175,7 @@ function decodeParaText(data: Buffer): string {
 
   return out;
 }
+
 
 type ParaHeaderInfo = {
   nchars: number;
@@ -313,6 +329,16 @@ export class NativeHwp5Parser implements Hwp5Parser {
     };
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
