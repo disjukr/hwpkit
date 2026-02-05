@@ -25,21 +25,21 @@ pm test
   - [ ] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, ontLineHeight, snapToGrid
   - [ ] lineWrapType, utoSpaceEAsianEng, utoSpaceEAsianNum
 - [ ] 테스트
-  - [ ] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
+  - [x] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
 
 ## 2) CharShape (DocInfo tag 21) – 파싱 완성
 - [ ] CHAR_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
-  - [ ] old, italic
-  - [ ] underline (type/shape/color)
-  - [ ] strikeout (type/shape/color) – 현재는 strikeColor 기반으로 일부만 연결됨
-  - [ ] outline (type)
-  - [ ] shadow (type/color/offsetX/offsetY)
+  - [x] old, italic
+  - [x] underline (type/shape/color)
+  - [x] strikeout (type/shape/color)
+  - [x] outline (type)
+  - [x] shadow (type/color/offsetX/offsetY)
   - [ ] emboss, engrave, superscript, subscript
   - [ ] useFontSpace, useKerning
   - [ ] atios/charSpacings/relSizes/charOffsets 의미/범위 검증
 - [ ] 테스트
-  - [ ] 굵게/밑줄/그림자 등이 포함된 샘플 추가
-  - [ ] 파싱된 필드 값 assert 추가
+  - [x] 굵게/밑줄/그림자 등이 포함된 샘플 추가
+  - [x] 파싱된 필드 값 assert 추가
 
 ## 3) Paragraph 인덱스 연결(BodyText)
 - [ ] BodyText에서 문단 단위 메타데이터 파싱

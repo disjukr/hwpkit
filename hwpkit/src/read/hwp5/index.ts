@@ -13,6 +13,9 @@
   RgbColor,
   Section,
   StrikeoutType,
+  UnderlineType,
+  ShadowType,
+  LineType3,
   StyleType,
   TextDirection,
   VerAlignType,
@@ -91,6 +94,62 @@ function parseU16Array(buf: Buffer, off: number, count: number): number[] {
   return out;
 }
 
+
+
+function i8(n: number): number {
+  return (n << 24) >> 24;
+}
+
+function parseCharShapeRecord(data: Buffer): {
+  fontIds: number[];
+  ratios: number[];
+  charSpacings: number[];
+  relSizes: number[];
+  charOffsets: number[];
+  baseSize100: number;
+  props: number;
+  shadowOffsetX: number;
+  shadowOffsetY: number;
+  textColor: readonly [number, number, number];
+  shadeColor: readonly [number, number, number];
+  shadowColor: readonly [number, number, number];
+  strikeColor?: readonly [number, number, number];
+} {
+  const fontIds = parseU16Array(data, 0, 7);
+  const ratios = Array.from(data.subarray(14, 21));
+  const charSpacings = Array.from(data.subarray(21, 28)).map(i8);
+  const relSizes = Array.from(data.subarray(28, 35));
+  const charOffsets = Array.from(data.subarray(35, 42)).map(i8);
+
+  const baseSize100 = data.length >= 44 ? data.readUInt16LE(42) : 1000;
+  const props = data.length >= 50 ? data.readUInt32LE(46) : 0;
+
+  const shadowOffsetX = data.length > 50 ? i8(data[50]!) : 0;
+  const shadowOffsetY = data.length > 51 ? i8(data[51]!) : 0;
+
+  const textColor = data.length >= 60 ? bbggrrToRgb(data.readUInt32LE(56) >>> 0) : ([0, 0, 0] as const);
+  const shadeColor = data.length >= 64 ? bbggrrToRgb(data.readUInt32LE(60) >>> 0) : ([255, 255, 255] as const);
+  const shadowColor = data.length >= 68 ? bbggrrToRgb(data.readUInt32LE(64) >>> 0) : ([178, 178, 178] as const);
+
+  const strikeColorRaw = data.length >= 74 ? (data.readUInt32LE(70) >>> 0) : 0;
+  const strikeColor = strikeColorRaw ? bbggrrToRgb(strikeColorRaw) : undefined;
+
+  return {
+    fontIds,
+    ratios,
+    charSpacings,
+    relSizes,
+    charOffsets,
+    baseSize100,
+    props,
+    shadowOffsetX,
+    shadowOffsetY,
+    textColor,
+    shadeColor,
+    shadowColor,
+    strikeColor,
+  };
+}
 
 function parseParaShapeRecord(data: Buffer): {
   align: number;
@@ -187,11 +246,15 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
     fontBaseSize: number;
     color: readonly [number, number, number];
     shadeColor: readonly [number, number, number];
+    shadowColor?: readonly [number, number, number];
     fontId: number[];
     fontRatio: number[];
     fontSpacing: number[];
     fontScale: number[];
     fontLocation: number[];
+    props?: number;
+    shadowOffsetX?: number;
+    shadowOffsetY?: number;
     strikeColor?: readonly [number, number, number];
   }[];
   styles: { name: string; engName: string }[];
@@ -215,27 +278,21 @@ function extractDocInfoTables(docInfoRaw: Buffer): {
     });
 
   const charShapes = recs.filter((r) => r.tagId === 21).map((r) => {
-    const fontId = parseU16Array(r.data, 0, 7);
-
-    // TODO: parse properly per spec. For now keep stable minimal defaults.
-    const fontRatio = [100, 100, 100, 100, 100, 100, 100];
-    const fontSpacing = parseU16Array(r.data, 28, 7);
-    const fontScale = parseU16Array(r.data, 14, 7);
-    const fontLocation = [0, 0, 0, 0, 0, 0, 0];
-
-    const baseSize100 = r.data.length >= 44 ? r.data.readUInt16LE(42) : 1000;
-    const fontBaseSize = baseSize100 / 100;
-
+    const cs = parseCharShapeRecord(r.data);
     return {
-      fontBaseSize,
-      color: r.data.length >= 68 ? bbggrrToRgb(r.data.readUInt32LE(60) >>> 0) : ([0, 0, 0] as const),
-      shadeColor: r.data.length >= 72 ? bbggrrToRgb(r.data.readUInt32LE(64) >>> 0) : ([255, 255, 255] as const),
-      fontId,
-      fontRatio,
-      fontSpacing,
-      fontScale,
-      fontLocation,
-      strikeColor: r.data.length >= 56 && r.data.readUInt32LE(52) !== 0 ? bbggrrToRgb(r.data.readUInt32LE(52) >>> 0) : undefined,
+      fontBaseSize: cs.baseSize100 / 100,
+      color: cs.textColor,
+      shadeColor: cs.shadeColor,
+      shadowColor: cs.shadowColor,
+      fontId: cs.fontIds,
+      fontRatio: cs.ratios,
+      fontSpacing: cs.charSpacings,
+      fontScale: cs.relSizes,
+      fontLocation: cs.charOffsets,
+      props: cs.props,
+      shadowOffsetX: cs.shadowOffsetX,
+      shadowOffsetY: cs.shadowOffsetY,
+      strikeColor: cs.strikeColor,
     };
   });
 
@@ -524,14 +581,26 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           charSpacings: toLangMap(cs.fontSpacing, 0),
           relSizes: toLangMap(cs.fontScale, 100),
           charOffsets: toLangMap(cs.fontLocation, 0),
-          italic: false,
-          bold: false,
-          underline: undefined,
-          strikeout: cs.strikeColor
-            ? { type: StrikeoutType.Continuous, shape: LineType2.Solid, color: rgb(cs.strikeColor) }
+          italic: ((cs.props ?? 0) & 0x2) !== 0,
+          bold: ((cs.props ?? 0) & 0x1) !== 0,
+          underline: ((cs.props ?? 0) & 0x4) !== 0
+            ? { type: UnderlineType.Bottom, shape: LineType2.Solid, color: rgb(cs.color) }
             : undefined,
-          outline: undefined,
-          shadow: undefined,
+          strikeout: ((cs.props ?? 0) & 0x8) !== 0 || cs.strikeColor
+            ? { type: StrikeoutType.Continuous, shape: LineType2.Solid, color: rgb(cs.strikeColor ?? cs.color) }
+            : undefined,
+          outline: (((cs.props ?? 0) >>> 8) & 0xff) !== 0 ? { type: LineType3.Solid } : undefined,
+          shadow:
+            (cs.shadowColor && ((cs.shadowOffsetX ?? 0) !== 0 || (cs.shadowOffsetY ?? 0) !== 0)) ||
+            (cs.shadowOffsetX ?? 0) !== 0 ||
+            (cs.shadowOffsetY ?? 0) !== 0
+              ? {
+                  type: ShadowType.Drop,
+                  color: rgb((cs.shadowColor ?? [178, 178, 178]) as any),
+                  offsetX: (cs.shadowOffsetX ?? 0) as any,
+                  offsetY: (cs.shadowOffsetY ?? 0) as any,
+                }
+              : undefined,
           emboss: false,
           engrave: false,
           superscript: false,

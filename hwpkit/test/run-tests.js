@@ -8,7 +8,6 @@ function loadSample(name) {
 }
 
 function run() {
-  // Ensure lib is built
   const { readHwp5 } = require('../lib/read/hwp5');
 
   const buf = loadSample('01-plain-text.hwp');
@@ -19,8 +18,10 @@ function run() {
   assert(doc.head && doc.body);
 
   // beginNumber must be fully populated
-  assert.deepStrictEqual(Object.keys(doc.head.docSetting.beginNumber).sort(),
-    ['endnote', 'equation', 'footnote', 'page', 'picture', 'table'].sort());
+  assert.deepStrictEqual(
+    Object.keys(doc.head.docSetting.beginNumber).sort(),
+    ['endnote', 'equation', 'footnote', 'page', 'picture', 'table'].sort()
+  );
 
   // mapping tables non-empty
   assert(doc.head.mappingTable.styles.length > 0);
@@ -32,37 +33,38 @@ function run() {
   assert(pd.width > 0 && pd.height > 0);
   assert(pd.margin.left >= 0);
 
-  // charShape colors parsed from DocInfo (tag 21)
+  // baseline colors
   const cs0 = doc.head.mappingTable.charShapes[0];
-  assert.strictEqual(cs0.textColor, 0x00ffffff);
-  assert.strictEqual(cs0.shadeColor, 0x00b2b2b2);
-
-  // strike color exists in at least one charShape
-  const hasStrike = doc.head.mappingTable.charShapes.some((cs) => cs.strikeout && cs.strikeout.color === 0x00b5742e);
-  assert.strictEqual(hasStrike, true);
-
-
+  assert.strictEqual(cs0.textColor, 0x00000000);
+  assert.strictEqual(cs0.shadeColor, 0x00ffffff);
 
   // Sample: bold/italic/underline
   {
-    const buf2 = loadSample('03-bold-italic-underline.hwp');
-    const doc2 = readHwp5(buf2);
-    assert(doc2.head.mappingTable.charShapes.length > 0);
-    // At minimum, styled samples should create multiple charShapes.
+    const doc2 = readHwp5(loadSample('03-bold-italic-underline.hwp'));
     assert(doc2.head.mappingTable.charShapes.length >= 2);
+    assert.strictEqual(doc2.head.mappingTable.charShapes.some((cs) => cs.bold), true);
+    assert.strictEqual(doc2.head.mappingTable.charShapes.some((cs) => cs.italic), true);
+    assert.strictEqual(doc2.head.mappingTable.charShapes.some((cs) => !!cs.underline), true);
   }
 
   // Sample: strikeout
   {
-    const buf3 = loadSample('04-strikeout.hwp');
-    const doc3 = readHwp5(buf3);
-    const hasStrike2 = doc3.head.mappingTable.charShapes.some((cs) => cs.strikeout && cs.strikeout.color === 0x00b5742e);
-    assert.strictEqual(hasStrike2, true);
+    const doc3 = readHwp5(loadSample('04-strikeout.hwp'));
+    const hasStrike = doc3.head.mappingTable.charShapes.some(
+      (cs) => cs.strikeout && cs.strikeout.color === 0x00b5742e
+    );
+    assert.strictEqual(hasStrike, true);
+  }
+
+  // Sample: shadow/outline
+  {
+    const doc4 = readHwp5(loadSample('05-shadow-outline.hwp'));
+    assert.strictEqual(doc4.head.mappingTable.charShapes.some((cs) => !!cs.shadow), true);
+    assert.strictEqual(doc4.head.mappingTable.charShapes.some((cs) => !!cs.outline), true);
   }
 
   console.log('OK');
 }
-
 
 try {
   run();
