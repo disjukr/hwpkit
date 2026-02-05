@@ -84,6 +84,18 @@ function run() {
     assert(p0.colDef && p0.colDef.count === 3);
   }
 
+  // Sample: pageBreak/columnBreak (empirical from PARA_HEADER flags)
+  {
+    const doc9 = readHwp5(loadSample('09-page-break.hwp'));
+    assert.strictEqual(doc9.body.sections[0].paragraphs.some((p) => p.pageBreak), true);
+  }
+
+  {
+    const doc7 = readHwp5(loadSample('07-multi-column.hwp'));
+    // second paragraph starts in next column in this sample
+    assert.strictEqual(doc7.body.sections[0].paragraphs.some((p) => p.columnBreak), true);
+  }
+
   console.log('OK');
 }
 

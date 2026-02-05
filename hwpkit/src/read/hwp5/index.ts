@@ -357,12 +357,13 @@ function decodeParaText(data: Buffer): string {
   return out;
 }
 
-type ParaHeaderInfo = { nchars: number };
+type ParaHeaderInfo = { nchars: number; flags: number };
 
 function parseParaHeader(data: Buffer): ParaHeaderInfo {
-  if (data.length < 4) return { nchars: 0 };
+  if (data.length < 4) return { nchars: 0, flags: 0 };
   const raw = data.readUInt32LE(0);
-  return { nchars: raw & 0x7fffffff };
+  const flags = data.length >= 12 ? data.readUInt32LE(8) : 0;
+  return { nchars: raw & 0x7fffffff, flags };
 }
 
 function decodeParaTextWithCount(data: Buffer, nchars?: number): string {
@@ -500,8 +501,8 @@ function parseColDefFromTag69(tag69s: Buffer[]): ColDef | undefined {
 }
 
 
-function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] {
-  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] = [];
+function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] {
+  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] = [];
 
   let currentHeader: ParaHeaderInfo | null = null;
   let currentText: ParaTextDecoded | null = null;
@@ -532,10 +533,10 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     // Keep legacy behavior: split on \n into multiple paragraphs (attach runs only to first).
     const parts = joined.split('\n');
     if (parts.length <= 1) {
-      paras.push({ text: joined, runs, tag69s: currentTag69s });
+      paras.push({ text: joined, runs, tag69s: currentTag69s, flags: currentHeader?.flags ?? 0 });
     } else {
-      paras.push({ text: parts[0] ?? '', runs, tag69s: currentTag69s });
-      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [] });
+      paras.push({ text: parts[0] ?? '', runs, tag69s: currentTag69s, flags: currentHeader?.flags ?? 0 });
+      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [], flags: 0 });
     }
   };
 
@@ -648,7 +649,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const sectionPaths = listBodyTextSections(cfb);
   if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
 
-  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[] }[] = [];
+  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
   for (const secPath of sectionPaths) {
     const entry = CFB.find(cfb as any, secPath) as any;
@@ -809,6 +810,8 @@ export function readHwp5(buffer: Buffer): DocumentModel {
           paragraphs: paragraphs.map((p) => {
             const text = p.text ?? '';
             const colDef = parseColDefFromTag69(p.tag69s ?? []);
+            const pageBreak = p.flags === 0x04000000;
+            const columnBreak = p.flags === 0x08000000;
             const baseIndex = 0;
 
             const points = [
@@ -842,8 +845,8 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               paraShapeIndex: 0,
               styleIndex: 0,
               instId: 0,
-              pageBreak: false,
-              columnBreak: false,
+              pageBreak,
+              columnBreak,
               colDef,
               texts: texts.length
                 ? texts
