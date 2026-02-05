@@ -54,12 +54,12 @@ pm test
   - [ ] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → 	exts.length > 1 확인
   - [x] charShapeIndex 변화 지점 assert
 
-## 4) 단(Columns): Paragraph.colDef
-- [ ] 단 설정이 있는 문서에서 Paragraph.colDef 채우기
-  - [ ] 	ype, count, layoutType, sameSize, sameGap, columns[].width/gap
-- [ ] 테스트
-  - [ ] 다단(2단/3단) 샘플 추가
-  - [ ] colDef populated assert
+## 4) ��(Columns): Paragraph.colDef
+- [x] �� ������ �ִ� �������� Paragraph.colDef ä��� (empirical, BodyText tag69)
+  - [x] \type, count, layoutType, sameSize, sameGap, columns[].width/gap (partial: count/sameGap filled)
+- [x] �׽�Ʈ
+  - [x] �ٴ�(2��/3��) ���� �߰�: samples/07, samples/08
+  - [x] colDef populated assert
 
 ## 5) DocumentSetting 보강
 - [ ] docSetting.caretPos 실제값 파싱(가능하면)
