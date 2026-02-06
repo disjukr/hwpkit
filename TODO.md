@@ -21,7 +21,7 @@
 - [ ] PARA_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
   - [ ] \tabDef 인덱스
   - [ ] \breakLatinWordType, \breakNonLatinWord
-  - [ ] condense
+  - [x] condense
   - [ ] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, \fontLineHeight, snapToGrid
   - [ ] lineWrapType, \autoSpaceEAsianEng, \autoSpaceEAsianNum
 - [ ] 테스트
