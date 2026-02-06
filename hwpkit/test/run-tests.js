@@ -108,6 +108,37 @@ function run() {
     assert.strictEqual(p0.texts.length > 1, true);
   }
 
+  // Sample: charShape flags (emboss/engrave/super/sub + kerning/fontSpace)
+  {
+    const d = readHwp5(loadSample('11-superscript.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.superscript), true);
+  }
+
+  {
+    const d = readHwp5(loadSample('12-subscript.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.subscript), true);
+  }
+
+  {
+    const d = readHwp5(loadSample('13-emboss.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.emboss), true);
+  }
+
+  {
+    const d = readHwp5(loadSample('14-engrave.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.engrave), true);
+  }
+
+  {
+    const d = readHwp5(loadSample('15-use-kerning.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.useKerning), true);
+  }
+
+  {
+    const d = readHwp5(loadSample('16-use-font-space.hwp'));
+    assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.useFontSpace), true);
+  }
+
   console.log('OK');
 }
 
