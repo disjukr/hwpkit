@@ -71,8 +71,8 @@
 - \test/run-tests.js는 스모크/회귀 테스트로 유지
 - 기능 추가마다 타겟 assert를 늘리기
 - samples/에 최소 샘플 문서 추가
-  - [ ] bold/italic/underline
-  - [ ] strikeout
-  - [ ] multi-column
-  - [ ] 한 문단 내 mixed char shapes
+  - [x] bold/italic/underline
+  - [x] strikeout
+  - [x] multi-column
+  - [x] 한 문단 내 mixed char shapes
 
