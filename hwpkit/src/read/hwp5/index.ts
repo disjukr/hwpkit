@@ -173,27 +173,74 @@ function parseParaShapeRecord(data: Buffer): {
   autoSpaceEAsianEng: boolean;
   autoSpaceEAsianNum: boolean;
 } {
-  // Heuristic bitfield decode from first u32. (Spec-accurate decode TBD)
-  const props = data.length >= 4 ? data.readUInt32LE(0) : 0;
+  // Spec-based decode for HWPTAG_PARA_SHAPE (DocInfo tag 25).
+  // Total size: 54 bytes.
+  // - props1: u32 @ 0
+  // - tabDefId: u16 @ 28
+  // - props2: u32 @ 44
+  // - props3: u32 @ 48
+  // References: official HWP 5.0 spec (Table 43~46).
+
+  const props1 = data.length >= 4 ? (data.readUInt32LE(0) >>> 0) : 0;
+  const tabDef = data.length >= 30 ? data.readUInt16LE(28) : 0;
+  const props2 = data.length >= 48 ? (data.readUInt32LE(44) >>> 0) : 0;
+  const props3 = data.length >= 52 ? (data.readUInt32LE(48) >>> 0) : 0;
+
+  // props1
+  // bit 2~4: alignment
+  const align = (props1 >>> 2) & 0x7;
+  // bit 20~21: vertical alignment
+  const verAlign = (props1 >>> 20) & 0x3;
+  // bit 23~24: heading type
+  const headingType = (props1 >>> 23) & 0x3;
+  // bit 25~27: level (1~7 in spec; keep raw value)
+  const level = (props1 >>> 25) & 0x7;
+
+  // bit 5~6: BreakLatinWord
+  const breakLatinWordType = (props1 >>> 5) & 0x3;
+  // bit 7: BreakNonLatinWord (0=어절, 1=글자)
+  const breakNonLatinWord = ((props1 >>> 7) & 0x1) !== 0;
+  // bit 8: SnapToGrid (edit-grid)
+  const snapToGrid = ((props1 >>> 8) & 0x1) !== 0;
+
+  // bit 9~15: condense (0~75%)
+  const condense = (props1 >>> 9) & 0x7f;
+
+  const widowOrphan = ((props1 >>> 16) & 0x1) !== 0;
+  const keepWithNext = ((props1 >>> 17) & 0x1) !== 0;
+  const keepLines = ((props1 >>> 18) & 0x1) !== 0;
+  const pageBreakBefore = ((props1 >>> 19) & 0x1) !== 0;
+  const fontLineHeight = ((props1 >>> 22) & 0x1) !== 0;
+
+  // props2 (Table 45)
+  // bit 0~1: line-wrap related ("한 줄로 입력" etc). Keep raw value for now.
+  const lineWrapType = props2 & 0x3;
+  // bit 4: AutoSpaceEAsianEng
+  const autoSpaceEAsianEng = ((props2 >>> 4) & 0x1) !== 0;
+  // bit 5: AutoSpaceEAsianNum
+  const autoSpaceEAsianNum = ((props2 >>> 5) & 0x1) !== 0;
+
+  // props3 (Table 46): line spacing type. (Not mapped into current DocumentModel; keep parsed but unused.)
+  void props3;
 
   return {
-    align: (props >>> 2) & 0x7,
-    verAlign: (props >>> 5) & 0x3,
-    headingType: (props >>> 7) & 0x3,
-    level: (props >>> 9) & 0x7,
-    tabDef: 0,
-    breakLatinWordType: 0,
-    breakNonLatinWord: true,
-    condense: 0,
-    widowOrphan: false,
-    keepWithNext: false,
-    keepLines: false,
-    pageBreakBefore: false,
-    fontLineHeight: false,
-    snapToGrid: true,
-    lineWrapType: 0,
-    autoSpaceEAsianEng: true,
-    autoSpaceEAsianNum: true,
+    align,
+    verAlign,
+    headingType,
+    level,
+    tabDef,
+    breakLatinWordType,
+    breakNonLatinWord,
+    condense,
+    widowOrphan,
+    keepWithNext,
+    keepLines,
+    pageBreakBefore,
+    fontLineHeight,
+    snapToGrid,
+    lineWrapType,
+    autoSpaceEAsianEng,
+    autoSpaceEAsianNum,
   };
 }
 function tryFindUtf16AsciiZ(data: Buffer): string | null {

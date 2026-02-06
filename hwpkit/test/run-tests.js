@@ -139,6 +139,15 @@ function run() {
     assert.strictEqual(d.head.mappingTable.charShapes.some((cs) => cs.useFontSpace), true);
   }
 
+  // ParaShape sanity (spec-based decode of DocInfo tag25)
+  {
+    const d = readHwp5(loadSample('01-plain-text.hwp'));
+    const ps = d.head.mappingTable.paraShapes[0];
+    assert.strictEqual(typeof ps.align, 'number');
+    assert.strictEqual(ps.align >= 0 && ps.align <= 7, true);
+    assert.strictEqual(ps.condense >= 0 && ps.condense <= 127, true);
+  }
+
   console.log('OK');
 }
 
