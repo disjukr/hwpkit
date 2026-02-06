@@ -458,13 +458,21 @@ function decodeParaTextMapped(data: Buffer, nchars?: number): ParaTextDecoded {
 }
 
 function parseParaCharShapeRecord(data: Buffer): ParaCharShapeRun[] {
-  // Empirical: u32le array; first 2 words are often 0; remaining are pairs: (pos, charShapeIndex)
+  // Empirical: u32le array.
+  // Common layout: [0]=0, [1]=count, then pairs: (pos, charShapeIndex).
+  // Some files appear to omit the leading (0,count) header and start directly with pairs.
+
   const out: ParaCharShapeRun[] = [];
   const n = Math.floor(data.length / 4);
-  if (n < 4) return out;
-  for (let i = 2; i + 1 < n; i += 2) {
+  if (n < 2) return out;
+
+  const isLikelyHeader = data.readUInt32LE(0) === 0 && n >= 4;
+  const start = isLikelyHeader ? 2 : 0;
+
+  for (let i = start; i + 1 < n; i += 2) {
     out.push({ pos: data.readUInt32LE(i * 4), charShapeIndex: data.readUInt32LE((i + 1) * 4) });
   }
+
   out.sort((a, b) => a.pos - b.pos);
   const uniq: ParaCharShapeRun[] = [];
   for (const r of out) {

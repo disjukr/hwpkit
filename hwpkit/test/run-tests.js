@@ -101,6 +101,13 @@ function run() {
     assert.strictEqual(doc7.body.sections[0].paragraphs.some((p) => p.columnBreak), true);
   }
 
+  // Sample: mixed charShape in a single paragraph
+  {
+    const doc10 = readHwp5(loadSample('10-mixed-charshape-in-one-paragraph.hwp'));
+    const p0 = doc10.body.sections[0].paragraphs[0];
+    assert.strictEqual(p0.texts.length > 1, true);
+  }
+
   console.log('OK');
 }
 
