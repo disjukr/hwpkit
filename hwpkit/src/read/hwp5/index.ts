@@ -404,13 +404,20 @@ function decodeParaText(data: Buffer): string {
   return out;
 }
 
-type ParaHeaderInfo = { nchars: number; flags: number };
+type ParaHeaderInfo = { nchars: number; flags: number; paraShapeIndex: number; styleIndex: number; instId: number };
 
 function parseParaHeader(data: Buffer): ParaHeaderInfo {
-  if (data.length < 4) return { nchars: 0, flags: 0 };
+  if (data.length < 4) return { nchars: 0, flags: 0, paraShapeIndex: 0, styleIndex: 0, instId: 0 };
   const raw = data.readUInt32LE(0);
   const flags = data.length >= 12 ? data.readUInt32LE(8) : 0;
-  return { nchars: raw & 0x7fffffff, flags };
+  // Empirical offsets (record size 24 bytes in our samples):
+  // - paraShapeIndex: u16 @ 12
+  // - styleIndex: u16 @ 14
+  // - instId: u32 @ 16
+  const paraShapeIndex = data.length >= 14 ? data.readUInt16LE(12) : 0;
+  const styleIndex = data.length >= 16 ? data.readUInt16LE(14) : 0;
+  const instId = data.length >= 20 ? (data.readUInt32LE(16) >>> 0) : 0;
+  return { nchars: raw & 0x7fffffff, flags, paraShapeIndex, styleIndex, instId };
 }
 
 function decodeParaTextWithCount(data: Buffer, nchars?: number): string {
@@ -556,8 +563,8 @@ function parseColDefFromTag69(tag69s: Buffer[]): ColDef | undefined {
 }
 
 
-function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] {
-  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] = [];
+function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number; paraShapeIndex: number; styleIndex: number; instId: number }[] {
+  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
 
   let currentHeader: ParaHeaderInfo | null = null;
   let currentText: ParaTextDecoded | null = null;
@@ -588,10 +595,26 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     // Keep legacy behavior: split on \n into multiple paragraphs (attach runs only to first).
     const parts = joined.split('\n');
     if (parts.length <= 1) {
-      paras.push({ text: joined, runs, tag69s: currentTag69s, flags: currentHeader?.flags ?? 0 });
+      paras.push({
+        text: joined,
+        runs,
+        tag69s: currentTag69s,
+        flags: currentHeader?.flags ?? 0,
+        paraShapeIndex: currentHeader?.paraShapeIndex ?? 0,
+        styleIndex: currentHeader?.styleIndex ?? 0,
+        instId: currentHeader?.instId ?? 0,
+      });
     } else {
-      paras.push({ text: parts[0] ?? '', runs, tag69s: currentTag69s, flags: currentHeader?.flags ?? 0 });
-      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [], flags: 0 });
+      paras.push({
+        text: parts[0] ?? '',
+        runs,
+        tag69s: currentTag69s,
+        flags: currentHeader?.flags ?? 0,
+        paraShapeIndex: currentHeader?.paraShapeIndex ?? 0,
+        styleIndex: currentHeader?.styleIndex ?? 0,
+        instId: currentHeader?.instId ?? 0,
+      });
+      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [], flags: 0, paraShapeIndex: 0, styleIndex: 0, instId: 0 });
     }
   };
 
@@ -704,7 +727,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const sectionPaths = listBodyTextSections(cfb);
   if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
 
-  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number }[] = [];
+  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; flags: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
   for (const secPath of sectionPaths) {
     const entry = CFB.find(cfb as any, secPath) as any;
@@ -901,9 +924,9 @@ export function readHwp5(buffer: Buffer): DocumentModel {
             }
 
             return {
-              paraShapeIndex: 0,
-              styleIndex: 0,
-              instId: 0,
+              paraShapeIndex: p.paraShapeIndex ?? 0,
+              styleIndex: p.styleIndex ?? 0,
+              instId: p.instId ?? 0,
               pageBreak,
               columnBreak,
               colDef,

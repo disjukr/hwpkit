@@ -148,6 +148,14 @@ function run() {
     assert.strictEqual(ps.condense >= 0 && ps.condense <= 127, true);
   }
 
+  // PARA_HEADER meta (paraShapeIndex/styleIndex/instId)
+  {
+    const d = readHwp5(loadSample('01-plain-text.hwp'));
+    const p0 = d.body.sections[0].paragraphs[0];
+    assert.strictEqual(p0.paraShapeIndex > 0, true);
+    assert.strictEqual(p0.instId > 0, true);
+  }
+
   console.log('OK');
 }
 
