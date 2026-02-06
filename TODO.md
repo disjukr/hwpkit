@@ -51,7 +51,7 @@
   - [x] 올바른 Text.charShapeIndex로 구간(run) 생성
   - [x] controls와 텍스트 길이 정합성 유지 (U+FFFC placeholders filtered)
 - [ ] 테스트
-  - [ ] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → \texts.length > 1 확인
+  - [x] 한 문단 내에서 charShape가 섞인 샘플(부분 굵게 등) 추가 → \texts.length > 1 확인
   - [x] charShapeIndex 변화 지점 assert
 
 ## 4) 단(Columns): Paragraph.colDef
