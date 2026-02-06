@@ -34,8 +34,8 @@
   - [x] strikeout (type/shape/color)
   - [x] outline (type)
   - [x] shadow (type/color/offsetX/offsetY)
-  - [ ] emboss, engrave, superscript, subscript
-  - [ ] useFontSpace, useKerning
+  - [x] emboss, engrave, superscript, subscript
+  - [x] useFontSpace, useKerning
   - [ ] \ratios/charSpacings/relSizes/charOffsets 의미/범위 검증
 - [ ] 테스트
   - [x] 굵게/밑줄/그림자 등이 포함된 샘플 추가
