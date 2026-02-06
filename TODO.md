@@ -1,4 +1,4 @@
-# TODO - HWP5 -> DocumentModel (native)
+﻿# TODO - HWP5 -> DocumentModel (native)
 
 목표: HWP5에서 DocumentModel을 만들 때 **src/model/document/**에 정의된 필드들을 빠짐없이 채우기**.
 
@@ -19,11 +19,11 @@
 
 ## 1) ParaShape (DocInfo tag 25) – 파싱 완성
 - [ ] PARA_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
-  - [ ] \tabDef 인덱스
-  - [ ] \breakLatinWordType, \breakNonLatinWord
+  - [x] \\tabDef 인덱스
+  - [x] \\breakLatinWordType, \\breakNonLatinWord
   - [x] condense
-  - [ ] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, \fontLineHeight, snapToGrid
-  - [ ] lineWrapType, \autoSpaceEAsianEng, \autoSpaceEAsianNum
+  - [x] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, \\fontLineHeight, snapToGrid
+  - [x] lineWrapType, \\autoSpaceEAsianEng, \\autoSpaceEAsianNum
 - [ ] 테스트
   - [x] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
 
@@ -75,4 +75,5 @@
   - [x] strikeout
   - [x] multi-column
   - [x] 한 문단 내 mixed char shapes
+
 
