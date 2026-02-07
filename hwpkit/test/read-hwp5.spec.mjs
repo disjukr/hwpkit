@@ -1,5 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { describe, it, expect } from 'vitest';
+import { readHwp5 } from '../lib/read/hwp5/index.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function loadSample(name) {
   const p = path.resolve(__dirname, '..', '..', 'samples', name);
@@ -8,8 +13,6 @@ function loadSample(name) {
 
 describe('readHwp5', () => {
   it('parses samples correctly', () => {
-    const { readHwp5 } = require('../lib/read/hwp5');
-
     const doc = readHwp5(loadSample('01-plain-text.hwp'));
 
     expect(doc && typeof doc).toBe('object');
