@@ -1,0 +1,5 @@
+packages:
+  - 'hwpkit'
+  - 'website'
+
+  - 'hwpkit/automation'

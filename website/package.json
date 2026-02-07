@@ -3,8 +3,8 @@
   "name": "website",
   "version": "0.0.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "deploy:dev": "vercel",
     "deploy:prod": "vercel --prod"
   },
@@ -12,14 +12,18 @@
     "@emotion/babel-preset-css-prop": "^10.0.27",
     "@emotion/core": "^10.0.35",
     "@emotion/styled": "^10.0.27",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
     "axios": "^0.20.0",
     "emotion": "^10.0.27",
-    "hwpkit": "0.0.0",
-    "next": "^10.0.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "hwpkit": "workspace:*",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "vercel": "^20.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
   }
 }

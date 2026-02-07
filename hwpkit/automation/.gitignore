@@ -1,0 +1,11 @@
+node_modules/
+artifacts/
+tmp/
+
+dotnet/**/bin/
+dotnet/**/obj/
+
+*.log
+.DS_Store
+*.bak
+*.bak.*
