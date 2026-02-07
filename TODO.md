@@ -43,10 +43,10 @@
 
 ## 3) Paragraph 인덱스 연결(BodyText)
 - [ ] BodyText에서 문단 단위 메타데이터 파싱
-  - [x] Paragraph.styleIndex (PARA_HEADER u16)
+  - [x] Paragraph.styleIndex (PARA_HEADER u8)
   - [x] Paragraph.paraShapeIndex (PARA_HEADER u16)
   - [x] Paragraph.instId (PARA_HEADER u32)
-  - [x] pageBreak, columnBreak (empirical: PARA_HEADER flags)
+  - [x] pageBreak, columnBreak (spec: PARA_HEADER breakType, Table 59)
 - [ ] PARA_CHAR_SHAPE 파싱(문자 모양 포인터) 구현 → Paragraph.texts[]를 run 단위로 분할
   - [x] 올바른 Text.charShapeIndex로 구간(run) 생성
   - [x] controls와 텍스트 길이 정합성 유지 (U+FFFC placeholders filtered)
