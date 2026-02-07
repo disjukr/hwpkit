@@ -39,8 +39,8 @@ importers:
         specifier: ^10.0.27
         version: 10.0.27
       hwpkit:
-        specifier: 0.0.0
-        version: 0.0.0(hwp.js@0.0.3)
+        specifier: workspace:*
+        version: link:../hwpkit
       next:
         specifier: ^16.1.6
         version: 16.1.6(@babel/core@7.29.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -736,14 +736,6 @@ packages:
   http-cache-semantics@4.2.0:
     resolution: {integrity: sha512-dTxcvPXqPvXBQpq5dUr6mEMJX4oIEFv6bwom3FDwKRDsuIjjJGANqhBuoAn9c1RQJIdAKav33ED65E2ys+87QQ==}
 
-  hwp.js@0.0.3:
-    resolution: {integrity: sha512-qVdQjpyfR2rVmfZbbqd/8LAtt8YbwtZ2vm9FkBJj1UGPTP0Zs9+miUDrsPSfARpqkx3L7NeI1qR6hag5DaicyQ==}
-
-  hwpkit@0.0.0:
-    resolution: {integrity: sha512-m9JM0bcGBAPcfydpvXjwyQAL8OdkUdyOkZQmm12fRZ0FJegqChQc+3MHL3BI4bTRbfS1Jh4dtYeZnOz2srpnfg==}
-    peerDependencies:
-      hwp.js: ^0.0.3
-
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -899,9 +891,6 @@ packages:
   package-json@6.5.0:
     resolution: {integrity: sha512-k3bdm2n25tkyxcjSKzB5x8kfVxlMdgsbPr0GkZcwHsLpba6cBjqCt1KlcChKEvxHIcTB1FVMuwoijZ26xex5MQ==}
     engines: {node: '>=8'}
-
-  pako@1.0.11:
-    resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -1779,15 +1768,6 @@ snapshots:
 
   http-cache-semantics@4.2.0: {}
 
-  hwp.js@0.0.3:
-    dependencies:
-      cfb: 1.2.2
-      pako: 1.0.11
-
-  hwpkit@0.0.0(hwp.js@0.0.3):
-    dependencies:
-      hwp.js: 0.0.3
-
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
@@ -1910,8 +1890,6 @@ snapshots:
       registry-auth-token: 4.2.2
       registry-url: 5.1.0
       semver: 6.3.1
-
-  pako@1.0.11: {}
 
   parent-module@1.0.1:
     dependencies:

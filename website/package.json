@@ -14,7 +14,7 @@
     "@emotion/styled": "^10.0.27",
     "axios": "^0.20.0",
     "emotion": "^10.0.27",
-    "hwpkit": "0.0.0",
+    "hwpkit": "workspace:*",
     "next": "^16.1.6",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
