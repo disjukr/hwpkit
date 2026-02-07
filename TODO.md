@@ -18,13 +18,13 @@
 \npm test
 
 ## 1) ParaShape (DocInfo tag 25) – 파싱 완성
-- [ ] PARA_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
+- [x] PARA_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
   - [x] \\tabDef 인덱스
   - [x] \\breakLatinWordType, \\breakNonLatinWord
   - [x] condense
   - [x] boolean들: widowOrphan, keepWithNext, keepLines, pageBreakBefore, \\fontLineHeight, snapToGrid
   - [x] lineWrapType, \\autoSpaceEAsianEng, \\autoSpaceEAsianNum
-- [ ] 테스트
+- [x] 테스트
   - [x] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
 
 ## 2) CharShape (DocInfo tag 21) – 파싱 완성
