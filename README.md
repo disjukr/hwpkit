@@ -1,7 +1,6 @@
 # hwpkit
 
 - 본 제품은 한글과컴퓨터의 글 문서 파일(.hwp) 공개 문서를 참고하여 개발하였습니다.
-- hwp 5.0 형식의 파일 해석에 [hwp.js](https://github.com/hahnlee/hwp.js)를 사용하고 있습니다.
 
 ```sh
 yarn
