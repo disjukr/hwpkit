@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsc -w",
     "build": "rm -rf lib && tsc",
-    "test": "npm run build && node test/run-tests.js"
+    "test": "npm run build && vitest run"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
