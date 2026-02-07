@@ -1,6 +1,12 @@
 # hwpkit/automation
 
-Curated subset of local `hwp-automation`, embedded under `hwpkit`.
+Automation utilities for Hancom HWP.
 
-Included: `src/`, `tools/`, `dotnet/`, `package.json`.
-Excluded: `node_modules/`, `artifacts/`, `tmp/`, `official-docs/`, standalone lockfiles.
+## Included
+- `src/` runtime, CLI, and tests
+- `tools/` code generation scripts
+- `dotnet/` host project used by the automation bridge
+
+## Notes
+- Intended for internal tooling in this repository.
+- Run commands from this folder when working on automation features.
