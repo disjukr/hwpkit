@@ -8,12 +8,10 @@
     "website"
   ],
   "scripts": {
-    "dev": "ultra -r dev",
-    "build": "ultra -r -b build"
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -C hwpkit build",
+    "test": "pnpm -C hwpkit test"
   },
   "author": "JongChan Choi <jong@chan.moe>",
-  "license": "SEE LICENSE IN <hwpkit/README.md>",
-  "dependencies": {
-    "ultra-runner": "^3.5.0"
-  }
+  "license": "SEE LICENSE IN <hwpkit/README.md>"
 }
