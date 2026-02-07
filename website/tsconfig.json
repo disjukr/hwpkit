@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
     "jsx": "react-jsx",
     "strict": true,
     "alwaysStrict": true,
@@ -18,6 +22,12 @@
     "isolatedModules": true,
     "incremental": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -3,13 +3,20 @@
     "outDir": "lib",
     "target": "es2019",
     "module": "commonjs",
-    "lib": ["esnext", "dom"],
+    "lib": [
+      "esnext",
+      "dom"
+    ],
     "declaration": true,
     "strict": true,
     "alwaysStrict": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
