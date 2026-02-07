@@ -1,32 +1,29 @@
-## Windows scripting + patching conventions
+## Repo-specific operating notes (hwpkit)
 
-- Avoid complex one-shot patch scripts in `powershell -Command` (heredocs / heavy quoting / large regex replaces). They frequently break due to escaping/newline issues and can corrupt files.
-- Prefer small, explicit edits (or a Node `.cjs` helper that reads/writes files with clear replacements), and run tests after each small change.
-- If you need helper scripts, put them under the repo's `tmp/` directory (keep `tmp/` gitignored) so they can be re-run and iterated safely.
+- Package manager policy in this repo is pnpm.
+  - Keep `pnpm-workspace.yaml` as the workspace source of truth.
+  - Do not reintroduce `yarn.lock` or `package-lock.json`.
 
-- Update TODO.md checkboxes when finishing a TODO section (easy to forget after code+tests+samples).
+- Workspace linking rule:
+  - When `website` must consume local `hwpkit`, use `"hwpkit": "workspace:*"`.
+  - Otherwise pnpm may resolve to a store package variant and cause type/API mismatch.
 
-- When writing patch scripts in Node, remember that strings like \\\tabDef\ or \\\readHwp5\ will become control characters (\\t, \\r, \\b, etc.). Use escaped backslashes (\\\\tabDef) or String.raw.
+- Current root scripts intentionally scope build/test to stable targets:
+  - `build`: `pnpm -C hwpkit build && pnpm -C hwpkit/automation build`
+  - `test`: `pnpm -C hwpkit test && pnpm -C hwpkit/automation test`
 
-- On Windows nodes: prefer Git Bash (bash.exe -lc) over PowerShell for git/diff/grep/sed and general scripting to avoid encoding and quoting pitfalls.
+- `website` is upgraded to Next 16 and currently relies on webpack mode.
+  - Keep `next build --webpack` / `next dev --webpack` until Turbopack migration is done.
 
-## Recent learnings (2026-02)
+- `hwpkit` package output policy:
+  - Library output is ESM (`"type": "module"`, TS module `esnext`).
+  - Vitest tests are also ESM-based.
 
-- pnpm migration in this repo needs both:
-  - `pnpm-workspace.yaml` (pnpm does not use `package.json#workspaces` directly)
-  - removing legacy lockfiles (`yarn.lock`, `package-lock.json`) and keeping `pnpm-lock.yaml`.
+- `hwpkit/automation` policy:
+  - Embedded internal tooling package (Windows-first usage).
+  - CLI surface removed; keep maintenance focused on library/test/codegen paths.
+  - COM/E2E tests are env-gated (`HWP_AUTOMATION_E2E=1`) and skipped by default.
 
-- For local workspace linking, use `workspace:*` explicitly (e.g. `website -> hwpkit`).
-  - Without this, pnpm can resolve to a store package variant and types/APIs may drift from local source.
-
-- Next.js 16 defaults to Turbopack; if the project still has custom `webpack` config, use `next build --webpack` (and same for dev) until migrated.
-
-- Vitest + ESM:
-  - With `"type": "module"`, keep tests as ESM (`.mjs`/`import ...`) to avoid CommonJS `require('vitest')` failures.
-  - Splitting one giant `it(...)` into focused test cases improves failure isolation and maintenance.
-
-- When generating files from automation scripts, double-check resolved output paths on Windows.
-  - `process.cwd()` + relative traversal can silently target sibling repos; prefer explicit absolute paths for important outputs.
-
-- When embedding side projects into this repo, aggressively prune local-only artifacts before commit:
-  - backups (`*.bak*`), tmp folders, archived snapshots, generated local artifacts.
+- Samples path safety:
+  - When generating samples via automation scripts, use explicit absolute output paths under this repo’s `samples/`.
+  - Avoid ambiguous relative traversal that can write into sibling repos.
