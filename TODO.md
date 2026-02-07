@@ -28,7 +28,7 @@
   - [x] 특정 샘플 기준으로 paraShapes[n] 값 assert 추가
 
 ## 2) CharShape (DocInfo tag 21) – 파싱 완성
-- [ ] CHAR_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
+- [x] CHAR_SHAPE 스펙(필드 오프셋/비트)을 확정하고 아래 항목을 실제값으로 채우기
   - [x] \bold, italic
   - [x] underline (type/shape/color)
   - [x] strikeout (type/shape/color)

@@ -148,6 +148,31 @@ function run() {
     assert.strictEqual(ps.condense >= 0 && ps.condense <= 127, true);
   }
 
+  // CharShape samples: ratio/spacing/offset/size should change DocInfo tag21 arrays and be referenced by PARA_CHAR_SHAPE(tag68)
+  {
+    const d = readHwp5(loadSample('37-charshape-ratio150.hwp'));
+    const p0 = d.body.sections[0].paragraphs[0];
+    assert.strictEqual(p0.texts.length > 0, true);
+    const idx = p0.texts[0].charShapeIndex;
+    const cs = d.head.mappingTable.charShapes[idx];
+    assert.strictEqual(cs.ratios[1], 150);
+
+    const d2 = readHwp5(loadSample('38-charshape-spacing20.hwp'));
+    const p1 = d2.body.sections[0].paragraphs[0];
+    const cs1 = d2.head.mappingTable.charShapes[p1.texts[0].charShapeIndex];
+    assert.strictEqual(cs1.charSpacings[1], 20);
+
+    const d3 = readHwp5(loadSample('39-charshape-offset20.hwp'));
+    const p2 = d3.body.sections[0].paragraphs[0];
+    const cs2 = d3.head.mappingTable.charShapes[p2.texts[0].charShapeIndex];
+    assert.strictEqual(cs2.charOffsets[1], 20);
+
+    const d4 = readHwp5(loadSample('40-charshape-size150.hwp'));
+    const p3 = d4.body.sections[0].paragraphs[0];
+    const cs3 = d4.head.mappingTable.charShapes[p3.texts[0].charShapeIndex];
+    assert.strictEqual(cs3.relSizes[1], 150);
+  }
+
   // ParaShape samples: widowOrphan/keepWithNext should reflect mappingTable.paraShapes[paraShapeIndex]
   {
     const d1 = readHwp5(loadSample('28-parashape-widow-orphan-on.hwp'));

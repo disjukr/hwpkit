@@ -969,6 +969,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
             const uniq: { pos: number; charShapeIndex: number }[] = [];
             for (const r of points) {
               if (!uniq.length || uniq[uniq.length - 1]!.pos !== r.pos) uniq.push(r);
+              else uniq[uniq.length - 1] = r;
             }
 
             const texts: { charShapeIndex: number; controls: Control[] }[] = [];
