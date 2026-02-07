@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "lib",
     "target": "es2019",
-    "module": "commonjs",
+    "module": "esnext",
     "lib": [
       "esnext",
       "dom"
@@ -11,7 +11,8 @@
     "strict": true,
     "alwaysStrict": true,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleResolution": "node"
   },
   "include": [
     "src/**/*.ts"
