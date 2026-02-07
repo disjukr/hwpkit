@@ -1,43 +1,27 @@
-﻿import assert from "node:assert/strict";
-import { createHwp } from "./hwp.js";
+import { describe, expect, it } from 'vitest'
+import { createHwp } from './hwp.js'
 
-async function testInsertTextRoundtrip() {
-  const hwp = createHwp();
-  const token = `hello-${Date.now()}`;
+const e2e = process.platform === 'win32' && process.env.HWP_AUTOMATION_E2E === '1'
+const itE2E = e2e ? it : it.skip
 
-  const results = await hwp.batch([
-    {
-      op: "action",
-      action: "InsertText",
-      setId: "InsertText",
-      fields: { Text: token },
-    },
-    {
-      op: "getTextFile",
-      format: "TEXT",
-      option: "",
-    },
-  ] as any);
+describe('automation smoke', () => {
+  itE2E('GetMessageBoxMode returns number', async () => {
+    const hwp = createHwp()
+    const mode = await hwp.method.GetMessageBoxMode()
+    expect(typeof mode).toBe('number')
+  })
 
-  const t = results.find((r: any) => r.op === "getTextFile") as any;
-  assert.ok(t, "missing getTextFile result");
-  assert.equal(typeof t.text, "string");
-  assert.ok(t.text.includes(token), `expected exported text to include token: ${token}`);
-}
+  itE2E('InsertText roundtrip appears in text export', async () => {
+    const hwp = createHwp()
+    const token = `hello-${Date.now()}`
+    const results = await hwp.batch([
+      { op: 'action', action: 'InsertText', setId: 'InsertText', fields: { Text: token } },
+      { op: 'getTextFile', format: 'TEXT', option: '' },
+    ] as any)
 
-async function testSimpleCall() {
-  const hwp = createHwp();
-  // should be integer-ish
-  const mode = await hwp.method.GetMessageBoxMode();
-  assert.ok(typeof mode === "number");
-}
-
-(async () => {
-  const started = Date.now();
-  await testSimpleCall();
-  await testInsertTextRoundtrip();
-  console.log(JSON.stringify({ ok: true, ms: Date.now() - started }, null, 2));
-})().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+    const t = results.find((r: any) => r.op === 'getTextFile') as any
+    expect(t).toBeTruthy()
+    expect(typeof t.text).toBe('string')
+    expect(t.text.includes(token)).toBe(true)
+  })
+})

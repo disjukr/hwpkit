@@ -5,12 +5,13 @@
   "description": "hwp toolkit",
   "workspaces": [
     "hwpkit",
-    "website"
+    "website",
+    "hwpkit/automation"
   ],
   "scripts": {
     "dev": "pnpm -r --parallel dev",
-    "build": "pnpm -C hwpkit build",
-    "test": "pnpm -C hwpkit test"
+    "build": "pnpm -C hwpkit build && pnpm -C hwpkit/automation build",
+    "test": "pnpm -C hwpkit test && pnpm -C hwpkit/automation test"
   },
   "author": "JongChan Choi <jong@chan.moe>",
   "license": "SEE LICENSE IN <hwpkit/README.md>"

@@ -68,7 +68,8 @@ export class HwpClient {
     const v = validateParamSet(action as any, fields);
     if (!v.ok) throw new Error(v.error);
 
-    const spec = PARAMETER_SETS[action as any];
+    const setId = action as unknown as ParameterSetId;
+    const spec = PARAMETER_SETS[setId];
     const res = await runHwp({
       cmd: "batch",
       ops: [
