@@ -404,20 +404,85 @@ function decodeParaText(data: Buffer): string {
   return out;
 }
 
-type ParaHeaderInfo = { nchars: number; flags: number; paraShapeIndex: number; styleIndex: number; instId: number };
+type ParaHeaderInfo = {
+  nchars: number;
+  controlMask: number;
+  flags: number;// legacy alias of controlMask
+  paraShapeIndex: number;
+  styleIndex: number;
+  breakType: number;
+  charShapeInfoCount: number;
+  rangeTagCount: number;
+  alignInfoCount: number;
+  instId: number;
+  trackInfo: number;
+};
 
 function parseParaHeader(data: Buffer): ParaHeaderInfo {
-  if (data.length < 4) return { nchars: 0, flags: 0, paraShapeIndex: 0, styleIndex: 0, instId: 0 };
-  const raw = data.readUInt32LE(0);
-  const flags = data.length >= 12 ? data.readUInt32LE(8) : 0;
-  // Empirical offsets (record size 24 bytes in our samples):
-  // - paraShapeIndex: u16 @ 12
-  // - styleIndex: u16 @ 14
-  // - instId: u32 @ 16
-  const paraShapeIndex = data.length >= 14 ? data.readUInt16LE(12) : 0;
-  const styleIndex = data.length >= 16 ? data.readUInt16LE(14) : 0;
-  const instId = data.length >= 20 ? (data.readUInt32LE(16) >>> 0) : 0;
-  return { nchars: raw & 0x7fffffff, flags, paraShapeIndex, styleIndex, instId };
+  // Spec-based decode for HWPTAG_PARA_HEADER (BodyText tag 66), HWP 5.0 rev 1.3 (Table 58).
+  // Fixed 24 bytes for the common case (when nchars does NOT have 0x80000000 extension).
+  //
+  // Offsets (no extension):
+  // 0  UINT32 nchars
+  // 4  UINT32 controlMask
+  // 8  UINT16 paraShapeId
+  // 10 UINT8  styleId
+  // 11 UINT8  breakType (Table 59)
+  // 12 UINT16 charShapeInfoCount
+  // 14 UINT16 rangeTagCount
+  // 16 UINT16 alignInfoCount
+  // 18 UINT32 instanceId
+  // 22 UINT16 trackInfo (>=5.0.3.2)
+  //
+  // NOTE: We currently ignore the extended-header form (nchars & 0x80000000).
+  if (data.length < 8) {
+    return {
+      nchars: 0,
+      controlMask: 0,
+      flags: 0,
+      paraShapeIndex: 0,
+      styleIndex: 0,
+      breakType: 0,
+      charShapeInfoCount: 0,
+      rangeTagCount: 0,
+      alignInfoCount: 0,
+      instId: 0,
+      trackInfo: 0,
+    };
+  }
+
+  const raw = data.readUInt32LE(0) >>> 0;
+  const nchars = raw & 0x7fffffff;
+  const hasExt = (raw & 0x80000000) !== 0;
+
+  if (hasExt) {
+    // TODO: implement the extended variant (spec: additional UINT16/UINT8/UINT8/UINT16 after nchars).
+    // For now, fall back to best-effort using the non-ext offsets if present.
+  }
+
+  const controlMask = data.length >= 8 ? (data.readUInt32LE(4) >>> 0) : 0;
+  const paraShapeIndex = data.length >= 10 ? data.readUInt16LE(8) : 0;
+  const styleIndex = data.length >= 11 ? data.readUInt8(10) : 0;
+  const breakType = data.length >= 12 ? data.readUInt8(11) : 0;
+  const charShapeInfoCount = data.length >= 14 ? data.readUInt16LE(12) : 0;
+  const rangeTagCount = data.length >= 16 ? data.readUInt16LE(14) : 0;
+  const alignInfoCount = data.length >= 18 ? data.readUInt16LE(16) : 0;
+  const instId = data.length >= 22 ? (data.readUInt32LE(18) >>> 0) : 0;
+  const trackInfo = data.length >= 24 ? data.readUInt16LE(22) : 0;
+
+  return {
+    nchars,
+    controlMask,
+    flags: controlMask,
+    paraShapeIndex,
+    styleIndex,
+    breakType,
+    charShapeInfoCount,
+    rangeTagCount,
+    alignInfoCount,
+    instId,
+    trackInfo,
+  };
 }
 
 function decodeParaTextWithCount(data: Buffer, nchars?: number): string {
