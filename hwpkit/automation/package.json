@@ -1,0 +1,37 @@
+{
+  "name": "hwp-automation",
+  "version": "1.0.0",
+  "description": "Hancom HWP automation utilities",
+  "scripts": {
+    "test": "npm run test:smoke",
+    "comtest": "tsx src/cli.ts com-test",
+    "convert": "tsx src/cli.ts convert",
+    "meta": "tsx src/cli.ts meta",
+    "build:dotnet": "powershell -NoProfile -Command \"& $Env:ProgramFiles\\dotnet\\dotnet.exe build dotnet\\HwpDotNetHost\\HwpDotNetHost.csproj -c Release\"",
+    "postinstall": "npm run build:dotnet",
+    "premeta": "npm run build:dotnet",
+    "preconvert": "npm run build:dotnet",
+    "precomtest": "npm run build:dotnet",
+    "test:smoke": "tsx src/smoke.test.ts",
+    "test:action:insert-text": "tsx src/action-tests/insert-text.test.ts",
+    "gen": "node tools/gen-all.cjs",
+    "gen:methods": "node tools/gen-methods.cjs",
+    "gen:actions": "node tools/gen-actions.cjs",
+    "gen:psets": "node tools/gen-psets.cjs",
+    "gen:method-sigs": "node tools/gen-method-sigs.cjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/node": "^22.19.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "cfb": "^1.2.2",
+    "node-api-dotnet": "^0.9.19"
+  }
+}

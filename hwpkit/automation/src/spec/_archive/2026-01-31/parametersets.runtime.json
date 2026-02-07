@@ -1,0 +1,2852 @@
+{
+    "HDrawShadow":  {
+                        "props":  [
+                                      "HSet",
+                                      "ShadowAlpha",
+                                      "ShadowColor",
+                                      "ShadowOffsetX",
+                                      "ShadowOffsetY",
+                                      "ShadowType"
+                                  ]
+                    },
+    "HFormEditAttr":  {
+                          "props":  [
+                                        "AlignText",
+                                        "HSet",
+                                        "MaxLength",
+                                        "MultiLine",
+                                        "Number",
+                                        "PasswordChar",
+                                        "ReadOnly",
+                                        "ScrollBars",
+                                        "TabKeyBehavior",
+                                        "Text"
+                                    ]
+                      },
+    "HFormCommonAttr":  {
+                            "props":  [
+                                          "BackColor",
+                                          "BorderType",
+                                          "Color",
+                                          "Command",
+                                          "DrawFrame",
+                                          "Editable",
+                                          "Enabled",
+                                          "GroupName",
+                                          "HSet",
+                                          "name",
+                                          "Printable",
+                                          "TabOrder",
+                                          "TabStop"
+                                      ]
+                        },
+    "HInternet":  {
+                      "props":  [
+                                    "HSet",
+                                    "OpenUrlString",
+                                    "OpenUrlWhere"
+                                ]
+                  },
+    "HMousePos":  {
+                      "props":  [
+                                    "HSet",
+                                    "Page",
+                                    "X",
+                                    "XRelTo",
+                                    "Y",
+                                    "YRelTo"
+                                ]
+                  },
+    "HGridInfo":  {
+                      "props":  [
+                                    "Align",
+                                    "HorzAlign",
+                                    "HorzRange",
+                                    "HorzSpan",
+                                    "HSet",
+                                    "Method",
+                                    "Show",
+                                    "type",
+                                    "VertAlign",
+                                    "VertRange",
+                                    "VertSpan",
+                                    "ViewLine",
+                                    "ZOrder"
+                                ]
+                  },
+    "HOleCreation":  {
+                         "props":  [
+                                       "Aspect",
+                                       "Clsid",
+                                       "FlashProperties",
+                                       "HSet",
+                                       "IconMetafile",
+                                       "IconMM",
+                                       "IconXext",
+                                       "IconYext",
+                                       "InnerOCX",
+                                       "MovieProperties",
+                                       "Path",
+                                       "SoProperties",
+                                       "type"
+                                   ]
+                     },
+    "HXSecurity":  {
+                       "props":  [
+                                     "CanonicalMethod",
+                                     "CertificationInfo",
+                                     "CertificationInfoAll",
+                                     "DataPath",
+                                     "EncryptionMethod",
+                                     "HashMethod",
+                                     "HSet",
+                                     "PrivateKey",
+                                     "PrivInfo",
+                                     "SignatureMethod",
+                                     "SigValidate",
+                                     "SigValidateDlg",
+                                     "XsecSigTarget",
+                                     "XsecTargetHwp"
+                                 ]
+                   },
+    "HShapeObject":  {
+                         "props":  [
+                                       "AdjustPrevObjAttr",
+                                       "AdjustSelection",
+                                       "AdjustTextbox",
+                                       "AffectsLine",
+                                       "AllowOverlap",
+                                       "ApplyTo",
+                                       "BaseUnit",
+                                       "BorderFill",
+                                       "CellMarginBottom",
+                                       "CellMarginLeft",
+                                       "CellMarginRight",
+                                       "CellMarginTop",
+                                       "CellSpacing",
+                                       "ChangedShapeID",
+                                       "Color",
+                                       "DrawSizeInfo",
+                                       "EqFontName",
+                                       "FlowWithText",
+                                       "Height",
+                                       "HeightRelTo",
+                                       "HoldAnchorObj",
+                                       "HorzAlign",
+                                       "HorzOffset",
+                                       "HorzRelTo",
+                                       "HSet",
+                                       "LayoutHeight",
+                                       "LayoutWidth",
+                                       "LineMode",
+                                       "Lock",
+                                       "NumberingType",
+                                       "OptLockProperties",
+                                       "OptTargetList",
+                                       "OutsideMarginBottom",
+                                       "OutsideMarginLeft",
+                                       "OutsideMarginRight",
+                                       "OutsideMarginTop",
+                                       "PageBreak",
+                                       "PageNumber",
+                                       "ProtectSize",
+                                       "RepeatHeader",
+                                       "ShapeCaption",
+                                       "ShapeComment",
+                                       "ShapeDrawArcType",
+                                       "ShapeDrawCoordInfo",
+                                       "ShapeDrawCtrlHyperlink",
+                                       "ShapeDrawEditDetail",
+                                       "ShapeDrawFillAttr",
+                                       "ShapeDrawImageAttr",
+                                       "ShapeDrawImageScissoring",
+                                       "ShapeDrawLayOut",
+                                       "ShapeDrawLineAttr",
+                                       "ShapeDrawRectType",
+                                       "ShapeDrawResize",
+                                       "ShapeDrawRotate",
+                                       "ShapeDrawScAction",
+                                       "ShapeDrawShadow",
+                                       "ShapeDrawShear",
+                                       "ShapeDrawSoEquationOption",
+                                       "ShapeDrawSoMouseOption",
+                                       "ShapeDrawTextart",
+                                       "ShapeDrawVideoAttr",
+                                       "ShapeFormButtonAttr",
+                                       "ShapeFormCharshapeattr",
+                                       "ShapeFormComboboxAttr",
+                                       "ShapeFormCommonAttr",
+                                       "ShapeFormEditAttr",
+                                       "ShapeFormGeneral",
+                                       "ShapeFormListBoxAttr",
+                                       "ShapeFormScrollbarAttr",
+                                       "ShapeListProperites",
+                                       "ShapeTableCell",
+                                       "string",
+                                       "TableBorderFill",
+                                       "TableCharInfo",
+                                       "TextFlow",
+                                       "TextWrap",
+                                       "TreatAsChar",
+                                       "Version",
+                                       "VertAlign",
+                                       "VertOffset",
+                                       "VertRelTo",
+                                       "VisualString",
+                                       "Width",
+                                       "WidthRelTo"
+                                   ]
+                     },
+    "HGotoE":  {
+                   "props":  [
+                                 "HSet",
+                                 "SetSelectionIndex"
+                             ]
+               },
+    "HDocData":  {
+                     "props":  [
+                                   "HSet",
+                                   "type"
+                               ]
+                 },
+    "HSum":  {
+                 "props":  [
+                               "Average",
+                               "Comma",
+                               "HSet",
+                               "LineCount",
+                               "Method",
+                               "option",
+                               "Sum"
+                           ]
+             },
+    "HBlogUpload":  {
+                        "props":  [
+                                      "BlogUploadAccount",
+                                      "BlogUploadCategory",
+                                      "BlogUploadPostContent",
+                                      "BlogUploadPostID",
+                                      "BlogUploadPostTitle",
+                                      "BlogUploadPublish",
+                                      "HSet"
+                                  ]
+                    },
+    "HDropCap":  {
+                     "props":  [
+                                   "FaceColor",
+                                   "FaceName",
+                                   "HSet",
+                                   "LineColor",
+                                   "LineStyle",
+                                   "LineWeight",
+                                   "Spacing",
+                                   "Style"
+                               ]
+                 },
+    "HActionCrossRef":  {
+                            "props":  [
+                                          "Command",
+                                          "HSet"
+                                      ]
+                        },
+    "HTextCtrl":  {
+                      "props":  [
+                                    "CtrlData",
+                                    "HSet"
+                                ]
+                  },
+    "HCell":  {
+                  "props":  [
+                                "CellCtrlData",
+                                "Dirty",
+                                "Editable",
+                                "HasMargin",
+                                "Header",
+                                "Height",
+                                "HSet",
+                                "LineWrap",
+                                "MarginBottom",
+                                "MarginLeft",
+                                "MarginRight",
+                                "MarginTop",
+                                "Protected",
+                                "TextDirection",
+                                "VertAlign",
+                                "Width"
+                            ]
+              },
+    "HFileSaveAs":  {
+                        "props":  [
+                                      "Argument",
+                                      "HSet",
+                                      "ModifiedFlag",
+                                      "OpenFileName",
+                                      "OpenFlag",
+                                      "OpenFormat",
+                                      "OpenReadOnly",
+                                      "SaveCMFDoc30",
+                                      "SaveDistribute",
+                                      "SaveDRMDoc",
+                                      "SaveFileName",
+                                      "SaveFormat",
+                                      "SaveHwp97",
+                                      "SaveOverWrite"
+                                  ]
+                    },
+    "HFileOpenSave":  {
+                          "props":  [
+                                        "Argument",
+                                        "Attributes",
+                                        "filename",
+                                        "Format",
+                                        "HSet",
+                                        "Netffice",
+                                        "OpenFlag",
+                                        "OpenReadOnly"
+                                    ]
+                      },
+    "HPrintToImage":  {
+                          "props":  [
+                                        "colordepth",
+                                        "filename",
+                                        "Format",
+                                        "HSet",
+                                        "Range",
+                                        "RangeCustom",
+                                        "resolution"
+                                    ]
+                      },
+    "HFileSaveBlock":  {
+                           "props":  [
+                                         "Argument",
+                                         "filename",
+                                         "Format",
+                                         "HSet"
+                                     ]
+                       },
+    "HPrintWatermark":  {
+                            "props":  [
+                                          "AlphaImage",
+                                          "AlphaText",
+                                          "Brightness",
+                                          "Contrast",
+                                          "DrawFillImageType",
+                                          "filename",
+                                          "FontColor",
+                                          "FontName",
+                                          "FontSize",
+                                          "FontType",
+                                          "HSet",
+                                          "PicEffect",
+                                          "PosPage",
+                                          "RotateAngle",
+                                          "ShadowColor",
+                                          "ShadowOffsetX",
+                                          "ShadowOffsetY",
+                                          "ShadowType",
+                                          "string",
+                                          "TextWrap",
+                                          "WaterMarkEff",
+                                          "WatermarkType"
+                                      ]
+                        },
+    "HDrawLayOut":  {
+                        "props":  [
+                                      "CreateNumPt",
+                                      "CreatePt",
+                                      "CurveSegmentInfo",
+                                      "HSet"
+                                  ]
+                    },
+    "HHyperLink":  {
+                       "props":  [
+                                     "Command",
+                                     "DirectInsert",
+                                     "HSet",
+                                     "NoLInk",
+                                     "ShapeObject",
+                                     "Text"
+                                 ]
+                   },
+    "HSolarToLunar":  {
+                          "props":  [
+                                        "Day",
+                                        "HSet",
+                                        "Leap",
+                                        "Month",
+                                        "Year"
+                                    ]
+                      },
+    "HFormObjInputCodeTable":  {
+                                   "props":  [
+                                                 "DefaultCode",
+                                                 "HSet",
+                                                 "ResultString"
+                                             ]
+                               },
+    "HMessageSet":  {
+                        "props":  [
+                                      "HSet",
+                                      "string"
+                                  ]
+                    },
+    "HCaption":  {
+                     "props":  [
+                                   "CapFullSize",
+                                   "Gap",
+                                   "HSet",
+                                   "Side",
+                                   "Width"
+                               ]
+                 },
+    "HNumberingShape":  {
+                            "props":  [
+                                          "AlignmentLevel0",
+                                          "AlignmentLevel1",
+                                          "AlignmentLevel2",
+                                          "AlignmentLevel3",
+                                          "AlignmentLevel4",
+                                          "AlignmentLevel5",
+                                          "AlignmentLevel6",
+                                          "AlignmentLevel7",
+                                          "AlignmentLevel8",
+                                          "AlignmentLevel9",
+                                          "AutoIndentLevel0",
+                                          "AutoIndentLevel1",
+                                          "AutoIndentLevel2",
+                                          "AutoIndentLevel3",
+                                          "AutoIndentLevel4",
+                                          "AutoIndentLevel5",
+                                          "AutoIndentLevel6",
+                                          "AutoIndentLevel7",
+                                          "AutoIndentLevel8",
+                                          "AutoIndentLevel9",
+                                          "CharShapeLevel0",
+                                          "CharShapeLevel1",
+                                          "CharShapeLevel2",
+                                          "CharShapeLevel3",
+                                          "CharShapeLevel4",
+                                          "CharShapeLevel5",
+                                          "CharShapeLevel6",
+                                          "CharShapeLevel7",
+                                          "CharShapeLevel8",
+                                          "CharShapeLevel9",
+                                          "HasCharShapeLevel0",
+                                          "HasCharShapeLevel1",
+                                          "HasCharShapeLevel2",
+                                          "HasCharShapeLevel3",
+                                          "HasCharShapeLevel4",
+                                          "HasCharShapeLevel5",
+                                          "HasCharShapeLevel6",
+                                          "HasCharShapeLevel7",
+                                          "HasCharShapeLevel8",
+                                          "HasCharShapeLevel9",
+                                          "HSet",
+                                          "NewList",
+                                          "NumFormatLevel0",
+                                          "NumFormatLevel1",
+                                          "NumFormatLevel2",
+                                          "NumFormatLevel3",
+                                          "NumFormatLevel4",
+                                          "NumFormatLevel5",
+                                          "NumFormatLevel6",
+                                          "NumFormatLevel7",
+                                          "NumFormatLevel8",
+                                          "NumFormatLevel9",
+                                          "StartNumber",
+                                          "StartNumber0",
+                                          "StartNumber1",
+                                          "StartNumber2",
+                                          "StartNumber3",
+                                          "StartNumber4",
+                                          "StartNumber5",
+                                          "StartNumber6",
+                                          "StartNumber7",
+                                          "StartNumber8",
+                                          "StartNumber9",
+                                          "StrFormatLevel0",
+                                          "StrFormatLevel1",
+                                          "StrFormatLevel2",
+                                          "StrFormatLevel3",
+                                          "StrFormatLevel4",
+                                          "StrFormatLevel5",
+                                          "StrFormatLevel6",
+                                          "StrFormatLevel7",
+                                          "StrFormatLevel8",
+                                          "StrFormatLevel9",
+                                          "TextOffsetLevel0",
+                                          "TextOffsetLevel1",
+                                          "TextOffsetLevel2",
+                                          "TextOffsetLevel3",
+                                          "TextOffsetLevel4",
+                                          "TextOffsetLevel5",
+                                          "TextOffsetLevel6",
+                                          "TextOffsetLevel7",
+                                          "TextOffsetLevel8",
+                                          "TextOffsetLevel9",
+                                          "TextOffsetTypeLevel0",
+                                          "TextOffsetTypeLevel1",
+                                          "TextOffsetTypeLevel2",
+                                          "TextOffsetTypeLevel3",
+                                          "TextOffsetTypeLevel4",
+                                          "TextOffsetTypeLevel5",
+                                          "TextOffsetTypeLevel6",
+                                          "TextOffsetTypeLevel7",
+                                          "TextOffsetTypeLevel8",
+                                          "TextOffsetTypeLevel9",
+                                          "UseInstWidthLevel0",
+                                          "UseInstWidthLevel1",
+                                          "UseInstWidthLevel2",
+                                          "UseInstWidthLevel3",
+                                          "UseInstWidthLevel4",
+                                          "UseInstWidthLevel5",
+                                          "UseInstWidthLevel6",
+                                          "UseInstWidthLevel7",
+                                          "UseInstWidthLevel8",
+                                          "UseInstWidthLevel9",
+                                          "WidthAdjustLevel0",
+                                          "WidthAdjustLevel1",
+                                          "WidthAdjustLevel2",
+                                          "WidthAdjustLevel3",
+                                          "WidthAdjustLevel4",
+                                          "WidthAdjustLevel5",
+                                          "WidthAdjustLevel6",
+                                          "WidthAdjustLevel7",
+                                          "WidthAdjustLevel8",
+                                          "WidthAdjustLevel9"
+                                      ]
+                        },
+    "HTable":  {
+                   "props":  [
+                                 "AdjustPrevObjAttr",
+                                 "AdjustSelection",
+                                 "AdjustTextbox",
+                                 "AffectsLine",
+                                 "AllowOverlap",
+                                 "BorderFill",
+                                 "Cell",
+                                 "CellMarginBottom",
+                                 "CellMarginLeft",
+                                 "CellMarginRight",
+                                 "CellMarginTop",
+                                 "CellSpacing",
+                                 "FlowWithText",
+                                 "Height",
+                                 "HeightRelTo",
+                                 "HoldAnchorObj",
+                                 "HorzAlign",
+                                 "HorzOffset",
+                                 "HorzRelTo",
+                                 "HSet",
+                                 "LayoutHeight",
+                                 "LayoutWidth",
+                                 "Lock",
+                                 "NumberingType",
+                                 "OutsideMarginBottom",
+                                 "OutsideMarginLeft",
+                                 "OutsideMarginRight",
+                                 "OutsideMarginTop",
+                                 "PageBreak",
+                                 "PageNumber",
+                                 "ProtectSize",
+                                 "RepeatHeader",
+                                 "TableBorderFill",
+                                 "TableCharInfo",
+                                 "TextFlow",
+                                 "TextWrap",
+                                 "TreatAsChar",
+                                 "VertAlign",
+                                 "VertOffset",
+                                 "VertRelTo",
+                                 "Width",
+                                 "WidthRelTo"
+                             ]
+               },
+    "HDrawRotate":  {
+                        "props":  [
+                                      "Angle",
+                                      "CenterX",
+                                      "CenterY",
+                                      "Command",
+                                      "HSet",
+                                      "ObjectCenterX",
+                                      "ObjectCenterY",
+                                      "RotateImage"
+                                  ]
+                    },
+    "HDocumentFilterDialog":  {
+                                  "props":  [
+                                                "DbfCodeType",
+                                                "DbfDelSpace",
+                                                "DbfReadType",
+                                                "DbfRecordEnd",
+                                                "DbfRecordNumbering",
+                                                "DbfRecordStart",
+                                                "DocImgSaveType",
+                                                "FlashBackgroundColor",
+                                                "FlashNextButton",
+                                                "FlashNonselectImagePath",
+                                                "FlashPageEnd",
+                                                "FlashPageStart",
+                                                "FlashSelectImagePath",
+                                                "HSet",
+                                                "HtmlCodeType",
+                                                "HtmlDefault",
+                                                "HtmlFilePath",
+                                                "HtmlSend",
+                                                "TextCodeType",
+                                                "TextDefault",
+                                                "TextFilePath",
+                                                "TextFontName",
+                                                "TextKeepAlign",
+                                                "TextReadType",
+                                                "UnicodeCodeType",
+                                                "UnicodeFilePath",
+                                                "UnicodeKeepAlign"
+                                            ]
+                              },
+    "HDrawSoEquationOption":  {
+                                  "props":  [
+                                                "AutoConvert",
+                                                "HSet",
+                                                "ScriptDefault"
+                                            ]
+                              },
+    "HInputDateStyle":  {
+                            "props":  [
+                                          "DateStyleDataForm",
+                                          "DateStyleType",
+                                          "HSet"
+                                      ]
+                        },
+    "HVfsAuthentication":  {
+                               "props":  [
+                                             "AuthenticationURL",
+                                             "HSet"
+                                         ]
+                           },
+    "HDrawShear":  {
+                       "props":  [
+                                     "HSet",
+                                     "XFactor",
+                                     "YFactor"
+                                 ]
+                   },
+    "HConvertJianFan":  {
+                            "props":  [
+                                          "HSet",
+                                          "type"
+                                      ]
+                        },
+    "HMarkpenShape":  {
+                          "props":  [
+                                        "Color",
+                                        "HSet"
+                                    ]
+                      },
+    "HFileOpen":  {
+                      "props":  [
+                                    "Argument",
+                                    "HSet",
+                                    "ModifiedFlag",
+                                    "OpenFileName",
+                                    "OpenFlag",
+                                    "OpenFormat",
+                                    "OpenReadOnly",
+                                    "SaveCMFDoc30",
+                                    "SaveDistribute",
+                                    "SaveDRMDoc",
+                                    "SaveFileName",
+                                    "SaveFormat",
+                                    "SaveHwp97",
+                                    "SaveOverWrite"
+                                ]
+                  },
+    "HTableSwap":  {
+                       "props":  [
+                                     "HSet",
+                                     "SwapMargin",
+                                     "type"
+                                 ]
+                   },
+    "HSpellingCheck":  {
+                           "props":  [
+                                         "CheckStart",
+                                         "HSet",
+                                         "NotifyResult"
+                                     ]
+                       },
+    "HFormObjHanjaMean":  {
+                              "props":  [
+                                            "HSet",
+                                            "ResultString"
+                                        ]
+                          },
+    "HLoadUserInfoFile":  {
+                              "props":  [
+                                            "DeleteCurUserInfo",
+                                            "ExistMacroIdiomPath",
+                                            "ExistTemplDocPath",
+                                            "HSet",
+                                            "LoadBaseTemplDoc",
+                                            "MacroIdiomPath",
+                                            "MergeCurUserInfo",
+                                            "SaveCurUserInfo",
+                                            "TemplDocPath",
+                                            "UserInfoDataFilePath"
+                                        ]
+                          },
+    "HAppState":  {
+                      "props":  [
+                                    "AdjustPrevPictureSize",
+                                    "CreationID",
+                                    "CreationMode",
+                                    "HandlerType",
+                                    "HSet",
+                                    "KeyMacro",
+                                    "Overwrite",
+                                    "Presentation",
+                                    "ScrMacro",
+                                    "ZOrder"
+                                ]
+                  },
+    "HStyleTemplate":  {
+                           "props":  [
+                                         "filename",
+                                         "HSet",
+                                         "NameEngs",
+                                         "NameLocals"
+                                     ]
+                       },
+    "HShapeGuideLine":  {
+                            "props":  [
+                                          "CoordInfo",
+                                          "HSet",
+                                          "Line",
+                                          "Magnet",
+                                          "Method",
+                                          "Show",
+                                          "Tooltip",
+                                          "TooltipSizeInfo"
+                                      ]
+                        },
+    "HStyleDelete":  {
+                         "props":  [
+                                       "Alternation",
+                                       "HSet",
+                                       "Target"
+                                   ]
+                     },
+    "HMakeContents":  {
+                          "props":  [
+                                        "AutoTabRight",
+                                        "HSet",
+                                        "Hyperlink",
+                                        "Leader",
+                                        "Level",
+                                        "Make",
+                                        "OutFileName",
+                                        "Position",
+                                        "StyleName",
+                                        "Styles",
+                                        "type"
+                                    ]
+                      },
+    "HFindReplace":  {
+                         "props":  [
+                                       "AllWordForms",
+                                       "AutoSpell",
+                                       "Direction",
+                                       "FindCharShape",
+                                       "FindJaso",
+                                       "FindParaShape",
+                                       "FindRegExp",
+                                       "FindString",
+                                       "FindStyle",
+                                       "FindType",
+                                       "HanjaFromHangul",
+                                       "HSet",
+                                       "IgnoreFindString",
+                                       "IgnoreMessage",
+                                       "IgnoreReplaceString",
+                                       "MatchCase",
+                                       "ReplaceCharShape",
+                                       "ReplaceMode",
+                                       "ReplaceParaShape",
+                                       "ReplaceString",
+                                       "ReplaceStyle",
+                                       "SeveralWords",
+                                       "UseWildCards",
+                                       "WholeWordOnly"
+                                   ]
+                     },
+    "HScriptMacro":  {
+                         "props":  [
+                                       "Detail",
+                                       "HSet",
+                                       "index",
+                                       "name",
+                                       "RepeatCount"
+                                   ]
+                     },
+    "HChCompose":  {
+                       "props":  [
+                                     "Chars",
+                                     "CharShapes",
+                                     "CharSize",
+                                     "CheckCompose",
+                                     "CircleType",
+                                     "HSet"
+                                 ]
+                   },
+    "HConvertCase":  {
+                         "props":  [
+                                       "HSet",
+                                       "type"
+                                   ]
+                     },
+    "HTransTranslate":  {
+                            "props":  [
+                                          "HSet",
+                                          "TranslateApplyID",
+                                          "TranslateApplyType",
+                                          "TranslateRange",
+                                          "TranslateResult",
+                                          "TranslateSourceLang",
+                                          "TranslateText",
+                                          "TranslateTransLang"
+                                      ]
+                        },
+    "HTableInsertLine":  {
+                             "props":  [
+                                           "Count",
+                                           "HSet",
+                                           "Side"
+                                       ]
+                         },
+    "HKeyMacro":  {
+                      "props":  [
+                                    "HSet",
+                                    "index",
+                                    "name",
+                                    "RepeatCount"
+                                ]
+                  },
+    "HBibliographyAll":  {
+                             "props":  [
+                                           "BibItemDocument",
+                                           "BibItemEngine",
+                                           "BibItemVolitale",
+                                           "HSet"
+                                       ]
+                         },
+    "HStyleItem":  {
+                       "props":  [
+                                     "CharShape",
+                                     "HSet",
+                                     "LockForm",
+                                     "NameEng",
+                                     "NameLocal",
+                                     "Next",
+                                     "ParaShape",
+                                     "type"
+                                 ]
+                   },
+    "HDrawTextart":  {
+                         "props":  [
+                                       "AlignType",
+                                       "CharSpacing",
+                                       "FontName",
+                                       "FontStyle",
+                                       "FontType",
+                                       "HSet",
+                                       "LineSpacing",
+                                       "NumberOfLines",
+                                       "ShadowColor",
+                                       "ShadowOffsetX",
+                                       "ShadowOffsetY",
+                                       "ShadowType",
+                                       "Shape",
+                                       "string"
+                                   ]
+                     },
+    "HDutmal":  {
+                    "props":  [
+                                  "Align",
+                                  "Delete",
+                                  "FsizeRatio",
+                                  "HSet",
+                                  "Modify",
+                                  "option",
+                                  "PosType",
+                                  "ResultText",
+                                  "StyleNo",
+                                  "SubText"
+                              ]
+                },
+    "HConvertFullHalf":  {
+                             "props":  [
+                                           "Alpha",
+                                           "Gata",
+                                           "HGJamo",
+                                           "HSet",
+                                           "Number",
+                                           "Symbol",
+                                           "type"
+                                       ]
+                         },
+    "HInputHanja":  {
+                        "props":  [
+                                      "Hangul",
+                                      "Hanja",
+                                      "HanjaToHangul",
+                                      "HSet",
+                                      "OneChar",
+                                      "option"
+                                  ]
+                    },
+    "HPronounceInfo":  {
+                           "props":  [
+                                         "FontName",
+                                         "Hanja",
+                                         "Heterography",
+                                         "HSet",
+                                         "Japanese",
+                                         "Position",
+                                         "Show",
+                                         "TextColor",
+                                         "TextSize"
+                                     ]
+                       },
+    "HDeleteCtrls":  {
+                         "props":  [
+                                       "DeleteCtrlType",
+                                       "HSet"
+                                   ]
+                     },
+    "HPasteHtml":  {
+                       "props":  [
+                                     "Default",
+                                     "Format",
+                                     "HSet"
+                                 ]
+                   },
+    "HQCorrect":  {
+                      "props":  [
+                                    "HSet",
+                                    "HyperLinkRunKey",
+                                    "LauncherKey"
+                                ]
+                  },
+    "HDocumentInfo":  {
+                          "props":  [
+                                        "CurCtrl",
+                                        "CurPara",
+                                        "CurParaCount",
+                                        "CurParaLen",
+                                        "CurPos",
+                                        "DetailCharCount",
+                                        "DetailCurPage",
+                                        "DetailCurPrtPage",
+                                        "DetailInfo",
+                                        "DetailLineCount",
+                                        "DetailPageCount",
+                                        "DetailWordCount",
+                                        "HSet",
+                                        "RootPara",
+                                        "RootParaCount",
+                                        "RootPos",
+                                        "SecDef",
+                                        "SectionInfo"
+                                    ]
+                      },
+    "HUserQCommandFile":  {
+                              "props":  [
+                                            "filename",
+                                            "HSet",
+                                            "LoadType",
+                                            "Save"
+                                        ]
+                          },
+    "HShapeCopyPaste":  {
+                            "props":  [
+                                          "CellAttr",
+                                          "CellBorder",
+                                          "CellFill",
+                                          "HSet",
+                                          "type",
+                                          "TypeBodyAndCellOnly"
+                                      ]
+                        },
+    "HHncMessageBox":  {
+                           "props":  [
+                                         "Caption",
+                                         "Flag",
+                                         "HSet",
+                                         "Result",
+                                         "string"
+                                     ]
+                       },
+    "HHeaderFooter":  {
+                          "props":  [
+                                        "HSet",
+                                        "type"
+                                    ]
+                      },
+    "HTableDrawPen":  {
+                          "props":  [
+                                        "Color",
+                                        "HSet",
+                                        "Style",
+                                        "Width"
+                                    ]
+                      },
+    "HHtmlPlusExport":  {
+                            "props":  [
+                                          "HSet",
+                                          "HtmlExportType"
+                                      ]
+                        },
+    "HSaveAsImage":  {
+                         "props":  [
+                                       "DelCutting",
+                                       "HSet",
+                                       "MinHeight",
+                                       "MinWidth",
+                                       "ResizeImage",
+                                       "SaveAsFormat",
+                                       "SaveDpiX",
+                                       "SaveDpiY",
+                                       "SaveType"
+                                   ]
+                     },
+    "HScrollPosInfo":  {
+                           "props":  [
+                                         "HorzLimitPos",
+                                         "HorzPos",
+                                         "HSet",
+                                         "VertLimitPos",
+                                         "VertPos"
+                                     ]
+                       },
+    "HShapeObjComment":  {
+                             "props":  [
+                                           "EditShapeObjCommentFlag",
+                                           "EditShapeObjCommentStr",
+                                           "HSet"
+                                       ]
+                         },
+    "HCommPermission":  {
+                            "props":  [
+                                          "HSet",
+                                          "PermissionURI"
+                                      ]
+                        },
+    "HDocFilters":  {
+                        "props":  [
+                                      "DocFilters",
+                                      "Format",
+                                      "Hide",
+                                      "HSet",
+                                      "type"
+                                  ]
+                    },
+    "HPictureChange":  {
+                           "props":  [
+                                         "HSet",
+                                         "PictureEmbed",
+                                         "PicturePath"
+                                     ]
+                       },
+    "HPageNumPos":  {
+                        "props":  [
+                                      "DrawPos",
+                                      "HSet",
+                                      "NewNumber",
+                                      "NumberFormat",
+                                      "PrefixChar",
+                                      "SideChar",
+                                      "SuffixChar",
+                                      "UserChar"
+                                  ]
+                    },
+    "HFileConvert":  {
+                         "props":  [
+                                       "DestFileList",
+                                       "Format",
+                                       "HSet",
+                                       "SrcFileList"
+                                   ]
+                     },
+    "HTableDeleteLine":  {
+                             "props":  [
+                                           "HSet",
+                                           "type"
+                                       ]
+                         },
+    "HSecDef":  {
+                    "props":  [
+                                  "CharGrid",
+                                  "EndnoteShape",
+                                  "EquationNumber",
+                                  "FigureNumber",
+                                  "FirstBorder",
+                                  "FirstFill",
+                                  "FootnoteShape",
+                                  "HideBorder",
+                                  "HideEmptyLine",
+                                  "HideFill",
+                                  "HideFooter",
+                                  "HideHeader",
+                                  "HideMasterPage",
+                                  "HidePageNumPos",
+                                  "HSet",
+                                  "LineGrid",
+                                  "LineNumberCountBy",
+                                  "LineNumberDistance",
+                                  "LineNumberRestart",
+                                  "LineNumberStart",
+                                  "MemoShape",
+                                  "OutlineShape",
+                                  "PageBorderFillBoth",
+                                  "PageBorderFillEven",
+                                  "PageBorderFillOdd",
+                                  "PageDef",
+                                  "PageNumber",
+                                  "ShowLineNumbers",
+                                  "SpaceBetweenColumns",
+                                  "StartsOn",
+                                  "TableNumber",
+                                  "TabStop",
+                                  "TextDirection",
+                                  "TextVerticalWidthHead",
+                                  "WongojiFormat"
+                              ]
+                },
+    "HVersionInfo":  {
+                         "props":  [
+                                       "FileDiff",
+                                       "HSet",
+                                       "ItemEndIndex",
+                                       "ItemInfoDescription",
+                                       "ItemInfoIndex",
+                                       "ItemInfoLock",
+                                       "ItemInfoTimeHi",
+                                       "ItemInfoTimeLo",
+                                       "ItemInfoWriter",
+                                       "ItemOverWrite",
+                                       "ItemSaveDescription",
+                                       "ItemStartIndex",
+                                       "ResultMergedPath",
+                                       "ResultOption",
+                                       "ResultShowMemo",
+                                       "ResultSourcePath",
+                                       "ResultTargetPath",
+                                       "SaveFilePath",
+                                       "SourcePath",
+                                       "TargetPath",
+                                       "TempFilePath",
+                                       "UsedCert",
+                                       "UsedStanTime",
+                                       "VersionAutoSave",
+                                       "VersionDiffSplitView"
+                                   ]
+                     },
+    "HFindImagePath":  {
+                           "props":  [
+                                         "FindImagePathFile",
+                                         "FindImagePathFolder",
+                                         "FindImagePathNewFolder",
+                                         "FindImagePathType",
+                                         "HSet"
+                                     ]
+                       },
+    "HConvertToHangul":  {
+                             "props":  [
+                                           "Gata",
+                                           "Gu",
+                                           "Hanja",
+                                           "HanjaHangul",
+                                           "Hira",
+                                           "HSet",
+                                           "type"
+                                       ]
+                         },
+    "HTableChartInfo":  {
+                            "props":  [
+                                          "CtrlID",
+                                          "EndCol",
+                                          "EndRow",
+                                          "HSet",
+                                          "NextCtrlID",
+                                          "StartCol",
+                                          "StartRow"
+                                      ]
+                        },
+    "HMailMergeGenerate":  {
+                               "props":  [
+                                             "Continue",
+                                             "DbfCode",
+                                             "DbfPath",
+                                             "Field",
+                                             "FieldUpdate",
+                                             "filename",
+                                             "HSet",
+                                             "HwpId",
+                                             "HwpPath",
+                                             "Input",
+                                             "NxlPath",
+                                             "Output",
+                                             "PrintSet",
+                                             "Subject",
+                                             "type"
+                                         ]
+                           },
+    "HListParaPos":  {
+                         "props":  [
+                                       "HSet",
+                                       "List",
+                                       "Para",
+                                       "Pos"
+                                   ]
+                     },
+    "HGetText":  {
+                     "props":  [
+                                   "HSet",
+                                   "Text"
+                               ]
+                 },
+    "HPrivateInfoSecurity":  {
+                                 "props":  [
+                                               "Account",
+                                               "Address",
+                                               "Birthday",
+                                               "ChangePassword",
+                                               "Command",
+                                               "Credit",
+                                               "DelHyperlink",
+                                               "Email",
+                                               "Etc",
+                                               "ForeignerNo",
+                                               "HSet",
+                                               "InfoType",
+                                               "IPAddress",
+                                               "License",
+                                               "MarkChar",
+                                               "MarkCharType",
+                                               "NoMessageBox",
+                                               "Passport",
+                                               "Password",
+                                               "PasswordOnOff",
+                                               "Pattern",
+                                               "Resident",
+                                               "Telephone",
+                                               "UserDef"
+                                           ]
+                             },
+    "HLinkDocument":  {
+                          "props":  [
+                                        "FootnoteInherit",
+                                        "HSet",
+                                        "name",
+                                        "PageInherit"
+                                    ]
+                      },
+    "HTableStrToTbl":  {
+                           "props":  [
+                                         "AutoOrDefine",
+                                         "DelimiterEtc",
+                                         "DelimiterType",
+                                         "HSet",
+                                         "KeepSeperator",
+                                         "TableCreation",
+                                         "UserDefine"
+                                     ]
+                       },
+    "HPreference":  {
+                        "props":  [
+                                      "ApplyForbidden",
+                                      "ApplyLinkAttr",
+                                      "EndForbiddenStr",
+                                      "HSet",
+                                      "HwpxFormatDefaults",
+                                      "PasteObjectAsPicture",
+                                      "ShowSinglePage",
+                                      "StartForbiddenStr",
+                                      "UsePageLayout"
+                                  ]
+                    },
+    "HDocFindInfo":  {
+                         "props":  [
+                                       "HSet",
+                                       "ListID",
+                                       "ParaID",
+                                       "Pos"
+                                   ]
+                     },
+    "HDocDRM":  {
+                    "props":  [
+                                  "AskCert",
+                                  "Cert",
+                                  "DecryptKey",
+                                  "Flag",
+                                  "HSet",
+                                  "RecieverCert"
+                              ]
+                },
+    "HBorderFillExt":  {
+                           "props":  [
+                                         "ColorHorz",
+                                         "ColorVert",
+                                         "HSet",
+                                         "TypeHorz",
+                                         "TypeVert",
+                                         "WidthHorz",
+                                         "WidthVert"
+                                     ]
+                       },
+    "HInputHanjaMean":  {
+                            "props":  [
+                                          "HSet",
+                                          "MeanString"
+                                      ]
+                        },
+    "HParaShape":  {
+                       "props":  [
+                                     "AlignType",
+                                     "AutoSpaceEAsianEng",
+                                     "AutoSpaceEAsianNum",
+                                     "BorderConnect",
+                                     "BorderFill",
+                                     "BorderOffsetBottom",
+                                     "BorderOffsetLeft",
+                                     "BorderOffsetRight",
+                                     "BorderOffsetTop",
+                                     "BorderText",
+                                     "BreakLatinWord",
+                                     "BreakNonLatinWord",
+                                     "Bullet",
+                                     "BulletID",
+                                     "Checked",
+                                     "Condense",
+                                     "FontLineHeight",
+                                     "HeadingType",
+                                     "HSet",
+                                     "Indentation",
+                                     "KeepLinesTogether",
+                                     "KeepWithNext",
+                                     "LeftMargin",
+                                     "Level",
+                                     "LineSpacing",
+                                     "LineSpacingType",
+                                     "LineWrap",
+                                     "NextSpacing",
+                                     "Numbering",
+                                     "NumberingID",
+                                     "PagebreakBefore",
+                                     "PrevSpacing",
+                                     "RightMargin",
+                                     "SnapToGrid",
+                                     "SuppressLineNum",
+                                     "TabDef",
+                                     "TailType",
+                                     "TextAlignment",
+                                     "WidowOrphan"
+                                 ]
+                   },
+    "HLabel":  {
+                   "props":  [
+                                 "BoxLength",
+                                 "BoxMarginHor",
+                                 "BoxMarginVer",
+                                 "BoxWidth",
+                                 "HSet",
+                                 "LabelCols",
+                                 "LabelRows",
+                                 "Landscape",
+                                 "LeftMargin",
+                                 "PageCnt",
+                                 "PageLen",
+                                 "PageWidth",
+                                 "TextGap",
+                                 "TopMargin"
+                             ]
+               },
+    "HDrawVideoAttr":  {
+                           "props":  [
+                                         "HSet",
+                                         "VideoEmbedded",
+                                         "VideoFrameImage",
+                                         "VideoPath",
+                                         "VideoTag",
+                                         "VideoType"
+                                     ]
+                       },
+    "HSelectionOpt":  {
+                          "props":  [
+                                        "HSet",
+                                        "option"
+                                    ]
+                      },
+    "HColDef":  {
+                    "props":  [
+                                  "Count",
+                                  "HSet",
+                                  "Layout",
+                                  "LineColor",
+                                  "LineType",
+                                  "LineWidth",
+                                  "SameGap",
+                                  "SameSize",
+                                  "type",
+                                  "WidthGap"
+                              ]
+                },
+    "HFormComboboxAttr":  {
+                              "props":  [
+                                            "EditEnable",
+                                            "HSet",
+                                            "ListBoxRows",
+                                            "ListBoxWidth",
+                                            "Text"
+                                        ]
+                          },
+    "HViewProperties":  {
+                            "props":  [
+                                          "DragDrop",
+                                          "HSet",
+                                          "MouseWheelDir",
+                                          "OptionFlag",
+                                          "PageDir",
+                                          "ZoomCntX",
+                                          "ZoomCntY",
+                                          "ZoomCustomDlg",
+                                          "ZoomMirror",
+                                          "ZoomRatio",
+                                          "ZoomType"
+                                      ]
+                        },
+    "HCompatibleDocument":  {
+                                "props":  [
+                                              "CurrentVersion",
+                                              "Default",
+                                              "HSet",
+                                              "TargetProgram"
+                                          ]
+                            },
+    "HFileSendMail":  {
+                          "props":  [
+                                        "Filepath",
+                                        "HSet",
+                                        "Subject",
+                                        "To",
+                                        "type"
+                                    ]
+                      },
+    "HTextVertical":  {
+                          "props":  [
+                                        "HSet",
+                                        "Landscape",
+                                        "TextDirection",
+                                        "TextVerticalWidthHead"
+                                    ]
+                      },
+    "HViewStatus":  {
+                        "props":  [
+                                      "HSet",
+                                      "type",
+                                      "ViewPosX",
+                                      "ViewPosY"
+                                  ]
+                    },
+    "HRevisionDef":  {
+                         "props":  [
+                                       "BeginPos",
+                                       "HSet",
+                                       "Margin",
+                                       "SignType",
+                                       "SubText"
+                                   ]
+                     },
+    "HPassword":  {
+                      "props":  [
+                                    "Ask",
+                                    "FullRange",
+                                    "HSet",
+                                    "Level",
+                                    "ReadOnly",
+                                    "ReadString",
+                                    "RWAsk",
+                                    "string",
+                                    "WriteString"
+                                ]
+                  },
+    "HFormObjInputHanja":  {
+                               "props":  [
+                                             "HSet",
+                                             "InputString",
+                                             "OneChar",
+                                             "ResultLength",
+                                             "ResultString"
+                                         ]
+                           },
+    "HFormButtonAttr":  {
+                            "props":  [
+                                          "BackStyle",
+                                          "Caption",
+                                          "HSet",
+                                          "RadioGroupName",
+                                          "TriState",
+                                          "Value"
+                                      ]
+                        },
+    "HTableCreation":  {
+                           "props":  [
+                                         "CellInfo",
+                                         "Cols",
+                                         "ColWidth",
+                                         "HeightType",
+                                         "HeightValue",
+                                         "HSet",
+                                         "RowHeight",
+                                         "Rows",
+                                         "TableDrawProperties",
+                                         "TableProperties",
+                                         "TableTemplate",
+                                         "TableTemplateValue",
+                                         "WidthType",
+                                         "WidthValue"
+                                     ]
+                       },
+    "HAutoFill":  {
+                      "props":  [
+                                    "AutoFillItem",
+                                    "AutoFillSection",
+                                    "HSet"
+                                ]
+                  },
+    "HCellBorderFill":  {
+                            "props":  [
+                                          "AllCellsBorderFill",
+                                          "ApplyBorderToEdge",
+                                          "ApplyTo",
+                                          "BackSlashFlag",
+                                          "BorderColorBottom",
+                                          "BorderColorRight",
+                                          "BorderColorTop",
+                                          "BorderCorlorLeft",
+                                          "BorderFill3D",
+                                          "BorderTypeBottom",
+                                          "BorderTypeLeft",
+                                          "BorderTypeRight",
+                                          "BorderTypeTop",
+                                          "BorderWidthBottom",
+                                          "BorderWidthLeft",
+                                          "BorderWidthRight",
+                                          "BorderWidthTop",
+                                          "BreakCellSeparateLine",
+                                          "CenterLineFlag",
+                                          "ColorHorz",
+                                          "ColorVert",
+                                          "CounterBackSlashFlag",
+                                          "CounterSlashFlag",
+                                          "CrookedSlashFlag",
+                                          "CrookedSlashFlag1",
+                                          "CrookedSlashFlag2",
+                                          "DiagonalColor",
+                                          "DiagonalType",
+                                          "DiagonalWidth",
+                                          "FillAttr",
+                                          "HSet",
+                                          "NoNeighborCell",
+                                          "SelCellsBorderFill",
+                                          "ShadeFaceColorIncDec",
+                                          "Shadow",
+                                          "SlashFlag",
+                                          "TableBorderFill",
+                                          "TypeHorz",
+                                          "TypeVert",
+                                          "WidthHorz",
+                                          "WidthVert"
+                                      ]
+                        },
+    "HTableTblToStr":  {
+                           "props":  [
+                                         "DelimiterType",
+                                         "HSet",
+                                         "UserDefine"
+                                     ]
+                       },
+    "HFileSecurity":  {
+                          "props":  [
+                                        "DocFlag",
+                                        "DRMDLLVersion",
+                                        "filename",
+                                        "HSet",
+                                        "NoCopy",
+                                        "NoPrint",
+                                        "Notify",
+                                        "PasswordAsk",
+                                        "PasswordFullRange",
+                                        "PasswordString"
+                                    ]
+                      },
+    "HFileSaveDaisy":  {
+                           "props":  [
+                                         "Author",
+                                         "filename",
+                                         "FolderName",
+                                         "HSet",
+                                         "Title",
+                                         "Uid"
+                                     ]
+                       },
+    "HBrailleConvert":  {
+                            "props":  [
+                                          "CharHeight",
+                                          "CharSpacing",
+                                          "FontName",
+                                          "FontType",
+                                          "HSet",
+                                          "LineCharApply",
+                                          "LineCharType",
+                                          "LineSpacing",
+                                          "PaperApply",
+                                          "PaperType",
+                                          "ResultType",
+                                          "TargetView"
+                                      ]
+                        },
+    "HExchangeFootnoteEndNote":  {
+                                     "props":  [
+                                                   "Flag",
+                                                   "HSet"
+                                               ]
+                                 },
+    "HPresentation":  {
+                          "props":  [
+                                        "Effect",
+                                        "HSet",
+                                        "InvertText",
+                                        "ShowMode",
+                                        "ShowPage",
+                                        "ShowTime",
+                                        "Sound"
+                                    ]
+                      },
+    "HDrawCoordInfo":  {
+                           "props":  [
+                                         "Count",
+                                         "HSet",
+                                         "Line",
+                                         "Point"
+                                     ]
+                       },
+    "HCodeTable":  {
+                       "props":  [
+                                     "HSet",
+                                     "Text"
+                                 ]
+                   },
+    "HTableSplitCell":  {
+                            "props":  [
+                                          "Cols",
+                                          "DistributeHeight",
+                                          "HSet",
+                                          "Merge",
+                                          "Mode2",
+                                          "Rows"
+                                      ]
+                        },
+    "HConvertHiraToGata":  {
+                               "props":  [
+                                             "HSet",
+                                             "type"
+                                         ]
+                           },
+    "HDrawRectType":  {
+                          "props":  [
+                                        "HSet",
+                                        "type"
+                                    ]
+                      },
+    "HFileSetSecurity":  {
+                             "props":  [
+                                           "HSet",
+                                           "NoCopy",
+                                           "NoPrint",
+                                           "Password"
+                                       ]
+                         },
+    "HXMLOpenSave":  {
+                         "props":  [
+                                       "Argument",
+                                       "HSet",
+                                       "OpenFlag",
+                                       "XmlFileName",
+                                       "XslFileName"
+                                   ]
+                     },
+    "HMovieProperties":  {
+                             "props":  [
+                                           "AutoPlay",
+                                           "AutoRewind",
+                                           "Base",
+                                           "Caption",
+                                           "EnablePos",
+                                           "EnableTrack",
+                                           "HSet",
+                                           "ShowAudio",
+                                           "ShowChaption",
+                                           "ShowCtrlPanel",
+                                           "ShowMenu",
+                                           "ShowPosCtrl",
+                                           "ShowStatus",
+                                           "ShowTrackBar"
+                                       ]
+                         },
+    "HFlashProperties":  {
+                             "props":  [
+                                           "AutoPlay",
+                                           "Base",
+                                           "BgColor",
+                                           "HSet",
+                                           "LoopPlay",
+                                           "Qulaity",
+                                           "Scale",
+                                           "ShowMenu",
+                                           "WMode"
+                                       ]
+                         },
+    "HDrawScAction":  {
+                          "props":  [
+                                        "HorzFlip",
+                                        "HSet",
+                                        "RotateAngel",
+                                        "RotateCenterX",
+                                        "RotateCenterY",
+                                        "VertFlip"
+                                    ]
+                      },
+    "HBorderFill":  {
+                        "props":  [
+                                      "BackSlashFlag",
+                                      "BorderColorBottom",
+                                      "BorderColorRight",
+                                      "BorderColorTop",
+                                      "BorderCorlorLeft",
+                                      "BorderFill3D",
+                                      "BorderTypeBottom",
+                                      "BorderTypeLeft",
+                                      "BorderTypeRight",
+                                      "BorderTypeTop",
+                                      "BorderWidthBottom",
+                                      "BorderWidthLeft",
+                                      "BorderWidthRight",
+                                      "BorderWidthTop",
+                                      "BreakCellSeparateLine",
+                                      "CenterLineFlag",
+                                      "CounterBackSlashFlag",
+                                      "CounterSlashFlag",
+                                      "CrookedSlashFlag",
+                                      "CrookedSlashFlag1",
+                                      "CrookedSlashFlag2",
+                                      "DiagonalColor",
+                                      "DiagonalType",
+                                      "DiagonalWidth",
+                                      "FillAttr",
+                                      "HSet",
+                                      "ShadeFaceColorIncDec",
+                                      "Shadow",
+                                      "SlashFlag"
+                                  ]
+                    },
+    "HPageHiding":  {
+                        "props":  [
+                                      "Fields",
+                                      "HSet"
+                                  ]
+                    },
+    "HMetaTag":  {
+                     "props":  [
+                                   "HSet",
+                                   "MetaTagName"
+                               ]
+                 },
+    "HInputHanjaBusu":  {
+                            "props":  [
+                                          "BusuString",
+                                          "HSet"
+                                      ]
+                        },
+    "HFormObjHanjaBusu":  {
+                              "props":  [
+                                            "HSet",
+                                            "ResultString"
+                                        ]
+                          },
+    "HBlogAccount":  {
+                         "props":  [
+                                       "BlogAccountAuthorID",
+                                       "BlogAccountBlogID",
+                                       "BlogAccountFlag",
+                                       "BlogAccountName",
+                                       "BlogAccountPass",
+                                       "BlogAccountServer",
+                                       "BlogAccountType",
+                                       "HSet"
+                                   ]
+                     },
+    "HFormCharshapeattr":  {
+                               "props":  [
+                                             "AutoSize",
+                                             "CharShape",
+                                             "FollowContext",
+                                             "HSet",
+                                             "WordWarp"
+                                         ]
+                           },
+    "HTrackChange":  {
+                         "props":  [
+                                       "ChangeColor",
+                                       "ChangeShape",
+                                       "DeleteColor",
+                                       "DeleteShape",
+                                       "Format",
+                                       "FormatColor",
+                                       "FormatShape",
+                                       "HSet",
+                                       "InsertColor",
+                                       "InsertShape",
+                                       "MemoColor",
+                                       "MemoLine",
+                                       "MemoWidth",
+                                       "Tooltip"
+                                   ]
+                     },
+    "HFootnoteShape":  {
+                           "props":  [
+                                         "BeneathText",
+                                         "HSet",
+                                         "LineColor",
+                                         "LineLength",
+                                         "LineType",
+                                         "LineWidth",
+                                         "NewNumber",
+                                         "NumberFormat",
+                                         "PlaceAt",
+                                         "PrefixChar",
+                                         "Restart",
+                                         "SpaceAboveLine",
+                                         "SpaceBelowLine",
+                                         "SpaceBetweenNotes",
+                                         "Suffix",
+                                         "SuperScript",
+                                         "UserChar"
+                                     ]
+                       },
+    "HShapeObjSaveAsPicture":  {
+                                   "props":  [
+                                                 "Ext",
+                                                 "HSet",
+                                                 "Path"
+                                             ]
+                               },
+    "HCCLMark":  {
+                     "props":  [
+                                   "HSet",
+                                   "ImageSize",
+                                   "LicenseCountry",
+                                   "PermitCommercial",
+                                   "PermitModify",
+                                   "ShowImageText"
+                               ]
+                 },
+    "HFieldCtrl":  {
+                       "props":  [
+                                     "Command",
+                                     "CtrlData",
+                                     "Editable",
+                                     "FieldDirty",
+                                     "HSet",
+                                     "User"
+                                 ]
+                   },
+    "HPageDef":  {
+                     "props":  [
+                                   "BottomMargin",
+                                   "FooterLen",
+                                   "GutterLen",
+                                   "GutterType",
+                                   "HeaderLen",
+                                   "HSet",
+                                   "Landscape",
+                                   "LeftMargin",
+                                   "PaperHeight",
+                                   "PaperWidth",
+                                   "RightMargin",
+                                   "TopMargin"
+                               ]
+                 },
+    "HFormGeneral":  {
+                         "props":  [
+                                       "FormObjType",
+                                       "HSet"
+                                   ]
+                     },
+    "HDrawArcType":  {
+                         "props":  [
+                                       "HSet",
+                                       "Interval",
+                                       "type"
+                                   ]
+                     },
+    "HDrawConnectLine":  {
+                             "props":  [
+                                           "HSet",
+                                           "type"
+                                       ]
+                         },
+    "HMetaData":  {
+                      "props":  [
+                                    "HSet",
+                                    "MetaContent",
+                                    "MetaDatatype",
+                                    "MetaProperty",
+                                    "MetaResource"
+                                ]
+                  },
+    "HXMLSchema":  {
+                       "props":  [
+                                     "HSet",
+                                     "HwpFileName",
+                                     "SchemaFileName",
+                                     "TemplateFileName",
+                                     "TemplateName"
+                                 ]
+                   },
+    "HSectionMasterPage":  {
+                               "props":  [
+                                             "HSet",
+                                             "SectionMasterPageTypes",
+                                             "SectionNumber"
+                                         ]
+                           },
+    "HInsertFieldTemplate":  {
+                                 "props":  [
+                                               "Editable",
+                                               "HSet",
+                                               "ShowSingle",
+                                               "TemplateDirection",
+                                               "TemplateHelp",
+                                               "TemplateName",
+                                               "TemplateType"
+                                           ]
+                             },
+    "HDrawSoMouseOption":  {
+                               "props":  [
+                                             "CreateOnDrag",
+                                             "CreateOnDragShowTooltip",
+                                             "EasySelect",
+                                             "HSet"
+                                         ]
+                           },
+    "HSaveUserInfoFile":  {
+                              "props":  [
+                                            "ExistMacroIdiomPath",
+                                            "ExistTemplDocPath",
+                                            "HSet",
+                                            "MacroIdiomPath",
+                                            "SaveBaseTemplDoc",
+                                            "TemplDocPath",
+                                            "UserInfoDataFilePath"
+                                        ]
+                          },
+    "HChangeRome":  {
+                        "props":  [
+                                      "HanString",
+                                      "HSet",
+                                      "option",
+                                      "RomeString"
+                                  ]
+                    },
+    "HBulletShape":  {
+                         "props":  [
+                                       "Alignment",
+                                       "AutoIndent",
+                                       "BulletChar",
+                                       "BulletImage",
+                                       "CharShape",
+                                       "Checkable",
+                                       "CheckedBulletChar",
+                                       "HasCharShape",
+                                       "HasImage",
+                                       "HSet",
+                                       "TextOffset",
+                                       "TextOffsetType",
+                                       "UseInstWidth",
+                                       "WidthAdjust"
+                                   ]
+                     },
+    "HFileXMLSchema":  {
+                           "props":  [
+                                         "HSet",
+                                         "NodeCreationOption",
+                                         "XMLOpenSave"
+                                     ]
+                       },
+    "HRWPassword":  {
+                        "props":  [
+                                      "Ask",
+                                      "FullRange",
+                                      "HSet",
+                                      "ReadOnly",
+                                      "ReadString",
+                                      "WriteString"
+                                  ]
+                    },
+    "HMemoShape":  {
+                       "props":  [
+                                     "ActiveFillColor",
+                                     "FillColor",
+                                     "HSet",
+                                     "LineColor",
+                                     "LineType",
+                                     "LineWidth",
+                                     "MemoType",
+                                     "Width"
+                                 ]
+                   },
+    "HInsertFile":  {
+                        "props":  [
+                                      "FileArg",
+                                      "FileFormat",
+                                      "filename",
+                                      "HSet",
+                                      "KeepCharshape",
+                                      "KeepParashape",
+                                      "KeepSection",
+                                      "KeepStyle"
+                                  ]
+                    },
+    "HFileInfo":  {
+                      "props":  [
+                                    "Compressed",
+                                    "Encrypted",
+                                    "Format",
+                                    "HSet",
+                                    "VersionNum",
+                                    "VersionStr"
+                                ]
+                  },
+    "HCtrlData":  {
+                      "props":  [
+                                    "HSet",
+                                    "name"
+                                ]
+                  },
+    "HSectionApply":  {
+                          "props":  [
+                                        "ApplyTo",
+                                        "Category",
+                                        "ConvAplly2Index",
+                                        "HSet",
+                                        "index",
+                                        "string"
+                                    ]
+                      },
+    "HShapeObjectCopyPaste":  {
+                                  "props":  [
+                                                "HSet",
+                                                "ShapeObjectFill",
+                                                "ShapeObjectLine",
+                                                "ShapeObjectPicEffect",
+                                                "ShapeObjectShadow",
+                                                "ShapeObjectSize",
+                                                "type"
+                                            ]
+                              },
+    "HFormObjInputIdiom":  {
+                               "props":  [
+                                             "HSet",
+                                             "ResultLength",
+                                             "ResultString",
+                                             "SearchString"
+                                         ]
+                           },
+    "HDrawFillAttr":  {
+                          "props":  [
+                                        "Brightness",
+                                        "Contrast",
+                                        "DrawFillImageType",
+                                        "Embedded",
+                                        "filename",
+                                        "FileNameStr",
+                                        "GradationAlpha",
+                                        "GradationAngle",
+                                        "GradationBrush",
+                                        "GradationCenterX",
+                                        "GradationCenterY",
+                                        "GradationColor",
+                                        "GradationColorNum",
+                                        "GradationIndexPos",
+                                        "GradationStep",
+                                        "GradationStepCenter",
+                                        "GradationType",
+                                        "HSet",
+                                        "ImageAlpha",
+                                        "ImageBrush",
+                                        "ImageCreateOnDrag",
+                                        "InsideMarginBottom",
+                                        "InsideMarginLeft",
+                                        "InsideMarginRight",
+                                        "InsideMarginTop",
+                                        "OriginalSizeX",
+                                        "OriginalSizeY",
+                                        "PicEffectTo",
+                                        "Reverse",
+                                        "SkipBottom",
+                                        "SkipLeft",
+                                        "SkipRight",
+                                        "SkipTop",
+                                        "ToolbarColor",
+                                        "type",
+                                        "WinBrushAlpha",
+                                        "WinBrushFaceColor",
+                                        "WinBrushFaceStyle",
+                                        "WinBrushHatchColor",
+                                        "WindowsBrush"
+                                    ]
+                      },
+    "HBibliographyName":  {
+                              "props":  [
+                                            "BibNameCorperate",
+                                            "BibNameFirst",
+                                            "BibNameLast",
+                                            "BibNameMiddle",
+                                            "BibNameType",
+                                            "HSet"
+                                        ]
+                          },
+    "HChComposeShapes":  {
+                             "props":  [
+                                           "CircleCharShape",
+                                           "HSet",
+                                           "InnerCharShape1",
+                                           "InnerCharShape2",
+                                           "InnerCharShape3",
+                                           "InnerCharShape4",
+                                           "InnerCharShape5",
+                                           "InnerCharShape6",
+                                           "InnerCharShape7",
+                                           "InnerCharShape8",
+                                           "InnerCharShape9"
+                                       ]
+                         },
+    "HDrawLineAttr":  {
+                          "props":  [
+                                        "Alpha",
+                                        "Color",
+                                        "EndCap",
+                                        "HeadFill",
+                                        "HeadSize",
+                                        "HeadStyle",
+                                        "HSet",
+                                        "OutLineStyle",
+                                        "Style",
+                                        "TailFill",
+                                        "TailSize",
+                                        "TailStyle",
+                                        "Width"
+                                    ]
+                      },
+    "HFormListBoxAttr":  {
+                             "props":  [
+                                           "HSet",
+                                           "ItemHeight",
+                                           "Text",
+                                           "TopIndex"
+                                       ]
+                         },
+    "HSearchAddress":  {
+                           "props":  [
+                                         "HSet"
+                                     ]
+                       },
+    "HSearchForeign":  {
+                           "props":  [
+                                         "HSet"
+                                     ]
+                       },
+    "HPageBorderFill":  {
+                            "props":  [
+                                          "BackSlashFlag",
+                                          "BorderColorBottom",
+                                          "BorderColorRight",
+                                          "BorderColorTop",
+                                          "BorderCorlorLeft",
+                                          "BorderFill3D",
+                                          "BorderTypeBottom",
+                                          "BorderTypeLeft",
+                                          "BorderTypeRight",
+                                          "BorderTypeTop",
+                                          "BorderWidthBottom",
+                                          "BorderWidthLeft",
+                                          "BorderWidthRight",
+                                          "BorderWidthTop",
+                                          "BreakCellSeparateLine",
+                                          "CenterLineFlag",
+                                          "CounterBackSlashFlag",
+                                          "CounterSlashFlag",
+                                          "CrookedSlashFlag",
+                                          "CrookedSlashFlag1",
+                                          "CrookedSlashFlag2",
+                                          "DiagonalColor",
+                                          "DiagonalType",
+                                          "DiagonalWidth",
+                                          "FillArea",
+                                          "FillAttr",
+                                          "FooterInside",
+                                          "HeaderInside",
+                                          "HSet",
+                                          "OffsetBottom",
+                                          "OffsetLeft",
+                                          "OffsetRight",
+                                          "OffsetTop",
+                                          "ShadeFaceColorIncDec",
+                                          "Shadow",
+                                          "SlashFlag",
+                                          "TextBorder"
+                                      ]
+                        },
+    "HDrawImageAttr":  {
+                           "props":  [
+                                         "Brightness",
+                                         "Contrast",
+                                         "DrawFillImageType",
+                                         "Embedded",
+                                         "FileInfo",
+                                         "filename",
+                                         "FileNameStr",
+                                         "GradationBrush",
+                                         "HSet",
+                                         "ImageAdjustPrevObject",
+                                         "ImageAdjustTableCell",
+                                         "ImageAlphaEffect",
+                                         "ImageAutoRotate",
+                                         "ImageBrush",
+                                         "ImageCreateOnDrag",
+                                         "ImageCreateTreatAsChar",
+                                         "ImageInsertFileNameInCaption",
+                                         "InsideMarginBottom",
+                                         "InsideMarginLeft",
+                                         "InsideMarginRight",
+                                         "InsideMarginTop",
+                                         "OriginalSizeX",
+                                         "OriginalSizeY",
+                                         "PicEffectTo",
+                                         "Reverse",
+                                         "SkipBottom",
+                                         "SkipLeft",
+                                         "SkipRight",
+                                         "SkipTop",
+                                         "WindowsBrush"
+                                     ]
+                       },
+    "HPresentationRange":  {
+                               "props":  [
+                                             "ExistPresentation",
+                                             "HSet",
+                                             "PresentationDefault"
+                                         ]
+                           },
+    "HPageNumCtrl":  {
+                         "props":  [
+                                       "HSet",
+                                       "PageStartsOn"
+                                   ]
+                     },
+    "HMasterPage":  {
+                        "props":  [
+                                      "ApplyTo",
+                                      "CopyMasterPageTypes",
+                                      "CopySectionNumber",
+                                      "Duplicate",
+                                      "Front",
+                                      "HSet",
+                                      "MasterPageTypes",
+                                      "type"
+                                  ]
+                    },
+    "HTableBorderFill":  {
+                             "props":  [
+                                           "AllCellsBorderFill",
+                                           "BorderApplyTo",
+                                           "HSet",
+                                           "SelCellsBorderFill"
+                                       ]
+                         },
+    "HLunarToSolar":  {
+                          "props":  [
+                                        "Day",
+                                        "HSet",
+                                        "Month",
+                                        "Year"
+                                    ]
+                      },
+    "HPrint":  {
+                   "props":  [
+                                 "BinderHole",
+                                 "BinderHoleType",
+                                 "Collate",
+                                 "Device",
+                                 "DocAuthor",
+                                 "DocTitle",
+                                 "DontCallEndPage",
+                                 "EvenOddPageType",
+                                 "filename",
+                                 "Flags",
+                                 "FromPreView",
+                                 "GraphicEffect",
+                                 "GraphicQuality",
+                                 "HSet",
+                                 "IdcPrintWallPaper",
+                                 "ImageResampling",
+                                 "InitialView",
+                                 "LastBlankPage",
+                                 "NumCopy",
+                                 "OverlapSize",
+                                 "PageLayout",
+                                 "PanelView",
+                                 "Pause",
+                                 "PrintAutoFootNote",
+                                 "PrintAutoFootnoteCtext",
+                                 "PrintAutoFootnoteLtext",
+                                 "PrintAutoFootnoteRtext",
+                                 "PrintAutoHeadNote",
+                                 "PrintAutoHeadnoteCtext",
+                                 "PrintAutoHeadnoteLtext",
+                                 "PrintAutoHeadnoteRtext",
+                                 "PrintBarcode",
+                                 "PrintClickHere",
+                                 "PrintColorSet",
+                                 "PrintCropMark",
+                                 "PrintDrawObj",
+                                 "PrinterName",
+                                 "PrinterPaperLength",
+                                 "PrinterPaperSize",
+                                 "PrinterPaperWidth",
+                                 "PrintFormObj",
+                                 "PrintImage",
+                                 "PrintMarkPen",
+                                 "PrintMemo",
+                                 "PrintMemoContents",
+                                 "PrintMethod",
+                                 "PrintMultiFile",
+                                 "PrintPronounce",
+                                 "PrintRevision",
+                                 "PrintToFile",
+                                 "PrintWatermark",
+                                 "PrintWithoutBlank",
+                                 "PromptOnly",
+                                 "Range",
+                                 "RangeCustom",
+                                 "resolution",
+                                 "ReverseOrder",
+                                 "SaveFormat",
+                                 "ShapeObjRotateAngle",
+                                 "ShapeObjShear",
+                                 "UseHft2Ttf",
+                                 "UserOrder",
+                                 "UseThread",
+                                 "UsingPagenum",
+                                 "ZoomX",
+                                 "ZoomY"
+                             ]
+               },
+    "HPluginCreation":  {
+                            "props":  [
+                                          "Clsid",
+                                          "HSet",
+                                          "SoProperties"
+                                      ]
+                        },
+    "HDeletePage":  {
+                        "props":  [
+                                      "HSet",
+                                      "Range",
+                                      "RangeCustom",
+                                      "UsingPagenum"
+                                  ]
+                    },
+    "HHyperlinkJump":  {
+                           "props":  [
+                                         "HSet",
+                                         "Source",
+                                         "Target"
+                                     ]
+                       },
+    "HEngineProperties":  {
+                              "props":  [
+                                            "CtrlMaskAs2002",
+                                            "DoAnyCursorEdit",
+                                            "DoOutlineStyle",
+                                            "EnableAutoSpell",
+                                            "FaxDriver",
+                                            "HSet",
+                                            "ImageAutoCheck",
+                                            "InsertLock",
+                                            "OpenNewWindow",
+                                            "OptimizeWebHwpCopy",
+                                            "PDFDriver",
+                                            "ShowGuildLines",
+                                            "TabMoveCell"
+                                        ]
+                          },
+    "HCertDRM":  {
+                     "props":  [
+                                   "EndDate",
+                                   "HSet",
+                                   "LimitCopy",
+                                   "LimitPrint",
+                                   "ReceiverPrivInfos",
+                                   "ReceiverPublicKeys",
+                                   "SenderCertEndDate",
+                                   "SenderCertIssuer",
+                                   "SenderCertUsage",
+                                   "SenderPrivateInfo",
+                                   "SenderPrivateKey",
+                                   "SenderPublicKey",
+                                   "SetDate",
+                                   "StartDate"
+                               ]
+                 },
+    "HBibliography":  {
+                          "props":  [
+                                        "BibGUID",
+                                        "BibHasDocument",
+                                        "BibIndex",
+                                        "BibNameABBREVIATEDCASENUMBER",
+                                        "BibNameACCESSDAY",
+                                        "BibNameACCESSMONTH",
+                                        "BibNameACCESSYEAR",
+                                        "BibNameALBUMTITLE",
+                                        "BibNameBOOKTITLE",
+                                        "BibNameBROADCASTER",
+                                        "BibNameBROADCASTTITLE",
+                                        "BibNameCASENUMBER",
+                                        "BibNameCHAPTERNUMBER",
+                                        "BibNameCITY",
+                                        "BibNameCOMMENTS",
+                                        "BibNameCONFERENCENAME",
+                                        "BibNameCOURT",
+                                        "BibNameDAY",
+                                        "BibNameDEPARTMENT",
+                                        "BibNameDISTRIBUTOR",
+                                        "BibNameDOI",
+                                        "BibNameEDITION",
+                                        "BibNameINSTITUTION",
+                                        "BibNameINTERNETSITETITLE",
+                                        "BibNameISSUE",
+                                        "BibNameJOURNALNAME",
+                                        "BibNameLangType",
+                                        "BibNameMEDIUM",
+                                        "BibNameMONTH",
+                                        "BibNameNUMBERVOLUMES",
+                                        "BibNamePAGE",
+                                        "BibNamePAPER",
+                                        "BibNamePATENTNUMBER",
+                                        "BibNamePATENTTYPE",
+                                        "BibNamePERIODICALTITLE",
+                                        "BibNamePRODUCTION",
+                                        "BibNamePUBLICATIONTITLE",
+                                        "BibNamePUBLISHER",
+                                        "BibNameRECORDINGNUMBER",
+                                        "BibNameREGION",
+                                        "BibNameREPORTER",
+                                        "BibNames",
+                                        "BibNameSHORTTITLE",
+                                        "BibNameSTANDARDNUMBER",
+                                        "BibNameSTATEPROVINCE",
+                                        "BibNameSTATION",
+                                        "BibNameTAG",
+                                        "BibNameTHEATER",
+                                        "BibNameTHESISTYPE",
+                                        "BibNameTITLE",
+                                        "BibNameURL",
+                                        "BibNameVERSION",
+                                        "BibNameVOLUME",
+                                        "BibNameYEAR",
+                                        "BibStyleIndex",
+                                        "BibType",
+                                        "BibUsedTagNAme",
+                                        "HSet"
+                                    ]
+                      },
+    "HChangeRomeUser":  {
+                            "props":  [
+                                          "HSet"
+                                      ]
+                        },
+    "HCharShape":  {
+                       "props":  [
+                                     "Bold",
+                                     "BorderFill",
+                                     "DiacSymMark",
+                                     "Emboss",
+                                     "Engrave",
+                                     "FaceNameHangul",
+                                     "FaceNameHanja",
+                                     "FaceNameJapanese",
+                                     "FaceNameLatin",
+                                     "FaceNameOther",
+                                     "FaceNameSymbol",
+                                     "FaceNameUser",
+                                     "FontTypeHangul",
+                                     "FontTypeHanja",
+                                     "FontTypeJapanese",
+                                     "FontTypeLatin",
+                                     "FontTypeOther",
+                                     "FontTypeSymbol",
+                                     "FontTypeUser",
+                                     "Height",
+                                     "HSet",
+                                     "Italic",
+                                     "OffsetHangul",
+                                     "OffsetHanja",
+                                     "OffsetJapanese",
+                                     "OffsetLatin",
+                                     "OffsetOther",
+                                     "OffsetSymbol",
+                                     "OffsetUser",
+                                     "OutLineType",
+                                     "RatioHangul",
+                                     "RatioHanja",
+                                     "RatioJapanese",
+                                     "RatioLatin",
+                                     "RatioOther",
+                                     "RatioSymbol",
+                                     "RatioUser",
+                                     "ShadeColor",
+                                     "ShadowColor",
+                                     "ShadowOffsetX",
+                                     "ShadowOffsetY",
+                                     "ShadowType",
+                                     "SizeHangul",
+                                     "SizeHanja",
+                                     "SizeJapanese",
+                                     "SizeLatin",
+                                     "SizeOther",
+                                     "SizeSymbol",
+                                     "SizeUser",
+                                     "SmallCaps",
+                                     "SpacingHangul",
+                                     "SpacingHanja",
+                                     "SpacingJapanese",
+                                     "SpacingLatin",
+                                     "SpacingOther",
+                                     "SpacingSymbol",
+                                     "SpacingUser",
+                                     "StrikeOutColor",
+                                     "StrikeOutShape",
+                                     "StrikeOutType",
+                                     "SubScript",
+                                     "SuperScript",
+                                     "TextColor",
+                                     "UnderlineColor",
+                                     "UnderlineShape",
+                                     "UnderlineType",
+                                     "UseFontSpace",
+                                     "UseKerning"
+                                 ]
+                   },
+    "HEqEdit":  {
+                    "props":  [
+                                  "AdjustPrevObjAttr",
+                                  "AdjustSelection",
+                                  "AdjustTextbox",
+                                  "AffectsLine",
+                                  "AllowOverlap",
+                                  "ApplyTo",
+                                  "BaseUnit",
+                                  "Color",
+                                  "EqFontName",
+                                  "FlowWithText",
+                                  "Height",
+                                  "HeightRelTo",
+                                  "HoldAnchorObj",
+                                  "HorzAlign",
+                                  "HorzOffset",
+                                  "HorzRelTo",
+                                  "HSet",
+                                  "LayoutHeight",
+                                  "LayoutWidth",
+                                  "LineMode",
+                                  "Lock",
+                                  "NumberingType",
+                                  "OutsideMarginBottom",
+                                  "OutsideMarginLeft",
+                                  "OutsideMarginRight",
+                                  "OutsideMarginTop",
+                                  "PageNumber",
+                                  "ProtectSize",
+                                  "string",
+                                  "TextFlow",
+                                  "TextWrap",
+                                  "TreatAsChar",
+                                  "Version",
+                                  "VertAlign",
+                                  "VertOffset",
+                                  "VertRelTo",
+                                  "VisualString",
+                                  "Width",
+                                  "WidthRelTo"
+                              ]
+                },
+    "HIndexMark":  {
+                       "props":  [
+                                     "First",
+                                     "HSet",
+                                     "Second"
+                                 ]
+                   },
+    "HAddHanjaWord":  {
+                          "props":  [
+                                        "Hangul",
+                                        "Hanja",
+                                        "HSet"
+                                    ]
+                      },
+    "HListProperties":  {
+                            "props":  [
+                                          "HSet",
+                                          "LineWrap",
+                                          "MarginBottom",
+                                          "MarginLeft",
+                                          "MarginRight",
+                                          "MarginTop",
+                                          "TextDirection",
+                                          "VertAlign"
+                                      ]
+                        },
+    "HIdiom":  {
+                   "props":  [
+                                 "HSet",
+                                 "InputText",
+                                 "InputType"
+                             ]
+               },
+    "HRangeTagShape":  {
+                           "props":  [
+                                         "Color",
+                                         "HSet",
+                                         "Shape"
+                                     ]
+                       },
+    "HInsertText":  {
+                        "props":  [
+                                      "HSet",
+                                      "Text"
+                                  ]
+                    },
+    "HFtpUpload":  {
+                       "props":  [
+                                     "Directory",
+                                     "filename",
+                                     "HSet",
+                                     "Password",
+                                     "Port",
+                                     "SaveType",
+                                     "Server",
+                                     "SiteName",
+                                     "UserName"
+                                 ]
+                   },
+    "HBookMark":  {
+                      "props":  [
+                                    "Command",
+                                    "HSet",
+                                    "name",
+                                    "type"
+                                ]
+                  },
+    "HAutoNum":  {
+                     "props":  [
+                                   "HSet",
+                                   "NewNumber",
+                                   "NumFormat",
+                                   "NumType"
+                               ]
+                 },
+    "HSaveFootnote":  {
+                          "props":  [
+                                        "filename",
+                                        "Flag",
+                                        "HSet"
+                                    ]
+                      },
+    "HDrawEditDetail":  {
+                            "props":  [
+                                          "Command",
+                                          "HSet",
+                                          "index",
+                                          "PointX",
+                                          "PointY"
+                                      ]
+                        },
+    "HDrawCtrlHyperlink":  {
+                               "props":  [
+                                             "Command",
+                                             "CommandOops",
+                                             "HSet"
+                                         ]
+                           },
+    "HDrawObjTemplateSave":  {
+                                 "props":  [
+                                               "DrawTemplateCategory",
+                                               "DrawTemplateType",
+                                               "DrawTemplateTypeItem",
+                                               "HSet"
+                                           ]
+                             },
+    "HDrawTextBox":  {
+                         "props":  [
+                                       "CtrlData",
+                                       "Dirty",
+                                       "Editable",
+                                       "HSet",
+                                       "LineWrap",
+                                       "MarginBottom",
+                                       "MarginLeft",
+                                       "MarginRight",
+                                       "MarginTop",
+                                       "TextDirection",
+                                       "VertAlign"
+                                   ]
+                     },
+    "HCaptureEnd":  {
+                        "props":  [
+                                      "BeginX",
+                                      "BeginY",
+                                      "EndX",
+                                      "EndY",
+                                      "HSet",
+                                      "PageNum"
+                                  ]
+                    },
+    "HSummaryInfo":  {
+                         "props":  [
+                                       "Author",
+                                       "ChangeImageExtFrom",
+                                       "ChangeImageExtTo",
+                                       "Characters",
+                                       "CharactersExceptSpace",
+                                       "Comments",
+                                       "CopyPapers",
+                                       "CreationTimeHigh",
+                                       "CreationTimeLow",
+                                       "Date",
+                                       "DocVersion",
+                                       "EmbedImagePath",
+                                       "Etcetera",
+                                       "ExtractImageBaseFileName",
+                                       "ExtractImageExtName",
+                                       "ExtractImagePath",
+                                       "HanjaChar",
+                                       "HSet",
+                                       "HwpVersion",
+                                       "Keywords",
+                                       "LastSavedBy",
+                                       "Lines",
+                                       "MetaTag",
+                                       "ModifiedTimeHigh",
+                                       "ModifiedTimeLow",
+                                       "Pages",
+                                       "Paragraphs",
+                                       "PrintedTimeHigh",
+                                       "PrintedTimeLow",
+                                       "SelectedSummaryInfo",
+                                       "Subject",
+                                       "Title",
+                                       "Words"
+                                   ]
+                     },
+    "HSort":  {
+                  "props":  [
+                                "CheckExtendYear",
+                                "CheckFromRear",
+                                "CheckJaso",
+                                "CheckJasoReverse",
+                                "DelimiterChars",
+                                "DelimiterType",
+                                "EachPara",
+                                "HSet",
+                                "IgnoreMultiDelimiter",
+                                "KeyOption",
+                                "LangOrderType",
+                                "YearBase"
+                            ]
+              },
+    "HDrawImageScissoring":  {
+                                 "props":  [
+                                               "HandleIndex",
+                                               "HSet",
+                                               "Xoffset",
+                                               "Yoffset"
+                                           ]
+                             },
+    "HFormScrollbarAttr":  {
+                               "props":  [
+                                             "Delay",
+                                             "HSet",
+                                             "LargeChange",
+                                             "Max",
+                                             "Min",
+                                             "Page",
+                                             "SmallChange",
+                                             "type",
+                                             "Value"
+                                         ]
+                           },
+    "HStyle":  {
+                   "props":  [
+                                 "Apply",
+                                 "HSet"
+                             ]
+               },
+    "HTabDef":  {
+                    "props":  [
+                                  "AutoTabLeft",
+                                  "AutoTabRight",
+                                  "DeleteTab",
+                                  "HSet",
+                                  "TabItem"
+                              ]
+                },
+    "HTableTemplate":  {
+                           "props":  [
+                                         "ApplyTarget",
+                                         "CreateMode",
+                                         "filename",
+                                         "Format",
+                                         "HSet",
+                                         "ThemeColor"
+                                     ]
+                       },
+    "HDrawResize":  {
+                        "props":  [
+                                      "HandleIndex",
+                                      "HSet",
+                                      "Mode",
+                                      "Xoffset",
+                                      "Yoffset"
+                                  ]
+                    },
+    "HChartObjShape":  {
+                           "props":  [
+                                         "ChartGroup",
+                                         "ChartIndex",
+                                         "HSet"
+                                     ]
+                       }
+}
