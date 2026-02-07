@@ -84,15 +84,21 @@ function run() {
     assert(p0.colDef && p0.colDef.count === 3);
   }
 
-  // Sample: page break/column break parsing is TODO (Tag66 breakType/controlMask semantics).
-  // Keep a lightweight regression check: it should parse and not include FFFC placeholders.
+  // Sample: pageBreak/columnBreak (Tag66 breakType, Table 59)
   {
     const doc9 = readHwp5(loadSample('09-page-break.hwp'));
+    assert.strictEqual(doc9.body.sections[0].paragraphs.some((p) => p.pageBreak), true);
     const hasFFFC = doc9.body.sections[0].paragraphs
       .flatMap((p) => p.texts)
       .flatMap((t) => t.controls)
       .some((c) => c.code === 0xfffc);
     assert.strictEqual(hasFFFC, false);
+  }
+
+  {
+    const doc7 = readHwp5(loadSample('07-multi-column.hwp'));
+    // second paragraph starts in next column in this sample
+    assert.strictEqual(doc7.body.sections[0].paragraphs.some((p) => p.columnBreak), true);
   }
 
   // Sample: mixed charShape in a single paragraph
