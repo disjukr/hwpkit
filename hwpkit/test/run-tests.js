@@ -148,6 +148,19 @@ function run() {
     assert.strictEqual(ps.condense >= 0 && ps.condense <= 127, true);
   }
 
+  // ParaShape samples: widowOrphan/keepWithNext should reflect mappingTable.paraShapes[paraShapeIndex]
+  {
+    const d1 = readHwp5(loadSample('28-parashape-widow-orphan-on.hwp'));
+    const p1 = d1.body.sections[0].paragraphs[0];
+    const ps1 = d1.head.mappingTable.paraShapes[p1.paraShapeIndex];
+    assert.strictEqual(ps1.widowOrphan, true);
+
+    const d2 = readHwp5(loadSample('29-parashape-keep-with-next-on.hwp'));
+    const p2 = d2.body.sections[0].paragraphs[0];
+    const ps2 = d2.head.mappingTable.paraShapes[p2.paraShapeIndex];
+    assert.strictEqual(ps2.keepWithNext, true);
+  }
+
   // PARA_HEADER meta (paraShapeIndex/styleIndex/instId)
   {
     const d = readHwp5(loadSample('01-plain-text.hwp'));
