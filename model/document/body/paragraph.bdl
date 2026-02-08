@@ -1,0 +1,18 @@
+import model.document { Index }
+import model.document.body.column { ColDef }
+import model.document.body.control { Control }
+
+struct Paragraph {
+  paraShapeIndex: Index,
+  styleIndex: Index,
+  instId: integer,
+  pageBreak: boolean,
+  columnBreak: boolean,
+  texts: Text[],
+  colDef?: ColDef,
+}
+
+struct Text {
+  charShapeIndex: Index,
+  controls: Control[],
+}

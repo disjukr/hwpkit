@@ -1,0 +1,41 @@
+import model.document { Percent, Index }
+import model.document.head.alignment { AlignmentType1, VerAlignType }
+
+struct ParaShape {
+  align: AlignmentType1,
+  verAlign: VerAlignType,
+  headingType: HeadingType,
+  level: integer,
+  tabDef: Index,
+  breakLatinWordType: BreakLatinWordType,
+  breakNonLatinWord: boolean,
+  condense: Percent,
+  widowOrphan: boolean,
+  keepWithNext: boolean,
+  keepLines: boolean,
+  pageBreakBefore: boolean,
+  fontLineHeight: boolean,
+  snapToGrid: boolean,
+  lineWrapType: LineWrapType,
+  autoSpaceEAsianEng: boolean,
+  autoSpaceEAsianNum: boolean,
+}
+
+enum HeadingType {
+  None,
+  Outline,
+  Number,
+  Bullet,
+}
+
+enum BreakLatinWordType {
+  KeepWord,
+  Hyphenation,
+  BreakWord,
+}
+
+enum LineWrapType {
+  Break,
+  Squeeze,
+  Keep,
+}

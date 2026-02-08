@@ -1,0 +1,65 @@
+import model.document { RgbColor, Percent, Index, Hwpunit }
+import model.document.head.lang { LangType }
+import model.document.head.line { LineType2, LineType3 }
+
+struct CharShape {
+  height: Hwpunit,
+  textColor: RgbColor,
+  shadeColor: RgbColor,
+  useFontSpace: boolean,
+  useKerning: boolean,
+  fontIds: Index[LangType],
+  ratios: Percent[LangType],
+  charSpacings: Percent[LangType],
+  relSizes: Percent[LangType],
+  charOffsets: Percent[LangType],
+  italic: boolean,
+  bold: boolean,
+  underline?: Underline,
+  strikeout?: Strikeout,
+  outline?: Outline,
+  shadow?: Shadow,
+  emboss: boolean,
+  engrave: boolean,
+  superscript: boolean,
+  subscript: boolean,
+}
+
+struct Underline {
+  type: UnderlineType,
+  shape: LineType2,
+  color: RgbColor,
+}
+
+enum UnderlineType {
+  Bottom,
+  Center,
+  Top,
+}
+
+struct Strikeout {
+  type: StrikeoutType,
+  shape: LineType2,
+  color: RgbColor,
+}
+
+enum StrikeoutType {
+  None,
+  Continuous,
+}
+
+struct Outline {
+  type: LineType3,
+}
+
+struct Shadow {
+  type: ShadowType,
+  color: RgbColor,
+  offsetX: Percent,
+  offsetY: Percent,
+}
+
+enum ShadowType {
+  Drop,
+  Cont,
+}

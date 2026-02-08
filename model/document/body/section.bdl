@@ -1,0 +1,43 @@
+import model.document { Hwpunit }
+import model.document.body.paragraph { Paragraph }
+
+struct Section {
+  def: SecDef,
+  paragraphs: Paragraph[],
+}
+
+struct SecDef {
+  textDirection: TextDirection,
+  spaceColumns: Hwpunit,
+  tabStop: Hwpunit,
+  pageDef: PageDef,
+}
+
+enum TextDirection {
+  Horizontal,
+  Vertical,
+}
+
+struct PageDef {
+  landscape: boolean,
+  width: Hwpunit,
+  height: Hwpunit,
+  gutterType: GutterType,
+  margin: PageMargin,
+}
+
+enum GutterType {
+  LeftOnly,
+  LeftRight,
+  TopBottom,
+}
+
+struct PageMargin {
+  left: Hwpunit,
+  right: Hwpunit,
+  top: Hwpunit,
+  bottom: Hwpunit,
+  header: Hwpunit,
+  footer: Hwpunit,
+  gutter: Hwpunit,
+}

@@ -1,0 +1,7 @@
+union Control {
+  CharControl(code: integer),
+}
+
+enum ControlType {
+  Char,
+}

@@ -1,0 +1,21 @@
+enum AlignmentType1 {
+  Justify,
+  Left,
+  Right,
+  Center,
+  Distribute,
+  DistributeSpace,
+}
+
+enum AlignmentType2 {
+  Left,
+  Center,
+  Right,
+}
+
+enum VerAlignType {
+  Baseline,
+  Top,
+  Center,
+  Bottom,
+}
