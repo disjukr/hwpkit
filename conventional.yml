@@ -1,0 +1,63 @@
+name: Conventional BDL Standard
+description: This is the official standard provided by BDL.
+
+primitives:
+  boolean:
+    name: Boolean
+    description: Represents `true` or `false`.
+  int32:
+    name: 32 Bit Integer
+    description: A 32-bit integer ranging from `-2147483648` to `2147483647`.
+  int64:
+    name: 64 Bit Integer
+    description: A 64-bit integer ranging from `-9223372036854775808` to `9223372036854775807`.
+  integer:
+    name: Integer
+    description: An arbitrary integer including negative numbers.
+  float64:
+    name: 64 Bit Floating Point Number.
+    description: |-
+      [A 64-bit IEEE 754 floating-point number](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
+  string:
+    name: String
+    description: A unicode string.
+  bytes:
+    name: Bytes
+    description: A byte array.
+  object:
+    name: Object
+    description: A dictionary with string keys and values of any type.
+  void:
+    name: Void
+    description: Represents the absence of a value, typically used as a procedure return type.
+
+attributes:
+  bdl.struct.field:
+    - key: description
+      description: |-
+        Provides human-readable documentation for the struct field.
+    - key: example
+      description: |-
+        Provides an example value for this field.
+        Used for documentation and testing purposes.
+    - key: in
+      description: |-
+        Specifies the parameter location in requests.
+        Common values: "path", "query", "header", "body"
+  bdl.enum.item:
+    - key: value
+      description: TODO
+  bdl.oneof:
+    - key: discriminator
+      description: TODO
+  bdl.union.item:
+    - key: status
+      description: |-
+        HTTP status code for this response variant.
+        Example: "404", "400", "500"
+  bdl.proc:
+    - key: http
+      description: |-
+        Specifies the HTTP method and endpoint path for this procedure.
+        Format: "{METHOD} {path}"
+        Example: "GET /bdl/standards/{standardId}"
