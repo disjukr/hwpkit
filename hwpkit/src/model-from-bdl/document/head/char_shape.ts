@@ -10,11 +10,11 @@ export interface CharShape {
   shadeColor: RgbColor;
   useFontSpace: boolean;
   useKerning: boolean;
-  fontIds: { [key in LangType]: Index };
-  ratios: { [key in LangType]: Percent };
-  charSpacings: { [key in LangType]: Percent };
-  relSizes: { [key in LangType]: Percent };
-  charOffsets: { [key in LangType]: Percent };
+  fontIds: Record<LangType, Index>;
+  ratios: Record<LangType, Percent>;
+  charSpacings: Record<LangType, Percent>;
+  relSizes: Record<LangType, Percent>;
+  charOffsets: Record<LangType, Percent>;
   italic: boolean;
   bold: boolean;
   underline?: Underline;
