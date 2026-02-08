@@ -3,8 +3,8 @@
 import type { Body } from './body/index';
 import type { Head } from './head/index';
 
-export * from './head';
 export * from './body';
+export * from './head';
 
 export type Index = number;
 
