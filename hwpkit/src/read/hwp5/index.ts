@@ -376,32 +376,16 @@ function decodeParaText(data: Buffer): string {
       continue;
     }
 
-    // CtrlCh placeholder+skip
-    if (code > 0x0000 && code < 0x0020) {
-      out += '\uFFFC';
-      if (i + 9 < data.length) i += 8;
+    // Extended control in ParaText (e.g. 0x0002 + 6 words payload)
+    if (code === 0x0002 && i + 13 < data.length) {
+      out += '￼';
+      i += 12;
       continue;
     }
 
-    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
-    if (code === 0x0002 && i + 6 < data.length) {
-      const w1 = data.readUInt16LE(i + 2);
-      const w2 = data.readUInt16LE(i + 4);
-      const isAsciiPair = (w: number) => {
-        const a = w & 0xff;
-        const b = (w >>> 8) & 0xff;
-        const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
-        return isAZ(a) && isAZ(b);
-      };
-      out += '￼';
-      if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < data.length) i += 12;
-      continue;
-    }
-
-    // CtrlCh placeholder+skip
+    // Inline control chars
     if (code > 0x0000 && code < 0x0020) {
       out += '￼';
-      if (i + 13 < data.length) i += 12;
       continue;
     }
 
@@ -541,44 +525,19 @@ function decodeParaTextMapped(data: Buffer, _nchars?: number): ParaTextDecoded {
       continue;
     }
 
-    // CtrlCh placeholder+skip (heuristic)
-    if (code > 0x0000 && code < 0x0020) {
-      out += '\uFFFC';
+    // Extended control in ParaText (e.g. 0x0002 + 6 words payload)
+    if (code === 0x0002 && i + 13 < buf.length) {
+      out += '￼';
       rawPos += 1;
-      if (i + 9 < buf.length) {
-        i += 8;
-        rawPos += 4;
-      }
+      i += 12;
+      rawPos += 6;
       continue;
     }
 
-    // Control marker: 0x0002 + two u16 that are ascii pairs (e.g. 'd''c''e''s').
-    if (code === 0x0002 && i + 6 < buf.length) {
-      const w1 = buf.readUInt16LE(i + 2);
-      const w2 = buf.readUInt16LE(i + 4);
-      const isAsciiPair = (w: number) => {
-        const a = w & 0xff;
-        const b = (w >>> 8) & 0xff;
-        const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
-        return isAZ(a) && isAZ(b);
-      };
-      out += '￼';
-      rawPos += 1;
-      if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < buf.length) {
-        i += 12;
-        rawPos += 6;
-      }
-      continue;
-    }
-
-    // CtrlCh placeholder+skip (heuristic)
+    // Inline control chars
     if (code > 0x0000 && code < 0x0020) {
       out += '￼';
       rawPos += 1;
-      if (i + 13 < buf.length) {
-        i += 12;
-        rawPos += 6;
-      }
       continue;
     }
 
