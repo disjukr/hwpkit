@@ -1,2 +1,13 @@
-// AUTO-GENERATED from BDL. DO NOT EDIT.
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+export interface Font {
+  name: string;
+  type?: FontType;
+}
+
+export const enum FontType {
+  Rep,
+  Ttf,
+  Hft,
+}
+
 export type Fonts = Font[];
