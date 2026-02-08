@@ -33,3 +33,7 @@
   - Internal tooling package (Windows-first usage).
   - CLI surface removed; maintain library/test/codegen paths.
   - COM/E2E tests are env-gated (`HWP_AUTOMATION_E2E=1`) and skipped by default.
+
+### Progress visibility (requested by user)
+- If you create files under `tmp/` during active work, proactively share the created/updated `tmp/` filenames in chat as you go.
+- Do not wait to be asked; post short progress pings with file names so it is visible that work is ongoing.

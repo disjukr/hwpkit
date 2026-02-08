@@ -26,6 +26,7 @@ import {
 
 import * as CFB from 'cfb';
 import * as zlib from 'zlib';
+import { decodeDistributeViewText } from './distribute-decrypt';
 
 type RecordHeader = {
   tagId: number;
@@ -744,6 +745,29 @@ function parsePageDefFromBodyRecords(records: RecordHeader[]): {
   if (!width || !height) return null;
   return { width, height, margin };
 }
+function listViewTextSections(cfb: any): string[] {
+  const paths: string[] = (cfb.FullPaths ?? []) as string[];
+  const secRe = new RegExp('ViewText/Section[0-9]+$');
+  const capRe = new RegExp('ViewText/(Section[0-9]+)$');
+  const idxRe = new RegExp('Section([0-9]+)$');
+
+  const secs = paths
+    .filter((p) => secRe.test(p))
+    .map((p) => {
+      const m = p.match(capRe);
+      return m ? '/ViewText/' + m[1] : null;
+    })
+    .filter((p): p is string => !!p);
+
+  const unique = [...new Set(secs)];
+  unique.sort((a, b) => {
+    const ai = parseInt(a.match(idxRe)?.[1] ?? '0', 10);
+    const bi = parseInt(b.match(idxRe)?.[1] ?? '0', 10);
+    return ai - bi;
+  });
+  return unique;
+}
+
 function listBodyTextSections(cfb: any): string[] {
   const paths: string[] = (cfb.FullPaths ?? []) as string[];
   const secs = paths
@@ -790,18 +814,40 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const docInfoRaw = tryInflateRaw(docInfoCompressed);
   const tables = extractDocInfoTables(docInfoRaw);
 
-  // BodyText
-  const sectionPaths = listBodyTextSections(cfb);
-  if (sectionPaths.length === 0) throw new Error('Missing BodyText/Section* streams');
+  // BodyText (fallback) / ViewText (distribute docs)
+  const bodyPaths = listBodyTextSections(cfb);
+  const viewPaths = listViewTextSections(cfb);
+  if (bodyPaths.length === 0 && viewPaths.length === 0) throw new Error('Missing BodyText/Section* and ViewText/Section* streams');
 
   const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
-  for (const secPath of sectionPaths) {
-    const entry = CFB.find(cfb as any, secPath) as any;
-    const comp: Buffer | undefined = entry?.content;
-    if (!comp || !Buffer.isBuffer(comp)) continue;
-    const raw = tryInflateRaw(comp);
-    const recs = parseRecords(raw);
+
+  const sectionIds = [...new Set([
+    ...bodyPaths.map((p) => p.match(/Section([0-9]+)$/)?.[1]).filter((x): x is string => !!x),
+    ...viewPaths.map((p) => p.match(/Section([0-9]+)$/)?.[1]).filter((x): x is string => !!x),
+  ])].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+  for (const sid of sectionIds) {
+    const bodyPath = '/BodyText/Section' + sid;
+    const viewPath = '/ViewText/Section' + sid;
+
+    const bodyEntry = CFB.find(cfb as any, bodyPath) as any;
+    const viewEntry = CFB.find(cfb as any, viewPath) as any;
+    const bodyComp: Buffer | undefined = bodyEntry?.content;
+    const viewComp: Buffer | undefined = viewEntry?.content;
+
+    const bodyRaw = bodyComp && Buffer.isBuffer(bodyComp) ? tryInflateRaw(bodyComp) : null;
+    const viewRaw = viewComp && Buffer.isBuffer(viewComp) ? decodeDistributeViewText(viewComp) : null;
+
+    const bodyRecs = bodyRaw ? parseRecords(bodyRaw) : [];
+    const viewRecs = viewRaw ? parseRecords(viewRaw) : [];
+
+    const bodyScore = bodyRecs.reduce((acc, r) => acc + (r.tagId === 67 ? 5 : r.tagId === 66 ? 4 : r.tagId === 68 || r.tagId === 71 || r.tagId === 73 ? 2 : 0), 0);
+    const viewScore = viewRecs.reduce((acc, r) => acc + (r.tagId === 67 ? 5 : r.tagId === 66 ? 4 : r.tagId === 68 || r.tagId === 71 || r.tagId === 73 ? 2 : 0), 0);
+
+    const recs = viewScore > bodyScore ? viewRecs : bodyRecs;
+    if (!recs.length) continue;
+
     if (!parsedPageDef) parsedPageDef = parsePageDefFromBodyRecords(recs);
     paragraphs.push(...buildParagraphsFromBodyRecords(recs));
   }
