@@ -1,4 +1,4 @@
-import { CharControl, Control, ControlType, Paragraph, Text } from '../../../model/document';
+import { CharControl, Control, Paragraph, Text } from '../../../model/document';
 import { Element, Text as TextNode } from '../../naive-xml-parser';
 import { el2obj } from '../misc';
 import { HwpmlColDef, readHwpmlColDef } from './coldef';
@@ -62,7 +62,7 @@ export type HwpmlControl = Element;
 export function readHwpmlChar(hwpmlChar: HwpmlChar): CharControl[] {
   return (hwpmlChar.children as TextNode[]).map(
     ({ text }) => text.split('').map(char => ({
-      type: ControlType.Char,
+      type: 'CharControl' as const,
       code: char.charCodeAt(0),
     }))
   ).flat(1);

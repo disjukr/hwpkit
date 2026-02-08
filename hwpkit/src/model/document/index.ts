@@ -1,13 +1,18 @@
-import type { Head } from './head';
-import type { Body } from './body';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document.bdl
+import type { Body } from './body/index';
+import type { Head } from './head/index';
 
 export * from './head';
 export * from './body';
 
 export type Index = number;
-export type Hwpunit = number; // 10 pt = 1000 hwpunit
-export type RgbColor = number; // 0x00bbggrr
-export type Percent = number; // 0 ~ 100
+
+export type Hwpunit = number;
+
+export type RgbColor = number;
+
+export type Percent = number;
 
 export interface DocumentModel {
   head: Head;

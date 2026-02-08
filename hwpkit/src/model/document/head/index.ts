@@ -1,15 +1,17 @@
-import type { Index } from '..';
-import type { Font } from './font';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/head.bdl
+import type { Index } from '../index';
+import type { CharShape } from './char_shape';
+import type { Fonts } from './font';
 import type { LangType } from './lang';
-import type { CharShape } from './char-shape';
-import type { ParaShape } from './para-shape';
+import type { ParaShape } from './para_shape';
 
 export * from './alignment';
-export * from './char-shape';
+export * from './char_shape';
 export * from './font';
 export * from './lang';
 export * from './line';
-export * from './para-shape';
+export * from './para_shape';
 
 export interface Head {
   docSetting: DocumentSetting;
@@ -37,7 +39,7 @@ export interface CaretPos {
 }
 
 export interface MappingTable {
-  fontFaces: { [langType in LangType]: Font[] };
+  fontFaces: Record<LangType, Fonts>;
   charShapes: CharShape[];
   paraShapes: ParaShape[];
   styles: Style[];

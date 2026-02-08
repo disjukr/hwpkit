@@ -2,7 +2,6 @@ import {
   AlignmentType1,
   BreakLatinWordType,
   Control,
-  ControlType,
   ColDef,
   ColType,
   ColLayoutType,
@@ -981,7 +980,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               const controls = Array.from(slice)
                 .filter((ch) => ch !== '￼')
                 .map((ch) => ({
-                  type: ControlType.Char,
+                  type: 'CharControl',
                   code: ch.charCodeAt(0),
                 })) as Control[];
               if (!controls.length) continue;
@@ -1006,7 +1005,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
                       controls: Array.from(text)
                         .filter((ch) => ch !== '￼')
                         .map((ch) => ({
-                          type: ControlType.Char,
+                          type: 'CharControl',
                           code: ch.charCodeAt(0),
                         })) as Control[],
                     },

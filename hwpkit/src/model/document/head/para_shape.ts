@@ -1,6 +1,6 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
 // Source: model/document/head/para_shape.bdl
-import type { Index, Percent } from '../../document';
+import type { Index, Percent } from '../index';
 import type { AlignmentType1, VerAlignType } from './alignment';
 
 export interface ParaShape {

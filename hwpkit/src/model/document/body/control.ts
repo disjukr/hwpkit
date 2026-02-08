@@ -1,15 +1,11 @@
-export type Control =
-  | CharControl
-;
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/body/control.bdl
 
-export interface CharControl extends ControlBase<ControlType.Char> {
+export interface CharControl {
+  type: 'CharControl';
   code: number;
 }
 
-interface ControlBase<T extends ControlType> {
-  type: T;
-}
-
-export const enum ControlType {
-  Char,
-}
+export type Control =
+  | CharControl
+;

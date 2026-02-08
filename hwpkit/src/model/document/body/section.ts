@@ -1,4 +1,6 @@
-import type { Hwpunit } from '..';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/body/section.bdl
+import type { Hwpunit } from '../index';
 import type { Paragraph } from './paragraph';
 
 export interface Section {
