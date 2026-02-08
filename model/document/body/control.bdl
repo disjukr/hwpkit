@@ -1,5 +1,15 @@
 # standard - conventional
 
+import hwpkit.document { RgbColor }
+
 union Control {
-  CharControl(code: int32),
+  CharControl(text: string),
+  TabControl(),
+  LineBreakControl(),
+  HyphenControl(),
+  NbSpaceControl(),
+  FwSpaceControl(),
+  TitleMarkControl(ignore: boolean),
+  MarkPenBeginControl(color: RgbColor),
+  MarkPenEndControl(),
 }

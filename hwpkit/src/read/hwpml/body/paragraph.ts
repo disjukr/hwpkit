@@ -1,4 +1,4 @@
-import { CharControl, Control, Paragraph, Text } from '../../../model/document';
+import { Control, Paragraph, Text } from '../../../model/document';
 import { Element, Text as TextNode } from '../../naive-xml-parser';
 import { el2obj } from '../misc';
 import { HwpmlColDef, readHwpmlColDef } from './coldef';
@@ -59,13 +59,51 @@ export function readHwpmlControl(hwpmlControl: HwpmlControl): Control[] {
 
 export type HwpmlControl = Element;
 
-export function readHwpmlChar(hwpmlChar: HwpmlChar): CharControl[] {
-  return (hwpmlChar.children as TextNode[]).map(
-    ({ text }) => text.split('').map(char => ({
-      type: 'CharControl' as const,
-      code: char.charCodeAt(0),
-    }))
-  ).flat(1);
+function charControls(text: string): Control[] {
+  if (!text) return [];
+  return [{
+    type: 'CharControl' as const,
+    text,
+  }];
+}
+
+function controlFromCharChildElement(el: Element): Control[] {
+  switch (el.tagName) {
+    case 'TAB':
+      return [{ type: 'TabControl' }];
+    case 'LINEBREAK':
+      return [{ type: 'LineBreakControl' }];
+    case 'HYPEN':
+      return [{ type: 'HyphenControl' }];
+    case 'NBSPACE':
+      return [{ type: 'NbSpaceControl' }];
+    case 'FWSPACE':
+      return [{ type: 'FwSpaceControl' }];
+    case 'TITLEMARK':
+      return [{ type: 'TitleMarkControl', ignore: String(el.attrs?.Ignore ?? 'false').toLowerCase() === 'true' }];
+    case 'MARKPENBEGIN':
+      return [{ type: 'MarkPenBeginControl', color: parseInt(String(el.attrs?.Color ?? '0'), 10) || 0 }];
+    case 'MARKPENEND':
+      return [{ type: 'MarkPenEndControl' }];
+    default:
+      return [];
+  }
+}
+
+export function readHwpmlChar(hwpmlChar: HwpmlChar): Control[] {
+  const out: Control[] = [];
+
+  for (const child of hwpmlChar.children as Array<TextNode | Element>) {
+    if ((child as TextNode).text != null) {
+      out.push(...charControls((child as TextNode).text));
+      continue;
+    }
+
+    const el = child as Element;
+    out.push(...controlFromCharChildElement(el));
+  }
+
+  return out;
 }
 
 export type HwpmlChar = Element;

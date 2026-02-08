@@ -5,3 +5,8 @@ yarn-error.log
 # local debug scripts
 tmp/**
 
+
+# generated sample interpretation dumps
+/samples/*.hwp.json
+/samples/*.hml.json
+/samples/*.hwpml.json
