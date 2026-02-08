@@ -3,7 +3,6 @@ import { hwpunit2px, px2hwpunit } from '../../model/geom';
 import {
   CharShape,
   Control as DocControl,
-  ControlType as DocControlType,
   LangType,
 } from '../../model/document';
 import {
@@ -44,7 +43,7 @@ interface FloatingObjectLayoutControlResult extends LayoutControlResultBase<Layo
 export function layoutControl(config: LayoutControlConfig): LayoutControlResult {
   const { control, charShape } = config;
   switch (control.type) {
-    case DocControlType.Char: {
+    case 'CharControl': {
       const char = String.fromCharCode(control.code);
       if (isWhitespaceCharCode(control.code)) {
         return {

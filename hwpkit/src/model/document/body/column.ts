@@ -1,4 +1,6 @@
-import type { Hwpunit } from '..';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/body/column.bdl
+import type { Hwpunit } from '../index';
 
 export interface ColDef {
   type: ColType;

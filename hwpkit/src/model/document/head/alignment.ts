@@ -1,3 +1,6 @@
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/head/alignment.bdl
+
 export const enum AlignmentType1 {
   Justify,
   Left,

@@ -6,8 +6,8 @@ import { buildBdlIr } from '@disjukr/bdl/ir/builder';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
-const modelRoot = path.join(repoRoot, 'model');
-const outRoot = path.join(repoRoot, 'hwpkit', 'src', 'model-from-bdl');
+const bdlRoot = path.join(repoRoot, 'model');
+const outDocumentRoot = path.join(repoRoot, 'hwpkit', 'src', 'model', 'document');
 
 const PRIMITIVE_TS = {
   boolean: 'boolean',
@@ -27,7 +27,20 @@ const splitDefPath = (p) => {
 };
 
 function outFileFromModule(modulePath) {
-  return path.join(outRoot, `${modulePath.replace(/^hwpkit\./, '').replace(/\./g, '/')}.ts`);
+  if (!modulePath.startsWith('hwpkit.document')) {
+    throw new Error(`unsupported module path: ${modulePath}`);
+  }
+
+  const suffix = modulePath.slice('hwpkit.document'.length); // '', '.head', '.head.font', ...
+  if (!suffix) return path.join(outDocumentRoot, 'index.ts');
+
+  const parts = suffix.slice(1).split('.');
+  if (parts.length === 1) {
+    return path.join(outDocumentRoot, parts[0], 'index.ts');
+  }
+
+  const [group, ...rest] = parts;
+  return path.join(outDocumentRoot, group, `${rest.join('/')}.ts`);
 }
 
 function relImport(fromFile, toModule, names) {
@@ -60,7 +73,7 @@ function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
     if (ty.type === 'Dictionary') {
       const key = refType({ type: 'Plain', valueTypePath: ty.keyTypePath });
       const val = refType({ type: 'Plain', valueTypePath: ty.valueTypePath });
-      return `Record<${key}, ${val}>`; 
+      return `Record<${key}, ${val}>`;
     }
     return 'unknown';
   };
@@ -71,6 +84,26 @@ function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
   ];
 
   const body = [];
+
+  // Keep old consumer ergonomics for root/head/body barrels.
+  if (modulePath === 'hwpkit.document') body.push("export * from './head';", "export * from './body';", '');
+  if (modulePath === 'hwpkit.document.head') body.push(
+    "export * from './alignment';",
+    "export * from './char_shape';",
+    "export * from './font';",
+    "export * from './lang';",
+    "export * from './line';",
+    "export * from './para_shape';",
+    ''
+  );
+  if (modulePath === 'hwpkit.document.body') body.push(
+    "export * from './column';",
+    "export * from './control';",
+    "export * from './paragraph';",
+    "export * from './section';",
+    ''
+  );
+
   for (const defPath of moduleDefPaths) {
     const def = defs[defPath];
     if (!def) continue;
@@ -124,7 +157,7 @@ function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
 async function resolveModuleFile(modulePath) {
   if (!modulePath.startsWith('hwpkit.')) throw new Error(`unsupported module path: ${modulePath}`);
   const rel = modulePath.slice('hwpkit.'.length).replace(/\./g, '/');
-  const filePath = path.join(modelRoot, `${rel}.bdl`);
+  const filePath = path.join(bdlRoot, `${rel}.bdl`);
   return { fileUrl: `file://${filePath}`, text: await fsp.readFile(filePath, 'utf8') };
 }
 
@@ -133,7 +166,7 @@ const { ir } = await buildBdlIr({
   resolveModuleFile,
 });
 
-fs.rmSync(outRoot, { recursive: true, force: true });
+fs.rmSync(outDocumentRoot, { recursive: true, force: true });
 for (const [modulePath, mod] of Object.entries(ir.modules)) {
   const outFile = outFileFromModule(modulePath);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
@@ -141,4 +174,4 @@ for (const [modulePath, mod] of Object.entries(ir.modules)) {
   fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs, sourceBdlPath));
 }
 
-console.log(`Generated ${Object.keys(ir.modules).length} modules into ${path.relative(repoRoot, outRoot)}`);
+console.log(`Generated ${Object.keys(ir.modules).length} modules into ${path.relative(repoRoot, outDocumentRoot)}`);

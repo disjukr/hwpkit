@@ -1,8 +1,9 @@
-import { Option } from '../../../misc/type';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/head/font.bdl
 
 export interface Font {
   name: string;
-  type: Option<FontType>;
+  type?: FontType;
 }
 
 export const enum FontType {
@@ -10,3 +11,5 @@ export const enum FontType {
   Ttf,
   Hft,
 }
+
+export type Fonts = Font[];

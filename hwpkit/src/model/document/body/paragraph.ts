@@ -1,5 +1,7 @@
-import type { Index } from '..';
-import { ColDef } from './column';
+// AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/document/body/paragraph.bdl
+import type { Index } from '../index';
+import type { ColDef } from './column';
 import type { Control } from './control';
 
 export interface Paragraph {
