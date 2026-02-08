@@ -31,7 +31,7 @@ function outFileFromModule(modulePath) {
     throw new Error(`unsupported module path: ${modulePath}`);
   }
 
-  const suffix = modulePath.slice('hwpkit.document'.length); // '', '.head', '.head.font', ...
+  const suffix = modulePath.slice('hwpkit.document'.length);
   if (!suffix) return path.join(outDocumentRoot, 'index.ts');
 
   const parts = suffix.slice(1).split('.');
@@ -50,9 +50,42 @@ function relImport(fromFile, toModule, names) {
   return `import type { ${[...names].sort().join(', ')} } from '${rel}';`;
 }
 
-function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
+function findImmediateChildren(modulePath, modulePaths) {
+  const prefix = `${modulePath}.`;
+  const children = new Set();
+  for (const p of modulePaths) {
+    if (!p.startsWith(prefix)) continue;
+    const rest = p.slice(prefix.length);
+    if (!rest || rest.includes('.')) continue;
+    children.add(rest);
+  }
+  return [...children].sort();
+}
+
+function assertNoDuplicateTypeNames(defs) {
+  const byName = new Map(); // typeName -> defPaths[]
+  for (const defPath of Object.keys(defs)) {
+    const { name } = splitDefPath(defPath);
+    if (!byName.has(name)) byName.set(name, []);
+    byName.get(name).push(defPath);
+  }
+
+  const duplicates = [...byName.entries()]
+    .filter(([, paths]) => paths.length > 1)
+    .sort((a, b) => a[0].localeCompare(b[0]));
+
+  if (!duplicates.length) return;
+
+  const detail = duplicates
+    .map(([name, paths]) => `- ${name}:\n  ${paths.sort().join('\n  ')}`)
+    .join('\n');
+
+  throw new Error(`Duplicate def names detected in BDL IR:\n${detail}`);
+}
+
+function generateModuleTs(modulePath, moduleDefPaths, defs, modulePaths, sourceBdlPath) {
   const outFile = outFileFromModule(modulePath);
-  const imports = new Map(); // modulePath -> Set<name>
+  const imports = new Map();
 
   const refType = (ty) => {
     if (!ty) return 'unknown';
@@ -85,24 +118,10 @@ function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
 
   const body = [];
 
-  // Keep old consumer ergonomics for root/head/body barrels.
-  if (modulePath === 'hwpkit.document') body.push("export * from './head';", "export * from './body';", '');
-  if (modulePath === 'hwpkit.document.head') body.push(
-    "export * from './alignment';",
-    "export * from './char_shape';",
-    "export * from './font';",
-    "export * from './lang';",
-    "export * from './line';",
-    "export * from './para_shape';",
-    ''
-  );
-  if (modulePath === 'hwpkit.document.body') body.push(
-    "export * from './column';",
-    "export * from './control';",
-    "export * from './paragraph';",
-    "export * from './section';",
-    ''
-  );
+  for (const child of findImmediateChildren(modulePath, modulePaths)) {
+    body.push(`export * from './${child}';`);
+  }
+  if (body.length) body.push('');
 
   for (const defPath of moduleDefPaths) {
     const def = defs[defPath];
@@ -166,12 +185,17 @@ const { ir } = await buildBdlIr({
   resolveModuleFile,
 });
 
+assertNoDuplicateTypeNames(ir.defs);
+
+const modulePaths = Object.keys(ir.modules).sort();
+
 fs.rmSync(outDocumentRoot, { recursive: true, force: true });
-for (const [modulePath, mod] of Object.entries(ir.modules)) {
+for (const modulePath of modulePaths) {
+  const mod = ir.modules[modulePath];
   const outFile = outFileFromModule(modulePath);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
   const sourceBdlPath = path.posix.join('model', modulePath.slice('hwpkit.'.length).replace(/\./g, '/')) + '.bdl';
-  fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs, sourceBdlPath));
+  fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs, modulePaths, sourceBdlPath));
 }
 
-console.log(`Generated ${Object.keys(ir.modules).length} modules into ${path.relative(repoRoot, outDocumentRoot)}`);
+console.log(`Generated ${modulePaths.length} modules into ${path.relative(repoRoot, outDocumentRoot)}`);
