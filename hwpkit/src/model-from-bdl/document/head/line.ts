@@ -1,4 +1,6 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/.bdl
+
 export const enum LineType1 {
   Solid,
   Dash,

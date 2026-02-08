@@ -1,4 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/.bdl
 import type { Body } from './document/body';
 import type { Head } from './document/head';
 
