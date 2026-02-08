@@ -13,3 +13,6 @@ tmp/**
 
 # generated CFB debug dumps
 /samples/*.hwp.cfb*.json
+
+# generated official-document dumps
+/official-document/json/*.json
