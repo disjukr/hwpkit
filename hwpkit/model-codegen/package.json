@@ -1,0 +1,11 @@
+{
+  "name": "hwpkit-model-codegen",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node src/generate.js"
+  },
+  "dependencies": {
+    "@disjukr/bdl-runtime": "^0.5.1"
+  }
+}
