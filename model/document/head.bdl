@@ -1,6 +1,6 @@
 # standard - conventional
 
-import hwpkit.document { Index }
+import hwpkit.document { Index, Fonts }
 import hwpkit.document.head.font { Font }
 import hwpkit.document.head.lang { LangType }
 import hwpkit.document.head.char_shape { CharShape }
@@ -32,7 +32,7 @@ struct CaretPos {
 }
 
 struct MappingTable {
-  fontFaces: Font[][LangType],
+  fontFaces: Fonts[LangType],
   charShapes: CharShape[],
   paraShapes: ParaShape[],
   styles: Style[],
