@@ -14,7 +14,8 @@
     "build": "pnpm -C hwpkit build && pnpm -C hwpkit/automation build",
     "test": "pnpm -C hwpkit test && pnpm -C hwpkit/automation test",
     "codegen:model": "pnpm -C hwpkit/model-codegen generate",
-    "samples:dump-json": "pnpm -C hwpkit exec tsx scripts/dump-samples-json.mts"
+    "samples:dump-json": "pnpm -C hwpkit exec tsx scripts/dump-samples-json.mts",
+    "official:dump-json": "pnpm -C hwpkit exec tsx scripts/dump-official-document-json.mts"
   },
   "author": "JongChan Choi <jong@chan.moe>",
   "license": "SEE LICENSE IN <hwpkit/README.md>"

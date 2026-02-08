@@ -16,3 +16,6 @@ tmp/**
 
 # generated official-document dumps
 /official-document/json/*.json
+/official-document/*.hwp.json
+/official-document/*.hml.json
+/official-document/*.hwpml.json
