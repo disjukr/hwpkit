@@ -137,7 +137,7 @@ fs.rmSync(outRoot, { recursive: true, force: true });
 for (const [modulePath, mod] of Object.entries(ir.modules)) {
   const outFile = outFileFromModule(modulePath);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  const sourceBdlPath = path.posix.join('model', modulePath.slice('hwpkit.'.length).replace(/./g, '/')) + '.bdl';
+  const sourceBdlPath = path.posix.join('model', modulePath.slice('hwpkit.'.length).replace(/\./g, '/')) + '.bdl';
   fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs, sourceBdlPath));
 }
 

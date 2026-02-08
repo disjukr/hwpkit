@@ -1,5 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
-// Source: model/.bdl
+// Source: model/document/head/alignment.bdl
 
 export const enum AlignmentType1 {
   Justify,

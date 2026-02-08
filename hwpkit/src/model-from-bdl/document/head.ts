@@ -1,5 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
-// Source: model/.bdl
+// Source: model/document/head.bdl
 import type { Index } from '../document';
 import type { CharShape } from './head/char_shape';
 import type { Fonts } from './head/font';

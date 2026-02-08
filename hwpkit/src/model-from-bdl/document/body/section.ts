@@ -1,5 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
-// Source: model/.bdl
+// Source: model/document/body/section.bdl
 import type { Hwpunit } from '../../document';
 import type { Paragraph } from './paragraph';
 
