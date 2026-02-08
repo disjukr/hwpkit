@@ -7,7 +7,7 @@ struct ParaShape {
   align: AlignmentType1,
   verAlign: VerAlignType,
   headingType: HeadingType,
-  level: int32,
+  level: ParaLevel,
   tabDef: Index,
   breakLatinWordType: BreakLatinWordType,
   breakNonLatinWord: boolean,
@@ -28,6 +28,16 @@ enum HeadingType {
   Outline,
   Number,
   Bullet,
+}
+
+enum ParaLevel {
+  Level0,
+  Level1,
+  Level2,
+  Level3,
+  Level4,
+  Level5,
+  Level6,
 }
 
 enum BreakLatinWordType {
