@@ -7,7 +7,7 @@ struct ParaShape {
   align: AlignmentType1,
   verAlign: VerAlignType,
   headingType: HeadingType,
-  level: integer,
+  level: int32,
   tabDef: Index,
   breakLatinWordType: BreakLatinWordType,
   breakNonLatinWord: boolean,
