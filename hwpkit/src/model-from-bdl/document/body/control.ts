@@ -7,7 +7,3 @@ export interface CharControl {
 export type Control =
   | CharControl
 ;
-
-export const enum ControlType {
-  Char,
-}
