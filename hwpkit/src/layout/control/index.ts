@@ -42,21 +42,38 @@ interface FloatingObjectLayoutControlResult extends LayoutControlResultBase<Layo
 }
 export function layoutControl(config: LayoutControlConfig): LayoutControlResult {
   const { control, charShape } = config;
-  switch (control.type) {
-    case 'CharControl': {
-      const char = String.fromCharCode(control.code);
-      if (isWhitespaceCharCode(control.code)) {
-        return {
-          type: LayoutControlResultType.Inline,
-          control: layoutWhitespaceControl(char, charShape),
-        };
-      } else {
-        return {
-          type: LayoutControlResultType.Inline,
-          control: layoutCharControl(char, charShape, config),
-        };
-      }
+
+  const asInlineChar = (char: string): LayoutControlResult => {
+    const code = char.codePointAt(0) ?? 0;
+    if (isWhitespaceCharCode(code)) {
+      return {
+        type: LayoutControlResultType.Inline,
+        control: layoutWhitespaceControl(char, charShape),
+      };
     }
+    return {
+      type: LayoutControlResultType.Inline,
+      control: layoutCharControl(char, charShape, config),
+    };
+  };
+
+  switch (control.type) {
+    case 'CharControl':
+      return asInlineChar(control.text);
+    case 'TabControl':
+      return asInlineChar('	');
+    case 'LineBreakControl':
+      return asInlineChar('\n');
+    case 'HyphenControl':
+      return asInlineChar('-');
+    case 'NbSpaceControl':
+      return asInlineChar(' ');
+    case 'FwSpaceControl':
+      return asInlineChar('　');
+    case 'TitleMarkControl':
+    case 'MarkPenBeginControl':
+    case 'MarkPenEndControl':
+      return { type: LayoutControlResultType.None };
   }
 }
 

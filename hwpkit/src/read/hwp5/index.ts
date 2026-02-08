@@ -26,7 +26,7 @@ import {
 
 import * as CFB from 'cfb';
 import * as zlib from 'zlib';
-import { decodeDistributeViewText } from './distribute-decrypt';
+import { decodeDistributeViewText } from './distribute-decrypt.js';
 
 type RecordHeader = {
   tagId: number;
@@ -393,7 +393,15 @@ function decodeParaText(data: Buffer): string {
         const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
         return isAZ(a) && isAZ(b);
       };
-      if (isAsciiPair(w1) && isAsciiPair(w2)) i += 4;
+      out += '￼';
+      if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < data.length) i += 12;
+      continue;
+    }
+
+    // CtrlCh placeholder+skip
+    if (code > 0x0000 && code < 0x0020) {
+      out += '￼';
+      if (i + 13 < data.length) i += 12;
       continue;
     }
 
@@ -486,9 +494,8 @@ function parseParaHeader(data: Buffer): ParaHeaderInfo {
   };
 }
 
-function decodeParaTextWithCount(data: Buffer, nchars?: number): string {
-  const maxBytes = nchars != null ? Math.min(data.length, nchars * 2) : data.length;
-  return decodeParaText(data.subarray(0, maxBytes));
+function decodeParaTextWithCount(data: Buffer, _nchars?: number): string {
+  return decodeParaText(data);
 }
 
 // --- TODO(3): PARA_CHAR_SHAPE(run) support (empirical)
@@ -497,9 +504,8 @@ type ParaCharShapeRun = { pos: number; charShapeIndex: number };
 
 type ParaTextDecoded = { text: string; rawToOut: number[] };
 
-function decodeParaTextMapped(data: Buffer, nchars?: number): ParaTextDecoded {
-  const maxBytes = nchars != null ? Math.min(data.length, nchars * 2) : data.length;
-  const buf = data.subarray(0, maxBytes);
+function decodeParaTextMapped(data: Buffer, _nchars?: number): ParaTextDecoded {
+  const buf = data;
 
   let out = '';
   const rawToOut: number[] = [];
@@ -556,10 +562,22 @@ function decodeParaTextMapped(data: Buffer, nchars?: number): ParaTextDecoded {
         const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
         return isAZ(a) && isAZ(b);
       };
+      out += '￼';
       rawPos += 1;
-      if (isAsciiPair(w1) && isAsciiPair(w2)) {
-        i += 4;
-        rawPos += 2;
+      if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < buf.length) {
+        i += 12;
+        rawPos += 6;
+      }
+      continue;
+    }
+
+    // CtrlCh placeholder+skip (heuristic)
+    if (code > 0x0000 && code < 0x0020) {
+      out += '￼';
+      rawPos += 1;
+      if (i + 13 < buf.length) {
+        i += 12;
+        rawPos += 6;
       }
       continue;
     }
@@ -605,6 +623,30 @@ function parseParaCharShapeRecord(data: Buffer): ParaCharShapeRun[] {
 function u32Array(buf: Buffer): number[] {
   const out: number[] = [];
   for (let i = 0; i + 3 < buf.length; i += 4) out.push(buf.readUInt32LE(i));
+  return out;
+}
+
+function charToControl(ch: string): Control | null {
+  if (ch === '￼') return null;
+  if (ch === '	') return { type: 'TabControl' } as Control;
+  if (ch.charCodeAt(0) === 10) return { type: 'LineBreakControl' } as Control;
+  if (ch === ' ') return { type: 'NbSpaceControl' } as Control;
+  if (ch === '　') return { type: 'FwSpaceControl' } as Control;
+  return { type: 'CharControl', text: ch } as Control;
+}
+
+function textToControls(text: string): Control[] {
+  const out: Control[] = [];
+  let acc = '';
+  const flush = () => { if (acc) { out.push({ type: 'CharControl', text: acc } as Control); acc = ''; } };
+
+  for (const ch of Array.from(text)) {
+    const c = charToControl(ch);
+    if (!c) continue;
+    if (c.type === 'CharControl') acc += c.text;
+    else { flush(); out.push(c); }
+  }
+  flush();
   return out;
 }
 
@@ -657,33 +699,16 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
       pos: mapRawPos(rawToOut, r.pos),
       charShapeIndex: r.charShapeIndex,
     }));
-
-    // Keep legacy behavior: split on \n into multiple paragraphs (attach runs only to first).
-    const parts = joined.split('\n');
-    if (parts.length <= 1) {
-      paras.push({
-        text: joined,
-        runs,
-        tag69s: currentTag69s,
-        controlMask: currentHeader?.controlMask ?? 0,
-        breakType: currentHeader?.breakType ?? 0,
-        paraShapeIndex: currentHeader?.paraShapeIndex ?? 0,
-        styleIndex: currentHeader?.styleIndex ?? 0,
-        instId: currentHeader?.instId ?? 0,
-      });
-    } else {
-      paras.push({
-        text: parts[0] ?? '',
-        runs,
-        tag69s: currentTag69s,
-        controlMask: currentHeader?.controlMask ?? 0,
-        breakType: currentHeader?.breakType ?? 0,
-        paraShapeIndex: currentHeader?.paraShapeIndex ?? 0,
-        styleIndex: currentHeader?.styleIndex ?? 0,
-        instId: currentHeader?.instId ?? 0,
-      });
-      for (let i = 1; i < parts.length; i++) paras.push({ text: parts[i] ?? '', runs: [], tag69s: [], controlMask: 0, breakType: 0, paraShapeIndex: 0, styleIndex: 0, instId: 0 });
-    }
+    paras.push({
+      text: joined,
+      runs,
+      tag69s: currentTag69s,
+      controlMask: currentHeader?.controlMask ?? 0,
+      breakType: currentHeader?.breakType ?? 0,
+      paraShapeIndex: currentHeader?.paraShapeIndex ?? 0,
+      styleIndex: currentHeader?.styleIndex ?? 0,
+      instId: currentHeader?.instId ?? 0,
+    });
   };
 
   for (const r of records) {
@@ -1024,12 +1049,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               const e = i + 1 < uniq.length ? uniq[i + 1]!.pos : text.length;
               const slice = text.slice(s, e);
               if (!slice) continue;
-              const controls = Array.from(slice)
-                .filter((ch) => ch !== '￼')
-                .map((ch) => ({
-                  type: 'CharControl',
-                  code: ch.charCodeAt(0),
-                })) as Control[];
+              const controls = textToControls(slice);
               if (!controls.length) continue;
               texts.push({
                 charShapeIndex: uniq[i]!.charShapeIndex,
@@ -1049,12 +1069,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
                 : [
                     {
                       charShapeIndex: 0,
-                      controls: Array.from(text)
-                        .filter((ch) => ch !== '￼')
-                        .map((ch) => ({
-                          type: 'CharControl',
-                          code: ch.charCodeAt(0),
-                        })) as Control[],
+                      controls: textToControls(text),
                     },
                   ],
             };

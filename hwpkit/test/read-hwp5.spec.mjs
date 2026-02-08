@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, it, expect } from 'vitest';
 import { readHwp5 } from '../lib/read/hwp5/index.js';
+import { readHwpml } from '../lib/read/hwpml/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -79,7 +80,7 @@ describe('readHwp5', () => {
     const hasFFFC = doc9.body.sections[0].paragraphs
       .flatMap((p) => p.texts)
       .flatMap((t) => t.controls)
-      .some((c) => c.code === 0xfffc);
+      .some((c) => c.type === 'CharControl' && c.text === '￼');
     expect(hasFFFC).toBe(false);
 
     const doc10 = readHwp5(loadSample('10-mixed-charshape-in-one-paragraph.hwp'));
@@ -119,11 +120,33 @@ describe('readHwp5', () => {
 
     const toLines = (doc) =>
       doc.body.sections[0].paragraphs
-        .map((p) => (p.texts ?? []).flatMap((t) => t.controls ?? []).map((c) => String.fromCharCode(c.code)).join(''))
+        .map((p) => (p.texts ?? []).flatMap((t) => t.controls ?? []).map((c) => c.type === 'CharControl' ? c.text : c.type === 'TabControl' ? '	' : c.type === 'LineBreakControl' ? '\n' : '').join(''))
         .map((x) => x.trim())
         .filter((x) => x.length > 0);
 
     expect(toLines(dist)).toEqual(toLines(base));
+  });
+  it('parses controls sample from hwp/hml', () => {
+    const hwp = readHwp5(loadSample('60-controls.hwp'));
+    const hmlText = fs.readFileSync(path.resolve(__dirname, '..', '..', 'samples', '60-controls.hml'), 'utf8');
+    const hml = readHwpml(hmlText);
+
+    const controlTypes = (doc) =>
+      doc.body.sections
+        .flatMap((s) => s.paragraphs ?? [])
+        .flatMap((p) => p.texts ?? [])
+        .flatMap((t) => t.controls ?? [])
+        .map((c) => c.type);
+
+    const hwpTypes = controlTypes(hwp);
+    const hmlTypes = controlTypes(hml);
+
+    expect(hmlTypes.includes('TabControl')).toBe(true);
+    expect(hmlTypes.includes('NbSpaceControl')).toBe(true);
+    expect(hmlTypes.includes('MarkPenBeginControl')).toBe(true);
+    expect(hmlTypes.includes('MarkPenEndControl')).toBe(true);
+
+    expect(hwpTypes.includes('TabControl')).toBe(true);
   });
 
   it('parses paraShape widow/orphan and keep-with-next flags', () => {
