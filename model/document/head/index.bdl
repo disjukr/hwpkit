@@ -1,0 +1,51 @@
+import model.document { Index }
+import model.document.head.font { Font }
+import model.document.head.lang { LangType }
+import model.document.head.char_shape { CharShape }
+import model.document.head.para_shape { ParaShape }
+
+struct Head {
+  docSetting: DocumentSetting,
+  mappingTable: MappingTable,
+}
+
+struct DocumentSetting {
+  beginNumber: BeginNumber,
+  caretPos: CaretPos,
+}
+
+struct BeginNumber {
+  endnote: integer,
+  equation: integer,
+  footnote: integer,
+  page: integer,
+  picture: integer,
+  table: integer,
+}
+
+struct CaretPos {
+  list: integer,
+  para: integer,
+  pos: integer,
+}
+
+struct MappingTable {
+  fontFaces: Font[][LangType],
+  charShapes: CharShape[],
+  paraShapes: ParaShape[],
+  styles: Style[],
+}
+
+struct Style {
+  type: StyleType,
+  name: string,
+  engName: string,
+  paraShapeIndex: Index,
+  charShapeIndex: Index,
+  nextStyleIndex: Index,
+}
+
+enum StyleType {
+  Para,
+  Char,
+}

@@ -1,0 +1,32 @@
+enum LineType1 {
+  Solid,
+  Dash,
+  Dot,
+  DashDot,
+  Circle,
+  DoubleSlim,
+  SlimThick,
+  ThickSlim,
+  SlimThickSlim,
+  None,
+}
+
+enum LineType2 {
+  Solid,
+  Dash,
+  Dot,
+  DashDot,
+  Circle,
+  DoubleSlim,
+  SlimThick,
+  ThickSlim,
+  SlimThickSlim,
+}
+
+enum LineType3 {
+  Solid,
+  Dot,
+  Thick,
+  Dash,
+  DashDot,
+}

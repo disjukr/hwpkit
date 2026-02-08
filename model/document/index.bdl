@@ -1,0 +1,12 @@
+import model.document.head { Head }
+import model.document.body { Body }
+
+custom Index = integer
+custom Hwpunit = number
+custom RgbColor = integer
+custom Percent = number
+
+struct DocumentModel {
+  head: Head,
+  body: Body,
+}

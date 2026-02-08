@@ -1,0 +1,10 @@
+struct Font {
+  name: string,
+  type?: FontType,
+}
+
+enum FontType {
+  Rep,
+  Ttf,
+  Hft,
+}

@@ -1,0 +1,27 @@
+import model.document { Hwpunit }
+
+struct ColDef {
+  type: ColType,
+  count: integer,
+  layoutType: ColLayoutType,
+  sameSize: boolean,
+  sameGap: Hwpunit,
+  columns: Column[],
+}
+
+enum ColType {
+  Newspaper,
+  BalancedNewspaper,
+  Parallel,
+}
+
+enum ColLayoutType {
+  Left,
+  Right,
+  Mirror,
+}
+
+struct Column {
+  width: Hwpunit,
+  gap: Hwpunit,
+}
