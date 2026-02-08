@@ -7,7 +7,7 @@ export interface ParaShape {
   align: AlignmentType1;
   verAlign: VerAlignType;
   headingType: HeadingType;
-  level: number;
+  level: ParaLevel;
   tabDef: Index;
   breakLatinWordType: BreakLatinWordType;
   breakNonLatinWord: boolean;
@@ -28,6 +28,16 @@ export const enum HeadingType {
   Outline,
   Number,
   Bullet,
+}
+
+export const enum ParaLevel {
+  Level0,
+  Level1,
+  Level2,
+  Level3,
+  Level4,
+  Level5,
+  Level6,
 }
 
 export const enum BreakLatinWordType {
