@@ -17,18 +17,18 @@ struct DocumentSetting {
 }
 
 struct BeginNumber {
-  endnote: integer,
-  equation: integer,
-  footnote: integer,
-  page: integer,
-  picture: integer,
-  table: integer,
+  endnote: int32,
+  equation: int32,
+  footnote: int32,
+  page: int32,
+  picture: int32,
+  table: int32,
 }
 
 struct CaretPos {
-  list: integer,
-  para: integer,
-  pos: integer,
+  list: int32,
+  para: int32,
+  pos: int32,
 }
 
 struct MappingTable {

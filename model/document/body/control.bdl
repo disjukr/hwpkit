@@ -1,7 +1,7 @@
 # standard - conventional
 
 union Control {
-  CharControl(code: integer),
+  CharControl(code: int32),
 }
 
 enum ControlType {

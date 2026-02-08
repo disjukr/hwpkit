@@ -4,7 +4,7 @@ import hwpkit.document { Hwpunit }
 
 struct ColDef {
   type: ColType,
-  count: integer,
+  count: int32,
   layoutType: ColLayoutType,
   sameSize: boolean,
   sameGap: Hwpunit,
