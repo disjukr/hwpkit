@@ -113,6 +113,19 @@ describe('readHwp5', () => {
     expect(cs3.relSizes[1]).toBe(150);
   });
 
+  it('decodes distribute ViewText to recover original body text', () => {
+    const base = readHwp5(loadSample('50-distribute-base.hwp'));
+    const dist = readHwp5(loadSample('51-distribute-viewtext.hwp'));
+
+    const toLines = (doc) =>
+      doc.body.sections[0].paragraphs
+        .map((p) => (p.texts ?? []).flatMap((t) => t.controls ?? []).map((c) => String.fromCharCode(c.code)).join(''))
+        .map((x) => x.trim())
+        .filter((x) => x.length > 0);
+
+    expect(toLines(dist)).toEqual(toLines(base));
+  });
+
   it('parses paraShape widow/orphan and keep-with-next flags', () => {
     const d1 = readHwp5(loadSample('28-parashape-widow-orphan-on.hwp'));
     const ps1 = d1.head.mappingTable.paraShapes[d1.body.sections[0].paragraphs[0].paraShapeIndex];
