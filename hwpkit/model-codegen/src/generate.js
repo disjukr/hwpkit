@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import parseBdlAst from '@disjukr/bdl/parser';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
@@ -60,6 +61,11 @@ function parseBlocks(text, kind) {
 
 function parseBdl(file) {
   const src = fs.readFileSync(file, 'utf8').replace(/\r/g, '');
+
+  // Use official BDL parser first to ensure syntax validity.
+  // (Generation below still uses a lightweight emitter tailored to this repo's current schema subset.)
+  parseBdlAst(src);
+
   const imports = [...src.matchAll(/^import\s+([\w.]+)\s*\{\s*([^}]+)\s*\}\s*$/gm)].map((m) => ({
     module: m[1].trim(),
     names: m[2].split(',').map((x) => x.trim()).filter(Boolean),
