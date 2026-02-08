@@ -1,3 +1,5 @@
+# standard - conventional
+
 enum LineType1 {
   Solid,
   Dash,

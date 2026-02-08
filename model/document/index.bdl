@@ -1,3 +1,5 @@
+# standard - conventional
+
 import model.document.head { Head }
 import model.document.body { Body }
 

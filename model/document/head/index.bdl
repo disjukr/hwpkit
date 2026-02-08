@@ -1,3 +1,5 @@
+# standard - conventional
+
 import model.document { Index }
 import model.document.head.font { Font }
 import model.document.head.lang { LangType }
