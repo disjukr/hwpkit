@@ -60,7 +60,7 @@ function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
     if (ty.type === 'Dictionary') {
       const key = refType({ type: 'Plain', valueTypePath: ty.keyTypePath });
       const val = refType({ type: 'Plain', valueTypePath: ty.valueTypePath });
-      return `{ [key in ${key}]: ${val} }`;
+      return `Record<${key}, ${val}>`; 
     }
     return 'unknown';
   };

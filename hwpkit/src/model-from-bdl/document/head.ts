@@ -32,7 +32,7 @@ export interface CaretPos {
 }
 
 export interface MappingTable {
-  fontFaces: { [key in LangType]: Fonts };
+  fontFaces: Record<LangType, Fonts>;
   charShapes: CharShape[];
   paraShapes: ParaShape[];
   styles: Style[];
