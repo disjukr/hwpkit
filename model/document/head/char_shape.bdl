@@ -12,9 +12,9 @@ struct CharShape {
   useKerning: boolean,
   fontIds: Index[LangType],
   ratios: Percent[LangType],
-  charSpacings: Percent[LangType],
-  relSizes: Percent[LangType],
-  charOffsets: Percent[LangType],
+  charSpacings: Percent[LangType], // -50% ~ 50%
+  relSizes: Percent[LangType], // 10% ~ 250%
+  charOffsets: Percent[LangType], // -100% ~ 100%
   italic: boolean,
   bold: boolean,
   underline?: Underline,
@@ -57,8 +57,8 @@ struct Outline {
 struct Shadow {
   type: ShadowType,
   color: RgbColor,
-  offsetX: Percent,
-  offsetY: Percent,
+  offsetX: Percent, // -100% ~ 100%
+  offsetY: Percent, // -100% ~ 100%
 }
 
 enum ShadowType {

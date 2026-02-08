@@ -11,7 +11,7 @@ struct ParaShape {
   tabDef: Index,
   breakLatinWordType: BreakLatinWordType,
   breakNonLatinWord: boolean,
-  condense: Percent,
+  condense: Percent, // 0% ~ 75%
   widowOrphan: boolean,
   keepWithNext: boolean,
   keepLines: boolean,
