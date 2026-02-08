@@ -1,3 +1,5 @@
+# standard - conventional
+
 import model.document { RgbColor, Percent, Index, Hwpunit }
 import model.document.head.lang { LangType }
 import model.document.head.line { LineType2, LineType3 }

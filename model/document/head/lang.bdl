@@ -1,3 +1,5 @@
+# standard - conventional
+
 enum LangType {
   Hangul,
   Latin,
