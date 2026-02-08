@@ -386,10 +386,20 @@ function decodeParaText(data: Buffer): string {
       continue;
     }
 
-    // Extended control in ParaText (e.g. 0x0002 + 6 words payload)
-    if (code === 0x0002 && i + 13 < data.length) {
+    // Extended control in ParaText (0x0002 + optional 6-word payload)
+    if (code === 0x0002) {
       out += '￼';
-      i += 12;
+      if (i + 5 < data.length) {
+        const w1 = data.readUInt16LE(i + 2);
+        const w2 = data.readUInt16LE(i + 4);
+        const isAsciiPair = (w: number) => {
+          const a = w & 0xff;
+          const b = (w >>> 8) & 0xff;
+          const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
+          return isAZ(a) && isAZ(b);
+        };
+        if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < data.length) i += 12;
+      }
       continue;
     }
 
@@ -548,12 +558,24 @@ function decodeParaTextMapped(data: Buffer, _nchars?: number): ParaTextDecoded {
       continue;
     }
 
-    // Extended control in ParaText (e.g. 0x0002 + 6 words payload)
-    if (code === 0x0002 && i + 13 < buf.length) {
+    // Extended control in ParaText (0x0002 + optional 6-word payload)
+    if (code === 0x0002) {
       out += '￼';
       rawPos += 1;
-      i += 12;
-      rawPos += 6;
+      if (i + 5 < buf.length) {
+        const w1 = buf.readUInt16LE(i + 2);
+        const w2 = buf.readUInt16LE(i + 4);
+        const isAsciiPair = (w: number) => {
+          const a = w & 0xff;
+          const b = (w >>> 8) & 0xff;
+          const isAZ = (x: number) => x >= 0x61 && x <= 0x7a;
+          return isAZ(a) && isAZ(b);
+        };
+        if (isAsciiPair(w1) && isAsciiPair(w2) && i + 13 < buf.length) {
+          i += 12;
+          rawPos += 6;
+        }
+      }
       continue;
     }
 
