@@ -6,12 +6,14 @@
   "workspaces": [
     "hwpkit",
     "website",
-    "hwpkit/automation"
+    "hwpkit/automation",
+    "hwpkit/model-codegen"
   ],
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -C hwpkit build && pnpm -C hwpkit/automation build",
-    "test": "pnpm -C hwpkit test && pnpm -C hwpkit/automation test"
+    "test": "pnpm -C hwpkit test && pnpm -C hwpkit/automation test",
+    "codegen:model": "pnpm -C hwpkit/model-codegen generate"
   },
   "author": "JongChan Choi <jong@chan.moe>",
   "license": "SEE LICENSE IN <hwpkit/README.md>"

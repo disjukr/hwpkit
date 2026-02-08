@@ -46,6 +46,12 @@ importers:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@25.2.1)(tsx@4.21.0)
 
+  hwpkit/model-codegen:
+    dependencies:
+      '@disjukr/bdl-runtime':
+        specifier: ^0.5.1
+        version: 0.5.1
+
   website:
     dependencies:
       '@emotion/babel-preset-css-prop':
@@ -190,6 +196,9 @@ packages:
   '@babel/types@7.29.0':
     resolution: {integrity: sha512-LwdZHpScM4Qz8Xw2iKSzS+cfglZzJGvofQICy7W7v4caru4EaAmyUuO6BGrbyQ2mYV11W0U8j5mBhd14dd3B0A==}
     engines: {node: '>=6.9.0'}
+
+  '@disjukr/bdl-runtime@0.5.1':
+    resolution: {integrity: sha512-71KmLU8uoqVaFefYk15A7ZD2m2MehvCcv3OCXFJ7Shx9/c7qXiuM3Hzr85Ok1QGuJKMb1ZZT+gOrmADi3xyqvw==}
 
   '@emnapi/runtime@1.8.1':
     resolution: {integrity: sha512-mehfKSMWjjNol8659Z8KxEMrdSJDDot5SXMq00dM8BN4o+CLNXQ0xH2V7EchNHV4RmbZLmmPdEaXZc5H2FXmDg==}
@@ -1783,6 +1792,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@disjukr/bdl-runtime@0.5.1': {}
 
   '@emnapi/runtime@1.8.1':
     dependencies:
