@@ -6,6 +6,6 @@
     "generate": "node src/generate.js"
   },
   "dependencies": {
-    "@disjukr/bdl-runtime": "^0.5.1"
+    "@disjukr/bdl": "jsr:^0.7.0"
   }
 }
