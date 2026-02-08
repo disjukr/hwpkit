@@ -505,6 +505,7 @@ function decodeParaTextWithCount(data: Buffer, _nchars?: number): string {
 // --- TODO(3): PARA_CHAR_SHAPE(run) support (empirical)
 
 type ParaCharShapeRun = { pos: number; charShapeIndex: number };
+type ParaRangeTag = { start: number; end: number; tag: number };
 
 type ParaTextDecoded = { text: string; rawToOut: number[] };
 
@@ -624,6 +625,18 @@ function parseParaCharShapeRecord(data: Buffer): ParaCharShapeRun[] {
 }
 
 
+function parseParaRangeTagRecord(data: Buffer): ParaRangeTag[] {
+  const out: ParaRangeTag[] = [];
+  for (let i = 0; i + 11 < data.length; i += 12) {
+    out.push({
+      start: data.readUInt32LE(i),
+      end: data.readUInt32LE(i + 4),
+      tag: data.readUInt32LE(i + 8),
+    });
+  }
+  return out;
+}
+
 function u32Array(buf: Buffer): number[] {
   const out: number[] = [];
   for (let i = 0; i + 3 < buf.length; i += 4) out.push(buf.readUInt32LE(i));
@@ -654,6 +667,51 @@ function textToControls(text: string): Control[] {
   return out;
 }
 
+function textToControlsWithRangeTags(text: string, rangeTags: ParaRangeTag[] = []): Control[] {
+  const points = rangeTags
+    .map((r) => ({ start: Math.max(0, r.start | 0), end: Math.max(0, r.end | 0), color: (r.tag & 0x00ffffff) >>> 0, kind: (r.tag >>> 24) & 0xff }))
+    .filter((r) => r.end > r.start && r.kind === 0x02)
+    .sort((a, b) => a.start - b.start || a.end - b.end);
+
+  if (!points.length) return textToControls(text);
+
+  const out: Control[] = [];
+  let acc = '';
+  const flush = () => { if (acc) { out.push({ type: 'CharControl', text: acc } as Control); acc = ''; } };
+
+  const opens = new Map<number, number[]>();
+  const closes = new Map<number, number>();
+  for (const p of points) {
+    const arr = opens.get(p.start) ?? [];
+    arr.push(p.color);
+    opens.set(p.start, arr);
+    closes.set(p.end, (closes.get(p.end) ?? 0) + 1);
+  }
+
+  const chars = Array.from(text);
+  for (let i = 0; i <= chars.length; i++) {
+    const closeN = closes.get(i) ?? 0;
+    if (closeN) {
+      flush();
+      for (let k = 0; k < closeN; k++) out.push({ type: 'MarkPenEndControl' } as Control);
+    }
+
+    const openColors = opens.get(i) ?? [];
+    if (openColors.length) {
+      flush();
+      for (const color of openColors) out.push({ type: 'MarkPenBeginControl', color } as Control);
+    }
+
+    if (i === chars.length) break;
+    const c = charToControl(chars[i]);
+    if (!c) continue;
+    if (c.type === 'CharControl') acc += c.text;
+    else { flush(); out.push(c); }
+  }
+  flush();
+  return out;
+}
+
 function parseColDefFromTag69(tag69s: Buffer[]): ColDef | undefined {
   const u = u32Array(tag69s[0] ?? Buffer.alloc(0));
   const v = u.length >= 8 ? (u[7] ?? 0) : 0;
@@ -675,12 +733,13 @@ function parseColDefFromTag69(tag69s: Buffer[]): ColDef | undefined {
 }
 
 
-function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] {
-  const paras: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
+function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string; runs: ParaCharShapeRun[]; rangeTags: ParaRangeTag[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] {
+  const paras: { text: string; runs: ParaCharShapeRun[]; rangeTags: ParaRangeTag[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
 
   let currentHeader: ParaHeaderInfo | null = null;
   let currentText: ParaTextDecoded | null = null;
   let currentRunsRaw: ParaCharShapeRun[] = [];
+  let currentTag70s: ParaRangeTag[] = [];
   let currentTag69s: Buffer[] = [];
 
   const mapRawPos = (rawToOut: number[], rawPos: number) => {
@@ -706,6 +765,7 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     paras.push({
       text: joined,
       runs,
+      rangeTags: currentTag70s.map((rt) => ({ start: mapRawPos(rawToOut, rt.start), end: mapRawPos(rawToOut, rt.end), tag: rt.tag })),
       tag69s: currentTag69s,
       controlMask: currentHeader?.controlMask ?? 0,
       breakType: currentHeader?.breakType ?? 0,
@@ -721,6 +781,7 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
       currentHeader = parseParaHeader(r.data);
       currentText = null;
       currentRunsRaw = [];
+      currentTag70s = [];
       currentTag69s = [];
       continue;
     }
@@ -734,6 +795,10 @@ function buildParagraphsFromBodyRecords(records: RecordHeader[]): { text: string
     }
     if (r.tagId === 69) {
       currentTag69s.push(r.data);
+      continue;
+    }
+    if (r.tagId === 70) {
+      currentTag70s.push(...parseParaRangeTagRecord(r.data));
       continue;
     }
   }
@@ -848,7 +913,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
   const viewPaths = listViewTextSections(cfb);
   if (bodyPaths.length === 0 && viewPaths.length === 0) throw new Error('Missing BodyText/Section* and ViewText/Section* streams');
 
-  const paragraphs: { text: string; runs: ParaCharShapeRun[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
+  const paragraphs: { text: string; runs: ParaCharShapeRun[]; rangeTags: ParaRangeTag[]; tag69s: Buffer[]; controlMask: number; breakType: number; paraShapeIndex: number; styleIndex: number; instId: number }[] = [];
   let parsedPageDef: ReturnType<typeof parsePageDefFromBodyRecords> = null;
 
   const sectionIds = [...new Set([
@@ -1053,7 +1118,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
               const e = i + 1 < uniq.length ? uniq[i + 1]!.pos : text.length;
               const slice = text.slice(s, e);
               if (!slice) continue;
-              const controls = textToControls(slice);
+              const controls = textToControlsWithRangeTags(slice, (p.rangeTags ?? []).filter((r) => r.start >= s && r.end <= e).map((r) => ({ ...r, start: r.start - s, end: r.end - s })));
               if (!controls.length) continue;
               texts.push({
                 charShapeIndex: uniq[i]!.charShapeIndex,
@@ -1073,7 +1138,7 @@ export function readHwp5(buffer: Buffer): DocumentModel {
                 : [
                     {
                       charShapeIndex: 0,
-                      controls: textToControls(text),
+                      controls: textToControlsWithRangeTags(text, p.rangeTags ?? []),
                     },
                   ],
             };
