@@ -1,6 +1,6 @@
 # standard - conventional
 
-import model.document { Hwpunit }
+import hwpkit.document { Hwpunit }
 
 struct ColDef {
   type: ColType,

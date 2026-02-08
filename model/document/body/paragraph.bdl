@@ -1,8 +1,8 @@
 # standard - conventional
 
-import model.document { Index }
-import model.document.body.column { ColDef }
-import model.document.body.control { Control }
+import hwpkit.document { Index }
+import hwpkit.document.body.column { ColDef }
+import hwpkit.document.body.control { Control }
 
 struct Paragraph {
   paraShapeIndex: Index,

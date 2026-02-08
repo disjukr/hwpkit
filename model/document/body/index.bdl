@@ -1,6 +1,6 @@
 # standard - conventional
 
-import model.document.body.section { Section }
+import hwpkit.document.body.section { Section }
 
 struct Body {
   sections: Section[],

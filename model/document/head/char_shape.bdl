@@ -1,8 +1,8 @@
 # standard - conventional
 
-import model.document { RgbColor, Percent, Index, Hwpunit }
-import model.document.head.lang { LangType }
-import model.document.head.line { LineType2, LineType3 }
+import hwpkit.document { RgbColor, Percent, Index, Hwpunit }
+import hwpkit.document.head.lang { LangType }
+import hwpkit.document.head.line { LineType2, LineType3 }
 
 struct CharShape {
   height: Hwpunit,

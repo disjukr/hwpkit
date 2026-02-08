@@ -1,7 +1,7 @@
 # standard - conventional
 
-import model.document { Percent, Index }
-import model.document.head.alignment { AlignmentType1, VerAlignType }
+import hwpkit.document { Percent, Index }
+import hwpkit.document.head.alignment { AlignmentType1, VerAlignType }
 
 struct ParaShape {
   align: AlignmentType1,
