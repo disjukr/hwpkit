@@ -358,11 +358,21 @@ function decodeParaText(data: Buffer): string {
   for (let i = 0; i + 1 < data.length; i += 2) {
     const code = data.readUInt16LE(i);
 
-    if (code === 0x0009) {
-      out += '\t';
+    if (code === 0x001e) {
+      out += ' ';
       continue;
     }
 
+    if (code === 0x0009) {
+      if (i + 15 < data.length && data.readUInt16LE(i + 14) === 0x0009) {
+        out += '	';
+        i += 14;
+        continue;
+      }
+      out += '	';
+      continue;
+
+    }
     if (code === 0x000a) {
       out += '\n';
       continue;
@@ -503,8 +513,21 @@ function decodeParaTextMapped(data: Buffer, _nchars?: number): ParaTextDecoded {
     const code = buf.readUInt16LE(i);
     setBoundary(rawPos, out.length);
 
+    if (code === 0x001e) {
+      out += ' ';
+      rawPos += 1;
+      continue;
+    }
+
     if (code === 0x0009) {
-      out += '\t';
+      if (i + 15 < buf.length && buf.readUInt16LE(i + 14) === 0x0009) {
+        out += '	';
+        rawPos += 1;
+        i += 14;
+        rawPos += 7;
+        continue;
+      }
+      out += '	';
       rawPos += 1;
       continue;
     }
