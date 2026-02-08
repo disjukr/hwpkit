@@ -1,7 +1,7 @@
 # standard - conventional
 
-import hwpkit.document { Index, Fonts }
-import hwpkit.document.head.font { Font }
+import hwpkit.document { Index }
+import hwpkit.document.head.font { Font, Fonts }
 import hwpkit.document.head.lang { LangType }
 import hwpkit.document.head.char_shape { CharShape }
 import hwpkit.document.head.para_shape { ParaShape }
