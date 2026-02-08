@@ -1,4 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/.bdl
 import type { Index } from '../../document';
 import type { ColDef } from './column';
 import type { Control } from './control';

@@ -1,4 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/.bdl
 import type { Index, Percent } from '../../document';
 import type { AlignmentType1, VerAlignType } from './alignment';
 

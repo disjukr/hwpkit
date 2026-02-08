@@ -1,4 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
+// Source: model/.bdl
 import type { Hwpunit, Index, Percent, RgbColor } from '../../document';
 import type { LangType } from './lang';
 import type { LineType2, LineType3 } from './line';

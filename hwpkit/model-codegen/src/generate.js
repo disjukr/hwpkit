@@ -37,7 +37,7 @@ function relImport(fromFile, toModule, names) {
   return `import type { ${[...names].sort().join(', ')} } from '${rel}';`;
 }
 
-function generateModuleTs(modulePath, moduleDefPaths, defs) {
+function generateModuleTs(modulePath, moduleDefPaths, defs, sourceBdlPath) {
   const outFile = outFileFromModule(modulePath);
   const imports = new Map(); // modulePath -> Set<name>
 
@@ -65,7 +65,10 @@ function generateModuleTs(modulePath, moduleDefPaths, defs) {
     return 'unknown';
   };
 
-  const lines = ['// AUTO-GENERATED from BDL IR. DO NOT EDIT.'];
+  const lines = [
+    '// AUTO-GENERATED from BDL IR. DO NOT EDIT.',
+    `// Source: ${sourceBdlPath}`,
+  ];
 
   const body = [];
   for (const defPath of moduleDefPaths) {
@@ -134,7 +137,8 @@ fs.rmSync(outRoot, { recursive: true, force: true });
 for (const [modulePath, mod] of Object.entries(ir.modules)) {
   const outFile = outFileFromModule(modulePath);
   fs.mkdirSync(path.dirname(outFile), { recursive: true });
-  fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs));
+  const sourceBdlPath = path.posix.join('model', modulePath.slice('hwpkit.'.length).replace(/./g, '/')) + '.bdl';
+  fs.writeFileSync(outFile, generateModuleTs(modulePath, mod.defPaths, ir.defs, sourceBdlPath));
 }
 
 console.log(`Generated ${Object.keys(ir.modules).length} modules into ${path.relative(repoRoot, outRoot)}`);
