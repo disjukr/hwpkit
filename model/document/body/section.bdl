@@ -1,7 +1,7 @@
 # standard - conventional
 
-import model.document { Hwpunit }
-import model.document.body.paragraph { Paragraph }
+import hwpkit.document { Hwpunit }
+import hwpkit.document.body.paragraph { Paragraph }
 
 struct Section {
   def: SecDef,

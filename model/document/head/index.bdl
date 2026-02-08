@@ -1,10 +1,10 @@
 # standard - conventional
 
-import model.document { Index }
-import model.document.head.font { Font }
-import model.document.head.lang { LangType }
-import model.document.head.char_shape { CharShape }
-import model.document.head.para_shape { ParaShape }
+import hwpkit.document { Index }
+import hwpkit.document.head.font { Font }
+import hwpkit.document.head.lang { LangType }
+import hwpkit.document.head.char_shape { CharShape }
+import hwpkit.document.head.para_shape { ParaShape }
 
 struct Head {
   docSetting: DocumentSetting,
