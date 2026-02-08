@@ -10,3 +10,6 @@ tmp/**
 /samples/*.hwp.json
 /samples/*.hml.json
 /samples/*.hwpml.json
+
+# generated CFB debug dumps
+/samples/*.hwp.cfb*.json
