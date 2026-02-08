@@ -4,9 +4,9 @@ import hwpkit.document.head { Head }
 import hwpkit.document.body { Body }
 
 custom Index = int32
-custom Hwpunit = number
+custom Hwpunit = float64
 custom RgbColor = int32
-custom Percent = number
+custom Percent = float64
 
 struct DocumentModel {
   head: Head,
