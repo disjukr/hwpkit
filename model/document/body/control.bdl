@@ -3,7 +3,3 @@
 union Control {
   CharControl(code: int32),
 }
-
-enum ControlType {
-  Char,
-}
