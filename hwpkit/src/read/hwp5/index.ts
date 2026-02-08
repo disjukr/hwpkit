@@ -647,7 +647,6 @@ function textToControls(text: string): Control[] {
     else { flush(); out.push(c); }
   }
   flush();
-  while (out.length > 0 && out[out.length - 1]?.type === 'LineBreakControl') out.pop();
   return out;
 }
 
