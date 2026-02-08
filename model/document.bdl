@@ -7,7 +7,6 @@ custom Index = int32
 custom Hwpunit = int32 // 10 pt = 1000 hwpunit
 custom RgbColor = int32 // 0x00bbggrr
 custom Percent = int32 // 0 ~ 100
-custom Fonts = hwpkit.document.head.font.Font[]
 
 struct DocumentModel {
   head: Head,
