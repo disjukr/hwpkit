@@ -1,5 +1,5 @@
 // AUTO-GENERATED from BDL IR. DO NOT EDIT.
-// Source: model/.bdl
+// Source: model/document/body/control.bdl
 
 export interface CharControl {
   type: 'CharControl';
